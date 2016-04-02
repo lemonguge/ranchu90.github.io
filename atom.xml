@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[cd's blog]]></title>
+  <link href="http://mono-.github.io/atom.xml" rel="self"/>
+  <link href="http://mono-.github.io/"/>
+  <updated>2016-04-02T15:04:38+08:00</updated>
+  <id>http://mono-.github.io/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://www.coderforart.com/">CoderForArt</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[asdfdasf]]></title>
+    <link href="http://mono-.github.io/14595805304788.html"/>
+    <updated>2016-04-02T15:02:10+08:00</updated>
+    <id>http://mono-.github.io/14595805304788.html</id>
+    <content type="html"><![CDATA[
+<p>asfa asdf</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Title]]></title>
+    <link href="http://mono-.github.io/14595804338386.html"/>
+    <updated>2016-04-02T15:00:33+08:00</updated>
+    <id>http://mono-.github.io/14595804338386.html</id>
+    <content type="html"><![CDATA[
+<p>This is a text.</p>
+
+]]></content>
+  </entry>
+  
+</feed>
