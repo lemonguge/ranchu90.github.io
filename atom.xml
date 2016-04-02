@@ -4,7 +4,7 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-04-03T01:20:21+08:00</updated>
+  <updated>2016-04-03T02:59:27+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,7 +18,7 @@
     <updated>2016-04-03T01:18:58+08:00</updated>
     <id>http://ranchu90.github.io/14596175387256.html</id>
     <content type="html"><![CDATA[
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了数组如何在C语言函数中作为参数传递。<br/>
+<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
 现在把方法整理出来，以备能很快地回忆起来。</p>
 
 <pre><code>void printArray(int a[3][2]);
