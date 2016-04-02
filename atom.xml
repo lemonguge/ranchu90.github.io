@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[cd's blog]]></title>
-  <link href="http://mono-.github.io/atom.xml" rel="self"/>
-  <link href="http://mono-.github.io/"/>
-  <updated>2016-04-02T16:32:41+08:00</updated>
-  <id>http://mono-.github.io/</id>
+  <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
+  <link href="http://ranchu90.github.io/"/>
+  <updated>2016-04-02T16:51:10+08:00</updated>
+  <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
@@ -14,9 +14,9 @@
   
   <entry>
     <title type="html"><![CDATA[First blog]]></title>
-    <link href="http://mono-.github.io/14595804338386.html"/>
+    <link href="http://ranchu90.github.io/14595804338386.html"/>
     <updated>2016-04-02T15:00:33+08:00</updated>
-    <id>http://mono-.github.io/14595804338386.html</id>
+    <id>http://ranchu90.github.io/14595804338386.html</id>
     <content type="html"><![CDATA[
 <p>今天由zjb同学介绍，学会了使用github搭建个人的blog。<br/>
 从今天开始，我将在这个地方记录自己在技术上的成长。<br/>
