@@ -4,7 +4,7 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-04-03T03:03:51+08:00</updated>
+  <updated>2016-04-03T03:06:05+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -64,7 +64,7 @@ int main(){
 }
 </code></pre>
 
-<p><code>int \*\*a;</code></p>
+<p><code>int **a;</code></p>
 
 <p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
 
