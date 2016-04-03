@@ -106,8 +106,10 @@
                       
                       <div class="a-content-text">
                         
-                        	<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
+                        	<blockquote>
+<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
 现在把方法整理出来，以备能很快地回忆起来。</p>
+</blockquote>
 
 <pre><code>void printArray(int a[3][2]);
 void printArray(int a[][2]);
@@ -118,11 +120,11 @@ void printArray(int (*a)[2]);
 
 <hr/>
 
-<pre><code>#include<stdio.h>
+<pre><code>#include&lt;stdio.h&gt;
 void printArray(int a[][2]){
-        for(int i=0; i<3; ++i){
-                for(int j=0; j<2; ++j){
-                        printf("%d\n", a[i][j]);
+        for(int i=0; i&lt;3; ++i){
+                for(int j=0; j&lt;2; ++j){
+                        printf(&quot;%d\n&quot;, a[i][j]);
                 }
         }
 }
@@ -137,11 +139,11 @@ int main(){
 
 <p>手工寻址</p>
 
-<pre><code>#include<stdio.h>
+<pre><code>#include&lt;stdio.h&gt;
 void printArray(int **a, int m, int n){
-        for(int i=0; i<3; ++i){
-                for(int j=0; j<2; ++j){
-                        printf("%d\n", *((int*)a+i*n+j));
+        for(int i=0; i&lt;3; ++i){
+                for(int j=0; j&lt;2; ++j){
+                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
                 }
         }
 }
