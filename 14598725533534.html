@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Archives - cd's blog
+  Objective-C中的类别 - cd's blog
   
   </title>
   
@@ -93,65 +93,133 @@
 
  <script type="text/javascript">
   $(function(){
-    $('#menu_item_archives').addClass('is_active');
+    $('#menu_item_index').addClass('is_active');
   });
 </script>
 <div class="row">
   <div class="large-8 medium-8 columns">
-    <div id="archives-page-wrap">
-        <h1>Archives</h1>
-        <div class="markdown-body archives-wrap">
+      <div class="markdown-body article-wrap">
+       <div class="article">
           
-             
-                <h1>2016</h1>
-            
-            <div class="article">
-              <a class="clearlink" href="14598725533534.html">
-                <h1>Objective-C中的类别</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2016/4/6 0:9 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
-                 
-              </div>
-            </div><!-- article -->
+          <h1>Objective-C中的类别</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/4/6 0:9 上午</span>
 
+          <span>posted in&nbsp;</span> 
           
-            
-            <div class="article">
-              <a class="clearlink" href="14596175387256.html">
-                <h1>二维数组作为参数在C语言函数中如何传递</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2016/4/3 1:18 上午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
-          
-            
-            <div class="article">
-              <a class="clearlink" href="14595804338386.html">
-                <h1>First blog</h1>
-              </a>
-              <div class="read-more clearfix">
-                <span class="date">2016/4/2 15:0 下午</span>
-                <span>posted in&nbsp;</span> 
-                
-                    <span class="posted-in"><a href='diary.html'>Diary</a></span>
-                 
-              </div>
-            </div><!-- article -->
-
+              <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
            
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <blockquote>
+<p>刚刚翻看了OC的书中关于类别的一张，现将OC中类别的使用和限制总结如下。</p>
+</blockquote>
+
+<h2 id="toc_0">定义及使用</h2>
+
+<p>通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
+类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
+可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
+
+<h3 id="toc_1">声明</h3>
+
+<h4 id="toc_2">头文件</h4>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+
+@interface NSMutableString (GUID) //括号里为类别的名字
+
+-(void) appendGUID;
++(id) stringWithGUID;
+@end
+</code></pre>
+
+<h4 id="toc_3">实现</h4>
+
+<pre><code>#import &quot;NSMutableString+GUID.h&quot;
+
+@implementation NSMutableString (GUID)
+
+-(void) appendGUID{
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *string = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
+    [self appendString:string];
+   // CFRelease(uuid);
+}
+
++(id) stringWithGUID{
+    NSMutableString *string = [self string];
+    [string appendGUID];
+    return string;
+}
+
+@end
+</code></pre>
+
+<p>扩展成员方法：可访问类的所有成员变量、可以通过self调用类的其它方法、可以使用super关键字调用父类的方法。self关键字指实例对象。<br/>
+扩展类方法：无法访问成员变量。self关键字指类对象。</p>
+
+<h4 id="toc_4">使用</h4>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+#import &quot;NSMutableString+GUID.h&quot;
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSMutableString *str = [NSMutableString stringWithGUID];
+        NSLog(@&quot;GUID=%@&quot;, str);
+    }
+    return 0;
+}
+</code></pre>
+
+<h2 id="toc_5">限制</h2>
+
+<p>类别不能中扩展类中添加任何成员变量。<br/>
+重写现有方法时，无法调用原始现有对象方法。<br/>
+若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14596175387256.html" 
+          title="Next Post: 二维数组作为参数在C语言函数中如何传递">二维数组作为参数在C语言函数中如何传递 &raquo;</a>
+      
+      </p>
         </div>
       </div>
-  </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
