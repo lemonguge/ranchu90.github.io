@@ -4,7 +4,7 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-04-04T23:54:24+08:00</updated>
+  <updated>2016-04-04T23:55:25+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -53,8 +53,8 @@ int main(){
 
 <pre><code>#include&lt;stdio.h&gt;
 void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
+        for(int i=0; i&lt;m; ++i){
+                for(int j=0; j&lt;n; ++j){
                         printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
                 }
         }

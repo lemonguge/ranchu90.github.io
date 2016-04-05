@@ -154,8 +154,8 @@ int main(){
 
 <pre><code>#include&lt;stdio.h&gt;
 void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
+        for(int i=0; i&lt;m; ++i){
+                for(int j=0; j&lt;n; ++j){
                         printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
                 }
         }
