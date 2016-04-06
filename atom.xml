@@ -4,7 +4,7 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-04-06T00:47:52+08:00</updated>
+  <updated>2016-04-06T10:10:13+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -19,7 +19,7 @@
     <id>http://ranchu90.github.io/14598725533534.html</id>
     <content type="html"><![CDATA[
 <blockquote>
-<p>刚刚翻看了OC的书中关于类别的一张，现将OC中类别的使用和限制总结如下。</p>
+<p>刚刚翻看了OC的书中关于类别的一章，现将OC中类别的使用和限制总结如下。</p>
 </blockquote>
 
 <h2 id="toc_0">定义及使用</h2>
