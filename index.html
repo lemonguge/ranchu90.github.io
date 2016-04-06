@@ -114,10 +114,9 @@
 
 <h2 id="toc_0">定义及使用</h2>
 
-<pre><code>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。
-2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。
-3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。
-</code></pre>
+<p>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
+2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
+3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
 
 <h3 id="toc_1">声明</h3>
 
@@ -173,10 +172,9 @@ int main(int argc, const char * argv[]) {
 
 <h2 id="toc_5">限制</h2>
 
-<pre><code>1.类别不能在扩展类中添加任何成员变量。
-2.重写现有方法时，无法调用原始现有对象方法。
-3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。
-</code></pre>
+<p>1.类别不能在扩展类中添加任何成员变量。<br/>
+2.重写现有方法时，无法调用原始现有对象方法。<br/>
+3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
 
                         
                       </div>
@@ -201,124 +199,6 @@ int main(int argc, const char * argv[]) {
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14596175387256.html">
-                
-                  <h1>二维数组作为参数在C语言函数中如何传递</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
-
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
-</code></pre>
-
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
-
-<hr/>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
-
-<hr/>
-
-<p>手工寻址</p>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/4/3 1:18 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14595804338386.html">
-                
-                  <h1>First blog</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>今天由zjb同学介绍，学会了使用github搭建个人的blog。<br/>
-从今天开始，我将在这个地方记录自己在技术上的成长。<br/>
-我的目标是成为优秀的软件工程师。加油！</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/4/2 15:0 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='diary.html'>Diary</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -330,7 +210,7 @@ int main(){
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="all_1.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
