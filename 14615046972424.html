@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Objective C - cd's blog
+  困惑 - cd's blog
   
   </title>
   
@@ -92,126 +92,81 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14609059782704.html">
-                
-                  <h1>Objective-C中的协议</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">一.问题的产生</h2>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>困惑</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/4/24 21:31 下午</span>
 
-<p><img src="media/14609059782704/14609061125330.jpg" alt=""/><br/>
-NetworkConnector类提供所有和网络服务器的交互，包括连接、断开连接和手法数据。BusinessLogic类会接收NetworkConnector收到的数据，并确定它的走向。<br/>
-网络连接是一个在其他应用或同一个应用的其他地方一定会复用的东西。所以必须将它与BusinessLogic类设计成没有紧密耦合。<br/>
-<img src="media/14609059782704/14609063607549.jpg" alt=""/><br/>
-C++等语言使用多继承来解决这类问题，强制BusinessLogic类继承自NetworkConnector可以依赖的类。但是多继承会产生新的问题，即砖石问题。如果D类同时继承自B类和C类，同时B、C也继承自共同的超类A，这种情况下，如果D没有重写A中的方法，当D调用A类的方法的时候，无法确定会调用哪一个父类的方法B类的还是C类的？<br/>
-Objective-C只能使用单继承。 </p>
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='diary.html'>Diary</a></span>
+           
+         
+          <span class="comments">
+            
+              <a href="http://ranchu90.github.io/14615046972424.html#disqus_thread">comments</a>
+            
 
-<h2 id="toc_1">二.Objective-C的解决方案</h2>
+            
+          </span>
 
-<p>Objective-C使用协议来声明一个接口来解决这个问题。<br/>
-接口是在不提供默认实现时由一个类来具体实现，它只提供声明这些方法的接口机制，让可复用组件不依赖于特定的类来实现，而依赖于以协议形式存在的接口。</p>
+        </div>
+      </div><!-- article -->
 
-<h3 id="toc_2">协议的声明</h3>
+      <div class="article-content">
+      <p>最近这段时间在考虑以后工作的问题，非常困惑，是去企业，还是事业单位。<br/>
+考量的因素如下：<br/>
+1）工作量<br/>
+2）稳定性<br/>
+3）时间<br/>
+去企业工作无意工作量很大，不稳定，而且即使时间过去十年还是需要不停地学习新的东西。<br/>
+事业单位或公务员这类工作，一般不加班，稳定，资历很重要。</p>
 
-<pre><code>@protocol NetworkClient
-@required
--(void) networkConnector:(NetworkConnector *) in gotData:(NSData *) data;
-@optional
--(void) networkConnectorDisconnected:(NetworkConnector *) in;
-@end
+      </div>
 
-</code></pre>
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14632363806380.html" 
+          title="Previous Post: Objective-C复习笔记">&laquo; Objective-C复习笔记</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14609059782704.html" 
+          title="Next Post: Objective-C中的协议">Objective-C中的协议 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
 
-<p>@required关键字表明其后的方法是该协议必须实现的方法。<br/>
-@optional关键字表明其后的方法是实现类可以选择性实现的方法。<br/>
-同时，协议不能有成员变量。</p>
+          
+            <div id="disqus_thread"></div>
+          
 
-<h3 id="toc_3">声明一个必须实现协议的对象</h3>
-
-<pre><code>id&lt;NerworkClient&gt; *delegate; //&lt;&gt;中是该对象必须实现的协议
-</code></pre>
-
-<p>通常使用id数据类型来声明实现给定协议的实例变量。编译器会通过&lt;&gt;中的协议类型来确认协议的必须按方法是否在该对象上实现了。</p>
-
-<h3 id="toc_4">非正式协议</h3>
-
-<p>它是在Cocoa和Objective-C中的旧协议，通常是NSObject类的类别。</p>
-
-<h3 id="toc_5">正式协议</h3>
-
-<p>正式协议可以提供更好的类型安全。用@protocol关键字来声明。有@required和@optional关键字来保证必须实现的和可选的方法。</p>
-
-<h3 id="toc_6">避免协议循环依赖</h3>
-
-<p>协议在各自的声明中可以引用另一个协议。</p>
-
-<pre><code>@protocol Foo
--(void)someMethodRequiringBar:(id&lt;Bar&gt;)inBar;
-@end
-</code></pre>
-
-<p>如果Bar也需要Foo协议的话，就会导致协议之间的循环依赖，发生编译器错误。</p>
-
-<pre><code>@protocol Bar
--(void)someMethodRequiringFoo:(id&lt;Foo&gt;)inFoo;
-@end
-</code></pre>
-
-<p>解决方法，在Bar.h中加入@protocol Foo，告诉编译器Foo是一个协议，不用导入Foo.h。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/4/17 23:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14609059782704.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   <a href="Objective C.html">&laquo; Prev Page</a>  
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			 <a href="Objective C_2.html">&raquo; Next Page</a> 
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

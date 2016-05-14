@@ -129,7 +129,7 @@
 NetworkConnector类提供所有和网络服务器的交互，包括连接、断开连接和手法数据。BusinessLogic类会接收NetworkConnector收到的数据，并确定它的走向。<br/>
 网络连接是一个在其他应用或同一个应用的其他地方一定会复用的东西。所以必须将它与BusinessLogic类设计成没有紧密耦合。<br/>
 <img src="media/14609059782704/14609063607549.jpg" alt=""/><br/>
-C++等语言使用多继承来解决这类问题，墙纸BusinessLogic类继承自NetworkConnector可以依赖的类。但是多继承会产生新的问题，即砖石问题。如果D类同时继承自B类和C类，同时B、C也继承自共同的超类A，这种情况下，如果D没有重写A中的方法，当D调用A类的方法的时候，无法确定会调用哪一个父类的方法B类的还是C类的？<br/>
+C++等语言使用多继承来解决这类问题，强制BusinessLogic类继承自NetworkConnector可以依赖的类。但是多继承会产生新的问题，即砖石问题。如果D类同时继承自B类和C类，同时B、C也继承自共同的超类A，这种情况下，如果D没有重写A中的方法，当D调用A类的方法的时候，无法确定会调用哪一个父类的方法B类的还是C类的？<br/>
 Objective-C只能使用单继承。 </p>
 
 <h2 id="toc_1">二.Objective-C的解决方案</h2>
@@ -190,6 +190,9 @@ Objective-C只能使用单继承。 </p>
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14615046972424.html" 
+          title="Previous Post: 困惑">&laquo; 困惑</a>
       
         </p>
         </div>
@@ -276,6 +279,18 @@ Objective-C只能使用单继承。 </p>
 	      
 		      
 			      <li class="post">
+			        <a href="14632363806380.html">Objective-C复习笔记</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14615046972424.html">困惑</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14609059782704.html">Objective-C中的协议</a>
 			      </li>
 		     
@@ -293,10 +308,6 @@ Objective-C只能使用单继承。 </p>
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14595804338386.html">First blog</a>
-			      </li>
-		     
 		   
 		  		</ul>
                 </div>

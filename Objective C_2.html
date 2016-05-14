@@ -101,254 +101,80 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14632363806380.html">
+                <a class="clearlink" href="14598725533534.html">
                 
-                  <h1>Objective-C复习笔记</h1>
+                  <h1>Objective-C中的类别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">Objective-C简介</h2>
+                        	<blockquote>
+<p>刚刚翻看了OC的书中关于类别的一章，现将OC中类别的使用和限制总结如下。</p>
+</blockquote>
 
-<p>Objective-C简称Objc或者OC，是一种基于C语言的面向对象程序设计语言。1980年代产生，主要在苹果电脑平台上使用，开发Cocoa或Cocoa Touch应用程序。<br/>
-通过LLVM编译器架构，可以苹果家最新的编程语言Swift进行双向操作。不过终有一天将会被Swift取代。</p>
+<h2 id="toc_0">定义及使用</h2>
 
-<h3 id="toc_1">开发方式</h3>
+<p>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
+2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
+3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
 
-<h4 id="toc_2">命令行</h4>
+<h3 id="toc_1">声明</h3>
 
-<p>clang -fobj-arc *.m<br/>
--fobj-arc表示支持ARC内存管理<br/>
-适合研究、调试、学习</p>
+<h4 id="toc_2">头文件</h4>
 
-<h4 id="toc_3">IDE</h4>
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
 
-<p>通过Xcode构建正规工程项目<br/>
-有利于构建高质量的代码组织</p>
+@interface NSMutableString (GUID) //括号里为类别的名字
 
-<h2 id="toc_4">类与对象</h2>
+-(void) appendGUID;
++(id) stringWithGUID;
+@end
+</code></pre>
 
-<p>在OC中所有的类都是引用类型，所有c语言中的基本数值类型都是值类型。此外，详细的类型说明如下表所示：</p>
+<h4 id="toc_3">实现</h4>
 
-<table>
-<thead>
-<tr>
-<th>引用类型(reference)</th>
-<th>值类型(value type)</th>
-<th>类型装饰</th>
-</tr>
-</thead>
+<pre><code>#import &quot;NSMutableString+GUID.h&quot;
 
-<tbody>
-<tr>
-<td>类 class</td>
-<td>基础数值类型</td>
-<td>协议 protocol</td>
-</tr>
-<tr>
-<td>指针 pointer</td>
-<td>结构 struct</td>
-<td>类别 category</td>
-</tr>
-<tr>
-<td>快 block</td>
-<td>枚举 enum</td>
-<td>扩展 extension</td>
-</tr>
-</tbody>
-</table>
+@implementation NSMutableString (GUID)
 
-<h3 id="toc_5">类与结构体的区别</h3>
+-(void) appendGUID{
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *string = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
+    [self appendString:string];
+   // CFRelease(uuid);
+}
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>类 class</th>
-<th>结构 struct</th>
-</tr>
-</thead>
++(id) stringWithGUID{
+    NSMutableString *string = [self string];
+    [string appendGUID];
+    return string;
+}
 
-<tbody>
-<tr>
-<td>实例</td>
-<td>对象</td>
-<td>值</td>
-</tr>
-<tr>
-<td>类型</td>
-<td>引用类型(栈：指针，堆：实体对象)</td>
-<td>实例直接存在在栈中</td>
-</tr>
-</tbody>
-</table>
+@end
+</code></pre>
 
-<h3 id="toc_6">栈和堆的区别</h3>
+<p>扩展成员方法：可访问类的所有成员变量、可以通过self调用类的其它方法、可以使用super关键字调用父类的方法。self关键字指实例对象。<br/>
+扩展类方法：无法访问成员变量。self关键字指类对象。</p>
 
-<table>
-<thead>
-<tr>
-<th></th>
-<th>栈 stack</th>
-<th>堆 heap</th>
-</tr>
-</thead>
+<h4 id="toc_4">使用</h4>
 
-<tbody>
-<tr>
-<td>存储类容</td>
-<td>值类型</td>
-<td>引用类型的对象</td>
-</tr>
-<tr>
-<td>管理方式</td>
-<td>由系统自动管理，函数为单位</td>
-<td>分配由程序员手动请求</td>
-</tr>
-<tr>
-<td>具体</td>
-<td>空间大小编译时确定(参数+全局变量)</td>
-<td>释放由运行时ARC机制自动释放(确定是)</td>
-</tr>
-<tr>
-<td>具体</td>
-<td>函数执行时，系统自动分配stack</td>
-<td></td>
-</tr>
-<tr>
-<td>具体</td>
-<td>函数结束后，系统立即自动回收stack</td>
-<td></td>
-</tr>
-<tr>
-<td>传递方式</td>
-<td>函数间直接通过拷贝值传递</td>
-<td>函数间通过拷贝引用(指针)传递</td>
-</tr>
-<tr>
-<td>限制</td>
-<td>有局部性，大小有限额，超出stack overflow</td>
-<td>有全局性，无大小限制(受制系统内存大小)</td>
-</tr>
-</tbody>
-</table>
+<pre><code>#import &lt;Foundation/Foundation.h&gt;
+#import &quot;NSMutableString+GUID.h&quot;
 
-<h2 id="toc_7">属性与实例变量</h2>
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSMutableString *str = [NSMutableString stringWithGUID];
+        NSLog(@&quot;GUID=%@&quot;, str);
+    }
+    return 0;
+}
+</code></pre>
 
-<p>数据成员描述对象的状态：1.实例变量instance variable。2.属性property。</p>
+<h2 id="toc_5">限制</h2>
 
-<h3 id="toc_8">属性</h3>
-
-<p>属性描述的是对象的状态，是对外的接口(相当于是public)。<br/>
-声明一个属性的同时，编译器会自动为这个属性生成：<br/>
-1.getter访问器方法: properyName<br/>
-2.setter访问器方法: setProperyName<br/>
-3.一个对应的实例变量: _propery</p>
-
-<p>访问器方法可以自定义。访问器方法名也可以修改。对应的实例变量名也可以修改。但是一般使用编译器默认生成的，以便统一规范。</p>
-
-<p>使用静态全局变量(c语言)+类方法，可以模拟类属性。</p>
-
-<h3 id="toc_9">实例变量</h3>
-
-<p>可在不声明属性的情况下定义实例变量。只有实例变量，无类变量。<br/>
-若单独自定义了访问器方法，则编译器就不在合成实例变量。<br/>
-类外使用属性来访问，类内一般也是用属性访问即self.<br/>
-以下情况例外：<br/>
-初始化器 init<br/>
-析构器 dealloc<br/>
-自定义访问器方法中</p>
-
-<p>生存周期<br/>
-实例变量存储在堆上。<br/>
-值类型实例变量内嵌在对象实例中，随着对象实例释放。<br/>
-引用类型的实例变量通过指针引用堆上的实例，ARC对引用进行计数管理，自动施放。</p>
-
-<p>属性的描述特性<br/>
-Attribute可指定属性的不同功能。</p>
-
-<p>读写： readwrite(默认)，readonly<br/>
-多线程： atomic(默认)， nonatomic</p>
-
-<p>内存管理特性<br/>
-ARC下：<br/>
-strong(默认), weak(阻止循环引用), copy(创建独立拷贝)<br/>
-MRC下：<br/>
-retain<br/>
-assign<br/>
-unsafe_unretained</p>
-
-<h2 id="toc_10">方法</h2>
-
-<p>函数成员描述对象的行为：1.方法method。2.初始化器init。3.析构器dealloc。</p>
-
-<p>函数指的是代码段上可执行指令序列，OC中称为方法。<br/>
-所有的方法默认都是公有的，没有private和protected。<br/>
-方法调用通过运行时动态消息分发实现，OC中称为向对象发送消息。</p>
-
-<h3 id="toc_11">方法的类型</h3>
-
-<p>实例方法，可访问：<br/>
-实例成员。<br/>
-类型方法、静态变量。</p>
-
-<p>类方法<br/>
-可访问：类型方法、静态变量<br/>
-无法访问实例成员。</p>
-
-<h3 id="toc_12">方法的参数</h3>
-
-<p>参数为值类型，则为值传递方式；为引用类型，则为指针传递；<br/>
-方法可以无参数和返回值。</p>
-
-<h2 id="toc_13">初始化器和析构器</h2>
-
-<p>初始化器用于初始化对象实例或类型：<br/>
-对象初始化：-(id) init 可以重载多个<br/>
-alloc：1.在堆上分配合适大小内存。2.将属性或实例变量的内存置0。<br/>
-init：1.调用父类初始化器[super init]。2.初始化当前对象实例变量。<br/>
-new相当于alloc/init的无参数版本。<br/>
-类型初始化：+(void) initialize 只能一个<br/>
-负责类型级别初始化。<br/>
-每个类使用前被系统自动调用，每个进程周期只调用一次。<br/>
-子类调用父类的initialize方法。</p>
-
-<p>析构器用于释放对象的资源，无返回值。<br/>
-只能一个。<br/>
-无类型析构器。</p>
-
-<p>自动：ARC将对象属性引用计数减持。<br/>
-手动：1.释放不受ARC管理的动态内存，如malloc。<br/>
-     2.关闭非内存资源，如文件句柄，网络资源。</p>
-
-<p>dealloc由ARC自动在释放对象内存前调用，无法手工调用。<br/>
-子类dealloc会自动调用父类的dealloc(后置调用)。</p>
-
-<h2 id="toc_14">继承与多态</h2>
-
-<p>继承的含义：<br/>
-成员复用：子类复用父类成员<br/>
-类型抽象：将子类当做父类使用(IS-A关系准则)</p>
-
-<p>多态：<br/>
-子类在父类统一行为接口下，表现不同的实现方式。</p>
-
-<p>OC不支持重载，子类只能重写与父类同名同参数方法。</p>
-
-<p>子类中通过super调用父类实现。<br/>
-self具有多态性，可以指向不同的子类。<br/>
-super无多态性，仅指向当前父类。</p>
-
-<h3 id="toc_15">init和dealloc的继承</h3>
-
-<p>init：<br/>
-子类自动继承父类的初始化器。<br/>
-子类也可以重写父类的初始化器，此时子类初始化器必须先调用父类的一个初始化器。</p>
-
-<p>dealloc：<br/>
-子类可以选择继承父类析构器或者重写父类析构器。<br/>
-子类析构器执行完后会自动调用父类的析构器（后置调用，且不支持手工调用）。<br/>
-子类析构器自动具有多态性。</p>
+<p>1.类别不能在扩展类中添加任何成员变量。<br/>
+2.重写现有方法时，无法调用原始现有对象方法。<br/>
+3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
 
                         
                       </div>
@@ -357,7 +183,7 @@ super无多态性，仅指向当前父类。</p>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/5/14 22:33 下午</span>
+                    <span class="date">2016/4/6 0:9 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
@@ -366,7 +192,7 @@ super无多态性，仅指向当前父类。</p>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14632363806380.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14598725533534.html#disqus_thread">comments</a>
                       
 
                        
@@ -381,12 +207,12 @@ super无多态性，仅指向当前父类。</p>
 			<div class="row">
 			  <div class="large-6 columns">
 			  <p class="text-left" style="padding-top:25px;">
-			   
+			   <a href="Objective C_1.html">&laquo; Prev Page</a>  
 			  </p>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="Objective C_1.html">&raquo; Next Page</a> 
+			
 			</p>
 			  </div>
 			</div>
