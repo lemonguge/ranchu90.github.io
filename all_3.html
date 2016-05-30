@@ -101,80 +101,74 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14598725533534.html">
+                <a class="clearlink" href="14609059782704.html">
                 
-                  <h1>Objective-C中的类别</h1>
+                  <h1>Objective-C中的协议</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<blockquote>
-<p>刚刚翻看了OC的书中关于类别的一章，现将OC中类别的使用和限制总结如下。</p>
-</blockquote>
+                        	<h2 id="toc_0">一.问题的产生</h2>
 
-<h2 id="toc_0">定义及使用</h2>
+<p><img src="media/14609059782704/14609061125330.jpg" alt=""/><br/>
+NetworkConnector类提供所有和网络服务器的交互，包括连接、断开连接和手法数据。BusinessLogic类会接收NetworkConnector收到的数据，并确定它的走向。<br/>
+网络连接是一个在其他应用或同一个应用的其他地方一定会复用的东西。所以必须将它与BusinessLogic类设计成没有紧密耦合。<br/>
+<img src="media/14609059782704/14609063607549.jpg" alt=""/><br/>
+C++等语言使用多继承来解决这类问题，强制BusinessLogic类继承自NetworkConnector可以依赖的类。但是多继承会产生新的问题，即砖石问题。如果D类同时继承自B类和C类，同时B、C也继承自共同的超类A，这种情况下，如果D没有重写A中的方法，当D调用A类的方法的时候，无法确定会调用哪一个父类的方法B类的还是C类的？<br/>
+Objective-C只能使用单继承。 </p>
 
-<p>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
-2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
-3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
+<h2 id="toc_1">二.Objective-C的解决方案</h2>
 
-<h3 id="toc_1">声明</h3>
+<p>Objective-C使用协议来声明一个接口来解决这个问题。<br/>
+接口是在不提供默认实现时由一个类来具体实现，它只提供声明这些方法的接口机制，让可复用组件不依赖于特定的类来实现，而依赖于以协议形式存在的接口。</p>
 
-<h4 id="toc_2">头文件</h4>
+<h3 id="toc_2">协议的声明</h3>
 
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
+<pre><code>@protocol NetworkClient
+@required
+-(void) networkConnector:(NetworkConnector *) in gotData:(NSData *) data;
+@optional
+-(void) networkConnectorDisconnected:(NetworkConnector *) in;
+@end
 
-@interface NSMutableString (GUID) //括号里为类别的名字
+</code></pre>
 
--(void) appendGUID;
-+(id) stringWithGUID;
+<p>@required关键字表明其后的方法是该协议必须实现的方法。<br/>
+@optional关键字表明其后的方法是实现类可以选择性实现的方法。<br/>
+同时，协议不能有成员变量。</p>
+
+<h3 id="toc_3">声明一个必须实现协议的对象</h3>
+
+<pre><code>id&lt;NerworkClient&gt; *delegate; //&lt;&gt;中是该对象必须实现的协议
+</code></pre>
+
+<p>通常使用id数据类型来声明实现给定协议的实例变量。编译器会通过&lt;&gt;中的协议类型来确认协议的必须按方法是否在该对象上实现了。</p>
+
+<h3 id="toc_4">非正式协议</h3>
+
+<p>它是在Cocoa和Objective-C中的旧协议，通常是NSObject类的类别。</p>
+
+<h3 id="toc_5">正式协议</h3>
+
+<p>正式协议可以提供更好的类型安全。用@protocol关键字来声明。有@required和@optional关键字来保证必须实现的和可选的方法。</p>
+
+<h3 id="toc_6">避免协议循环依赖</h3>
+
+<p>协议在各自的声明中可以引用另一个协议。</p>
+
+<pre><code>@protocol Foo
+-(void)someMethodRequiringBar:(id&lt;Bar&gt;)inBar;
 @end
 </code></pre>
 
-<h4 id="toc_3">实现</h4>
+<p>如果Bar也需要Foo协议的话，就会导致协议之间的循环依赖，发生编译器错误。</p>
 
-<pre><code>#import &quot;NSMutableString+GUID.h&quot;
-
-@implementation NSMutableString (GUID)
-
--(void) appendGUID{
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    NSString *string = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
-    [self appendString:string];
-   // CFRelease(uuid);
-}
-
-+(id) stringWithGUID{
-    NSMutableString *string = [self string];
-    [string appendGUID];
-    return string;
-}
-
+<pre><code>@protocol Bar
+-(void)someMethodRequiringFoo:(id&lt;Foo&gt;)inFoo;
 @end
 </code></pre>
 
-<p>扩展成员方法：可访问类的所有成员变量、可以通过self调用类的其它方法、可以使用super关键字调用父类的方法。self关键字指实例对象。<br/>
-扩展类方法：无法访问成员变量。self关键字指类对象。</p>
-
-<h4 id="toc_4">使用</h4>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
-#import &quot;NSMutableString+GUID.h&quot;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        NSMutableString *str = [NSMutableString stringWithGUID];
-        NSLog(@&quot;GUID=%@&quot;, str);
-    }
-    return 0;
-}
-</code></pre>
-
-<h2 id="toc_5">限制</h2>
-
-<p>1.类别不能在扩展类中添加任何成员变量。<br/>
-2.重写现有方法时，无法调用原始现有对象方法。<br/>
-3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
+<p>解决方法，在Bar.h中加入@protocol Foo，告诉编译器Foo是一个协议，不用导入Foo.h。</p>
 
                         
                       </div>
@@ -183,7 +177,7 @@ int main(int argc, const char * argv[]) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/4/6 0:9 上午</span>
+                    <span class="date">2016/4/17 23:12 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
@@ -192,7 +186,7 @@ int main(int argc, const char * argv[]) {
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14598725533534.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14609059782704.html#disqus_thread">comments</a>
                       
 
                        
@@ -276,6 +270,12 @@ int main(int argc, const char * argv[]) {
 	      
 		      
 			      <li class="post">
+			        <a href="14645437888084.html">iOS开发基础（一）</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14637124055346.html">Objective-C复习笔记(二)</a>
 			      </li>
 		     
@@ -299,10 +299,6 @@ int main(int argc, const char * argv[]) {
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14596175387256.html">二维数组作为参数在C语言函数中如何传递</a>
-			      </li>
-		     
 		  
 		      
 		   
