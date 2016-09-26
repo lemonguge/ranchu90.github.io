@@ -103,64 +103,201 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14596175387256.html">
+                <a class="clearlink" href="14637124055346.html">
                 
-                  <h1>二维数组作为参数在C语言函数中如何传递</h1>
+                  <h1>Objective-C复习笔记(二)</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
+                        	<h2 id="toc_0">ARC机制</h2>
 
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
+<p>以往的OBJC是通过程序员手动地管理对象的释放。ARC(Automatic Reference Counting)自动引用计数，现在是OBJC的默认内存管理机制，针对堆上的对象，由编译器自动生成操作引用计数的指令(retain,release)来管理对象的释放。</p>
+
+<h3 id="toc_1">管理的对象</h3>
+
+<table>
+<thead>
+<tr>
+<th>受ARC管理</th>
+<th>不受ARC管理</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OC对象指针</td>
+<td>值类型(基本类型，struct)</td>
+</tr>
+<tr>
+<td>Block指针</td>
+<td>其他方式分配的资源(c语言的malloc)</td>
+</tr>
+<tr>
+<td>使用_attribute_((NSObject))定义的typedef</td>
+<td>非内存资源</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_2">管理的方式</h3>
+
+<pre><code>//新创建一个引用类型的对象，这个对象的引用计数初始为1；
+NSString *name = [[NSString alloc] initWithString:@&quot;Mono&quot;];
+//将对象引用赋值给其它变量或者常量，引用计数+1；
+NSString *otherName = name;
+//或者将将该对象引用赋值给其它对象的属性或实例变量，引用计数+1；
+person.name = name;
+//将对象传入函数参数，或者返回值，引用计数+1
+print(name);//函数结束后，参数或者局部变量离开函数，该对象的引用计数-1；
+//将对象加入集合之中，引用计数+1；
+[array addObject];
+
+//将变量或者常量,或者属性赋值为nil或者其他值，引用计数-1；
+otherName = nil; or otherName = @&quot;Other Name&quot;;
+person.name = nil;
+//实例变量和属性所在的对象呗释放，该对象引用计数-1；
+[person release];
+//将对象从集合中移除的时候，该对象的引用计数-1；
+[array removeObject:name];
+
+//当该对象的引用计数变为0的时候，内存自动被释放。
 </code></pre>
 
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
+<h2 id="toc_3">自动释放池(Autorelease Pool)</h2>
 
-<hr/>
+<p>如果对象频繁的进行释放和分配，那么会造成琐碎的内存管理负担。autorelease可以讲release的调用延迟到自动释放池被释放时。</p>
 
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
+<p>当自动释放池结束时，所有接受autorelease消息的对象都将被立即释放(对象被发送一条release消息);</p>
 
-<hr/>
+<p>AppKit和UIKit框架在处理每一次事件循环迭代时，都会讲其放入一个Autorelease Pool中，大多数情况无须程序员干预。</p>
 
-<p>手工寻址</p>
+<h3 id="toc_4">需要手动管理Autorelease Pool的情况</h3>
 
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
+<p>1.当编写的程序不是基于UI框架，而是命令行程序时。<br/>
+2.如果在循环中创建大量临时对象，需要更早地释放，避免临时对象聚集导致内存峰值过大。<br/>
+3.在主线程之外创建新的线程，在新线程开始执行处，需要创建自己的Autorelease Pool。<br/>
+4.嵌套使用Autorelease Pool的时候。</p>
 
-<p><code>int **a;</code></p>
+<h2 id="toc_5">协议 Protocol</h2>
 
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
+<p>类型的合同约定，只描述外部接口，不提供具体的实现。<br/>
+协议中无法包含实例变量，但可以包含以下的成员：<br/>
+属性 （本质上是访问器方法，编译器不会合成实例变量）<br/>
+实例方法<br/>
+类方法<br/>
+初始化器，析构器(不常用)</p>
+
+<h3 id="toc_6">使用协议</h3>
+
+<p>1.一个类遵守协议，需实现该协议约定的所有@required的成员，即必须要实现的成员。<br/>
+协议中的属性必须在实现类的.h接口文件中声明(编译器合成实例变量)<br/>
+2.协议本质上是一种类型，可以作为声明类型，但是不能创建实例。<br/>
+3.可以使用conformsToProtocl:检查是否实现了协议。<br/>
+4.编译警告：1）未实现必选方法。2）协议类型变量被赋值为非协议类型变量。运行会出错。</p>
+
+<h4 id="toc_7">协议的继承</h4>
+
+<p>一个协议可以继承一个或者多个协议。<br/>
+实现子协议的类型，同时也要实现父协议中必须是实现的成员。</p>
+
+<h4 id="toc_8">协议的组合</h4>
+
+<p>一个类可以同时实现多个协议，protocal<A,B,C....>来组合多个协议<br/>
+实现组合协议的类型，必须实现组合协议中的每一个协议</p>
+
+<h4 id="toc_9">协议中的可选</h4>
+
+<p>协议中使用关键字@optional定义的成员是可以选择不必实现的。</p>
+
+<h3 id="toc_10">常用的协议</h3>
+
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>NSObject</td>
+<td>包含对象的常用操作，相等、字符串表示、哈希。</td>
+</tr>
+<tr>
+<td>NSCopying</td>
+<td>支持复制的类型必须遵守该协议。</td>
+</tr>
+<tr>
+<td>NSMutableCopying</td>
+<td>在NSCopying协议的基础上，支持复制数据的可变性。</td>
+</tr>
+<tr>
+<td>NSFastEnumeration</td>
+<td>实现快速枚举for-in的类型采用</td>
+</tr>
+<tr>
+<td>NSCoding</td>
+<td>支持将对象图进行编码或解码以支持对象的序列化</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_11">类别 Categroy</h2>
+
+<p>在没有源代码的情况下，基于某些场合的需要，为一个类增加功能。<br/>
+可增加 | 不可增加<br/>
+--------- | -------------<br/>
+类方法 | 属性<br/>
+实例方法| 实例变量<br/>
+重写父类方法 | 已存在的同名方法</p>
+
+<h3 id="toc_12">命名规范</h3>
+
+<p>文件名：类名+扩展方法，如：Person+Sport.h/m</p>
+
+<h3 id="toc_13">类别的使用</h3>
+
+<h4 id="toc_14">场景</h4>
+
+<p>1.适合在没有源代码的情况下，想已经封装的类中添加方法。<br/>
+2.为一个类在某些特殊场景下增加功能。<br/>
+3.对于复杂的大型文件分割实现。<br/>
+4.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
+
+<h4 id="toc_15">添加类别的对象</h4>
+
+<p>1.自己创建的类。<br/>
+2.系统的类。<br/>
+3.第三方库。</p>
+
+<h4 id="toc_16">类别限制</h4>
+
+<p>1.类别不能在扩展类中添加任何成员变量。<br/>
+2.重写现有方法时，无法调用原始现有对象方法。<br/>
+3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
+
+<h2 id="toc_17">扩展 Extension</h2>
+
+<p>扩展支持在编译时，在有类的源代码的前提下，向类添加功能。可看做是匿名的类别。</p>
+
+<p>接口在.m文件中的@implementation前声明，实现代码在@implementation 内实现。</p>
+
+<p>扩展支持添加以下成员：<br/>
+1.属性。<br/>
+2.实例成员。<br/>
+3.类方法。<br/>
+4.实例方法。<br/>
+5.改写属性的读写属性。</p>
+
+<h3 id="toc_18">扩展的使用</h3>
+
+<p>扩展实现的成员只能在。m文件内部访问，类外无法直接往访问。</p>
+
+<p>扩展的主要用途在于信息隐藏，隐藏一些外部无须访问、而内部实现又需要使用的属性、方法：<br/>
+1.类的主要接口用于“对类以外公开”<br/>
+2.类的扩展接口用于“对类内可见”</p>
 
                         
                       </div>
@@ -169,16 +306,14 @@ int main(){
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/4/3 1:18 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+                    <span class="date">2016/5/20 10:46 上午</span>
+                    
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14637124055346.html#disqus_thread">comments</a>
                       
 
                        
@@ -264,33 +399,41 @@ int main(){
 	      
 		      
 			      <li class="post">
+			        <a href="14748977980780.html">6. Hashcode的作用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748971773098.html">5. Java的四种引用，强弱软虚，用到的场景</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748970236814.html">4.Object有哪些公用方法？</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748960344939.html">3.equals()和==的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
 			      </li>
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14748770602290.html">1.	九种基本数据类型的大小，以及他们的封装类</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14748751468195.html">J2SE基础问题汇总</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14747925084160.html">求职</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14648586354104.html">iOS开发基础（二）</a>
-			      </li>
-		     
 		  
 		      
 		  

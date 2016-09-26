@@ -103,69 +103,20 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748943230133.html">
+                <a class="clearlink" href="14748977980780.html">
                 
-                  <h1>2.  Switch能否用String做参数？</h1>
+                  <h1>6. Hashcode的作用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
-2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
-原理：hashCode()+equals()<br/>
-编译器在编译期间给代码做了转换。<br/>
-原始：</p>
+                        	<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来三列存储结构中确定对象的存储地址。</p>
 
-<pre><code>public class StringInSwitchCase { 
-      public static void main(String[] args) { 
-            String mode = args[0]; 
-            switch (mode) { 
-                  case &quot;ACTIVE&quot;: 
-                        System.out.println(&quot;Application is running on Active mode&quot;); 
-                        break; 
-                  case &quot;PASSIVE&quot;:
-                        System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         break; 
-                  case &quot;SAFE&quot;: 
-                          System.out.println(&quot;Application is running on Safe mode&quot;); 
-          } 
-      } 
-}
-</code></pre>
+<p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
 
-<p>编译器优化后：</p>
+<p>3.如果equals()被重写，那么该对象的hashCode()也要被重写，以保证2中的条件成立。</p>
 
-<pre><code>import java.io.PrintStream; 
- 
-public class StringInSwitchCase{ 
-      public StringInSwitchCase() { } 
- 
-      public static void main(string args[]) { 
-             String mode = args[0]; 
-            String s; switch ((s = mode).hashCode()) { 
-                  default: break; 
-                  case -74056953: 
-                        if (s.equals(&quot;PASSIVE&quot;)) { 
-                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         } 
-                        break; 
-                  case 2537357: 
-                        if (s.equals(&quot;SAFE&quot;)) { 
-                              System.out.println(&quot;Application is running on Safe mode&quot;); 
-                         } 
-                        break; 
-                  case 1925346054: 
-                        if (s.equals(&quot;ACTIVE&quot;)) { 
-                              System.out.println(&quot;Application is running on Active mode&quot;); 
-                         } 
-                        break; 
-               } 
-          } 
-}
-</code></pre>
-
-<p>参考资料：<br/>
-<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
+<p>4.由邻接矩阵的结构可知，hashCode值相同的对象，其内容不一定相同，只能说明他们存放在同一条链表中。</p>
 
                         
                       </div>
@@ -174,7 +125,7 @@ public class StringInSwitchCase{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 20:52 下午</span>
+                    <span class="date">2016/9/26 21:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -183,7 +134,7 @@ public class StringInSwitchCase{
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748977980780.html#disqus_thread">comments</a>
                       
 
                        
@@ -269,33 +220,41 @@ public class StringInSwitchCase{
 	      
 		      
 			      <li class="post">
+			        <a href="14748977980780.html">6. Hashcode的作用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748971773098.html">5. Java的四种引用，强弱软虚，用到的场景</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748970236814.html">4.Object有哪些公用方法？</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748960344939.html">3.equals()和==的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
 			      </li>
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14748770602290.html">1.	九种基本数据类型的大小，以及他们的封装类</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14748751468195.html">J2SE基础问题汇总</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14747925084160.html">求职</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14648586354104.html">iOS开发基础（二）</a>
-			      </li>
-		     
 		  
 		      
 		  

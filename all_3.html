@@ -103,50 +103,18 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14747925084160.html">
+                <a class="clearlink" href="14748960344939.html">
                 
-                  <h1>求职</h1>
+                  <h1>3.equals()和==的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<blockquote>
-<p>9月开始到现在，陆陆续续也面了5、6个公司，现在暂时告一个段落。<br/>
-每家公司面试的风格都不一样，根据面试官问的问题可以分为以下几类：</p>
-</blockquote>
+                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
 
-<h2 id="toc_0">面试</h2>
+<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
 
-<p>现在对过去的几次面试做个总结，每家公司面试的风格都不一样，根据面试官问的问题可以分为以下几类：</p>
-
-<ul>
-<li>1.智力类。这类公司喜欢问智力题，比如10个人互相有握手，那么他们总共握了几次手？一个凸多边形的外接矩阵怎么求？等等，从头到尾都是。</li>
-<li>2.代码类。直接上来就给题目让写代码。leet code上的题目。</li>
-<li>3.工程类。主要关注的点在你做的项目上，使用了什么技术，怎么实现的，还有没有其它的实现方式，这样做有什么缺陷，等等。</li>
-<li>4.基础类。对编程语言方面问的很深入，比如JVM模型，GC机制，GC算法，分配过程等等。</li>
-<li>5.常规问题。怎么学习的？对未来有什么规划？你还有什么要问我的？</li>
-</ul>
-
-<h2 id="toc_1">笔试</h2>
-
-<p>笔试题依据类型可以分为以下几类：</p>
-
-<ul>
-<li>1.智力题。特别是BAT，选择题基本上都是智力题。这方面只能靠平时的积累和总结了。</li>
-<li>2.基础题。在试卷中有出现，占比根据不同的公司来决定，有些的比例远不如智力题。</li>
-<li>3.编程题。几乎是重中之重。最爱考的是字符串处理及动态规划问题。</li>
-<li>4.应用题。这类题实际上也是在变相地考察基础，但是比单纯直接地考察基础的要求要高的多。阿里最后一个题是让设计实现一个HotSpot虚拟机。当时我就？？？也有让直接设计一个数据库的题型。</li>
-</ul>
-
-<h2 id="toc_2">总结</h2>
-
-<p>准备了很多，但仍然不够充分，每次面试总有答不上来的题。那些题实际上也不是很难，而是没有听说过和接触过。这也是这么多面试的一次收获，我还有那么多需要知道的东西。</p>
-
-<p>这个过程中，对于JAVA基础，JVM内存管理方面的内容我有做一个笔记总结，放在word文档中。这几天会陆陆续续整理后放上来。一来是这段时间学习的总结以便以后在复习的时候可以快速定位不牢固的知识，二来希望我的总结对别人也能有帮助。</p>
-
-<p>对于动态规划的思想还需要更多的练习，简单的可以，复杂一点总是让我花很多时间，最后还总不能全部AC，总是差那么一点。</p>
-
-<p>感谢网络上积极分享知识心得的朋友。我现在准备好好睡一觉。</p>
+<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
 
                         
                       </div>
@@ -155,16 +123,16 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/25 16:35 下午</span>
+                    <span class="date">2016/9/26 21:20 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='diary.html'>Diary</a></span>
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14747925084160.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
                       
 
                        
@@ -250,33 +218,41 @@
 	      
 		      
 			      <li class="post">
+			        <a href="14748977980780.html">6. Hashcode的作用</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748971773098.html">5. Java的四种引用，强弱软虚，用到的场景</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748970236814.html">4.Object有哪些公用方法？</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14748960344939.html">3.equals()和==的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
 			      </li>
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14748770602290.html">1.	九种基本数据类型的大小，以及他们的封装类</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14748751468195.html">J2SE基础问题汇总</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14747925084160.html">求职</a>
-			      </li>
-		     
 		  
 		      
-			      <li class="post">
-			        <a href="14648586354104.html">iOS开发基础（二）</a>
-			      </li>
-		     
 		  
 		      
 		  

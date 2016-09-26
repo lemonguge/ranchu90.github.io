@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  iOS开发基础（二） - cd's blog
+  cd's blog
   
   </title>
   
@@ -94,203 +94,116 @@
        
 
  <script type="text/javascript">
-  $(function(){
-    $('#menu_item_index').addClass('is_active');
-  });
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
 </script>
 <div class="row">
-  <div class="large-8 medium-8 columns">
-      <div class="markdown-body article-wrap">
-       <div class="article">
-          
-          <h1>iOS开发基础（二）</h1>
-     
-        <div class="read-more clearfix">
-          <span class="date">2016/6/2 17:10 下午</span>
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="14596175387256.html">
+                
+                  <h1>二维数组作为参数在C语言函数中如何传递</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<blockquote>
+<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
+现在把方法整理出来，以备能很快地回忆起来。</p>
+</blockquote>
 
-          
-           
-         
-          <span class="comments">
-            
-              <a href="http://ranchu90.github.io/14648586354104.html#disqus_thread">comments</a>
-            
+<pre><code>void printArray(int a[3][2]);
+void printArray(int a[][2]);
+void printArray(int (*a)[2]);
+</code></pre>
 
-            
-          </span>
+<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
 
-        </div>
-      </div><!-- article -->
+<hr/>
 
-      <div class="article-content">
-      <h2 id="toc_0">ViewController</h2>
-
-<p>作为连接视图View和模型Model的桥梁(控制器Controller)，从名字就可以看得出来，它是用来管理View的。除此之外，它还承担着传递数据，相应用户操作，内存管理，状态保持和适应设备的功能。</p>
-
-<p>先来看看它的生存周期：<br/>
-<img src="media/14648586354104/14648590059763.jpg" alt=""/><br/>
-当一个viewController它管理的view出现或者消失的时候会引发相应的方法，如果有需求，可以在对应的方法里写代码来处理相应的事务。</p>
-
-<p>默认状态下，Xcode会将与ViewController同名的Xib文件关联到对应的Controller上。如MyViewController关联到MyView.xib或者MyViewCon.xib。</p>
-
-<p>除此之外也可以用代码来制定加载制定的xib：<br/>
-<code><br/>
-[UIViewController initWithNibName:@&quot;MyView&quot;];<br/>
-</code></p>
-
-<p>或者在IB中指定ViewController，如下：<br/>
-<img src="media/14648586354104/14648600281167.jpg" alt=""/></p>
-
-<h3 id="toc_1">跳转</h3>
-
-<p>在viewcontroller中可以跳转到另一个viewcontoller：<br/>
-<code><br/>
-[self presentViewController: animated: completion:];<br/>
-[self showViewController: sender:];<br/>
-</code><br/>
-撤销当前的view可以使用：<br/>
-<code><br/>
-[self dismissViewControllerAnimated: completion:];<br/>
-</code></p>
-
-<h3 id="toc_2">回传数据</h3>
-
-<p>在其中可以设定回传数据或者在撤销当前view之后执行一段代码。completion是一个代码块block。<br/>
-实际上是使用了观察者模式来通知第一个view，并将数据传给它。</p>
-
-<pre><code>//在第二个view中，发送do发生变化的消息，并且将数据存在字典中回转给第一个view
-[self dismissViewControllerAnimated:YES completion:^{
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:@&quot;value1&quot;, @&quot;key1&quot;, @&quot;value2&quot;, @&quot;key2&quot;, nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;do&quot; object:self userInfo:dict];
-    }];
-
-//在第一个view中的viewDidLoad方法中
-//注册观察者，如果do对象有变化就执行Test方法
-[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(Test:) name:@&quot;do&quot; object:nil];
-
-- (void)Test:(id)sender{
-    NSLog(@&quot;%@&quot;, sender);
+<pre><code>#include&lt;stdio.h&gt;
+void printArray(int a[][2]){
+        for(int i=0; i&lt;3; ++i){
+                for(int j=0; j&lt;2; ++j){
+                        printf(&quot;%d\n&quot;, a[i][j]);
+                }
+        }
 }
-
-</code></pre>
-
-<p>执行结果：</p>
-
-<pre><code>2016-06-02 17:52:33.594 NibVC[37096:5919151] NSConcreteNotification 0x7fd6495118e0 {name = do; object = &lt;SecondViewController: 0x7fd6494b82d0&gt;; userInfo = {
-    key1 = value1;
-    key2 = value2;
+int main(){
+        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
+        printArray(test);
+        return 1;
 }
-
 </code></pre>
 
-<p>这种方法不仅可以用于viewController的回传值，还可以用于各个对象之间的消息传递，只需要注册观察者，和发送消息即可。</p>
+<hr/>
 
-<h2 id="toc_3">Storyboard</h2>
+<p>手工寻址</p>
 
-<p>Storyboard中文译为故事版，也就是做界面的地方，app的应用逻辑和导演讲故事是不是很像呢？在这之前，苹果使用的是xib文件来做的界面。storyboard的有点在于对多个view的管理比xib的要好。</p>
-
-<p>大多数操作就是托控件到view上，如果要关联到.m文件中则要按住Ctrl键+上控件拖到对应的.m文件上即可选择是添加为属性IBOutlet还是方法IBAction。</p>
-
-<h3 id="toc_4">场景的跳转</h3>
-
-<p>Storyboard的场景跳转使用的是Segue，按下Ctrl拖住一个按钮到下一个场景上即可实现。<br/>
-可以对Segue进行命名，以便在代码中使用Segue。<br/>
-<code><br/>
-[self performSegueWithIdentifier:@&quot;&quot; sender:sender];<br/>
-</code><br/>
-也可以在代码中显示Storyboard里的View Controller：<br/>
-<code><br/>
-id vc = [self.storyboard instantiateViewControllerWithIdentifier:@&quot;&quot;];<br/>
-[self showViewController:vc sender:sender];<br/>
-</code></p>
-
-<h3 id="toc_5">返回</h3>
-
-<p>在对应的vc中添加，再在Storyboard中将按钮的方法设置为以下方法。ForSegue可以改变为其它的名字。<br/>
-```<br/>
-- (void)unwindForSegue:(UIStoryboardSegue*)unwindSegue{</p>
-
-<p>}<br/>
-```</p>
-
-<h2 id="toc_6">App的声明周期</h2>
-
-<p><img src="media/14648586354104/14648697010376.jpg" alt=""/></p>
-
-<p><img src="media/14648586354104/14648697197812.jpg" alt=""/></p>
-
-<p><img src="media/14648586354104/14648697311911.jpg" alt=""/></p>
-
-<h2 id="toc_7">Navigation Controller</h2>
-
-<p>NavigationController是一种高效管理多个界面的工具，它可以提供在多个view之间方面地跳转。<br/>
-<img src="media/14648586354104/14648707096843.jpg" alt=""/></p>
-
-<p>每个被管理的ViewController自己提供：<br/>
-内容，导航栏标题，导航栏上的自定义按钮，或者可选的工具栏按钮。</p>
-
-<p>数据的传递可以通过Segue或者Delegate，Segue上面提到过，下面就列出使用Delegate的方法：<br/>
-<code><br/>
-- (void)navigationController: willShowViewController: animated:<br/>
-- (void)nagivationController: didShowViewController: animated:<br/>
-</code></p>
-
-<p>代码中使用</p>
-
-<pre><code>//创建
-- initWithRootViewController:
-- initWithNavigationBarClass:toolbarClass:
-//跳转
-- pushViewController:animated:
-- popViewControllerAnimated:
-- popToRootViewControllerAnimated:
-- popToViewController:animated:
+<pre><code>#include&lt;stdio.h&gt;
+void printArray(int **a, int m, int n){
+        for(int i=0; i&lt;m; ++i){
+                for(int j=0; j&lt;n; ++j){
+                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
+                }
+        }
+}
+int main(){
+        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
+        printArray((int**)test, 3, 2);
+        return 1;
+}
 </code></pre>
 
-<h2 id="toc_8">Tabbar Controller</h2>
+<p><code>int **a;</code></p>
 
-<p><img src="media/14648586354104/14648725794206.jpg" alt=""/><br/>
-TabbarController是另一种管理多个ViewController的方式。<br/>
-使用方法和NavigationController非常相似。还可以和它结合起来一起使用。</p>
+<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
 
-<p><img src="media/14648586354104/14648735896274.jpg" alt=""/></p>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/4/3 1:18 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+                      
 
-      </div>
-
-      <div class="row">
-        <div class="large-6 columns">
-        <p class="text-left" style="padding:15px 0px;">
-      
-          <a href="14747925084160.html" 
-          title="Previous Post: 求职">&laquo; 求职</a>
-      
-        </p>
-        </div>
-        <div class="large-6 columns">
-      <p class="text-right" style="padding:15px 0px;">
-      
-          <a  href="14645437888084.html" 
-          title="Next Post: iOS开发基础（一）">iOS开发基础（一） &raquo;</a>
-      
-      </p>
-        </div>
-      </div>
-      <div class="comments-wrap">
-        <div class="share-comments">
-          
-
-          
-            <div id="disqus_thread"></div>
-          
-
-          
-        </div>
-      </div>
-    </div><!-- article-wrap -->
-  </div><!-- large 8 -->
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
 
 
-
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="all_13.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			 <a href="all_15.html">&raquo; Next Page</a> 
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">
