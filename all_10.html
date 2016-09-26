@@ -103,16 +103,64 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14595804338386.html">
+                <a class="clearlink" href="14596175387256.html">
                 
-                  <h1>First blog</h1>
+                  <h1>二维数组作为参数在C语言函数中如何传递</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>今天由zjb同学介绍，学会了使用github搭建个人的blog。<br/>
-从今天开始，我将在这个地方记录自己在技术上的成长。<br/>
-我的目标是成为优秀的软件工程师。加油！</p>
+                        	<blockquote>
+<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
+现在把方法整理出来，以备能很快地回忆起来。</p>
+</blockquote>
+
+<pre><code>void printArray(int a[3][2]);
+void printArray(int a[][2]);
+void printArray(int (*a)[2]);
+</code></pre>
+
+<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
+
+<hr/>
+
+<pre><code>#include&lt;stdio.h&gt;
+void printArray(int a[][2]){
+        for(int i=0; i&lt;3; ++i){
+                for(int j=0; j&lt;2; ++j){
+                        printf(&quot;%d\n&quot;, a[i][j]);
+                }
+        }
+}
+int main(){
+        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
+        printArray(test);
+        return 1;
+}
+</code></pre>
+
+<hr/>
+
+<p>手工寻址</p>
+
+<pre><code>#include&lt;stdio.h&gt;
+void printArray(int **a, int m, int n){
+        for(int i=0; i&lt;m; ++i){
+                for(int j=0; j&lt;n; ++j){
+                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
+                }
+        }
+}
+int main(){
+        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
+        printArray((int**)test, 3, 2);
+        return 1;
+}
+</code></pre>
+
+<p><code>int **a;</code></p>
+
+<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
 
                         
                       </div>
@@ -121,16 +169,16 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/4/2 15:0 下午</span>
+                    <span class="date">2016/4/3 1:18 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='diary.html'>Diary</a></span>
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14595804338386.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
                       
 
                        
@@ -150,7 +198,7 @@
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="all_11.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
@@ -216,6 +264,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14748770602290.html">1.	九种基本数据类型的大小，以及他们的封装类</a>
 			      </li>
 		     
@@ -239,10 +293,6 @@
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14645437888084.html">iOS开发基础（一）</a>
-			      </li>
-		     
 		  
 		      
 		  

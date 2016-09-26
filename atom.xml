@@ -4,13 +4,79 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-09-26T16:02:52+08:00</updated>
+  <updated>2016-09-26T17:44:13+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[2.  Switch能否用String做参数？]]></title>
+    <link href="http://ranchu90.github.io/14748943230133.html"/>
+    <updated>2016-09-26T20:52:03+08:00</updated>
+    <id>http://ranchu90.github.io/14748943230133.html</id>
+    <content type="html"><![CDATA[
+<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
+2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
+原理：hashCode()+equals()<br/>
+编译器在编译期间给代码做了转换。<br/>
+原始：</p>
+
+<pre><code>public class StringInSwitchCase { 
+      public static void main(String[] args) { 
+            String mode = args[0]; 
+            switch (mode) { 
+                  case &quot;ACTIVE&quot;: 
+                        System.out.println(&quot;Application is running on Active mode&quot;); 
+                        break; 
+                  case &quot;PASSIVE&quot;:
+                        System.out.println(&quot;Application is running on Passive mode&quot;); 
+                         break; 
+                  case &quot;SAFE&quot;: 
+                          System.out.println(&quot;Application is running on Safe mode&quot;); 
+          } 
+      } 
+}
+</code></pre>
+
+<p>编译器优化后：</p>
+
+<pre><code>import java.io.PrintStream; 
+ 
+public class StringInSwitchCase{ 
+      public StringInSwitchCase() { } 
+ 
+      public static void main(string args[]) { 
+             String mode = args[0]; 
+            String s; switch ((s = mode).hashCode()) { 
+                  default: break; 
+                  case -74056953: 
+                        if (s.equals(&quot;PASSIVE&quot;)) { 
+                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
+                         } 
+                        break; 
+                  case 2537357: 
+                        if (s.equals(&quot;SAFE&quot;)) { 
+                              System.out.println(&quot;Application is running on Safe mode&quot;); 
+                         } 
+                        break; 
+                  case 1925346054: 
+                        if (s.equals(&quot;ACTIVE&quot;)) { 
+                              System.out.println(&quot;Application is running on Active mode&quot;); 
+                         } 
+                        break; 
+               } 
+          } 
+}
+</code></pre>
+
+<p>参考资料：<br/>
+<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[1.	九种基本数据类型的大小，以及他们的封装类]]></title>

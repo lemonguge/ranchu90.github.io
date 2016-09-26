@@ -103,117 +103,69 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748770602290.html">
+                <a class="clearlink" href="14748943230133.html">
                 
-                  <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
+                  <h1>2.  Switch能否用String做参数？</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<table>
-<thead>
-<tr>
-<th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
-</tr>
-</thead>
+                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
+2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
+原理：hashCode()+equals()<br/>
+编译器在编译期间给代码做了转换。<br/>
+原始：</p>
 
-<tbody>
-<tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_0">使用封装类的目的</h2>
-
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
-
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
-
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
-
-<h2 id="toc_2">void类型</h2>
-
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
-
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
+<pre><code>public class StringInSwitchCase { 
+      public static void main(String[] args) { 
+            String mode = args[0]; 
+            switch (mode) { 
+                  case &quot;ACTIVE&quot;: 
+                        System.out.println(&quot;Application is running on Active mode&quot;); 
+                        break; 
+                  case &quot;PASSIVE&quot;:
+                        System.out.println(&quot;Application is running on Passive mode&quot;); 
+                         break; 
+                  case &quot;SAFE&quot;: 
+                          System.out.println(&quot;Application is running on Safe mode&quot;); 
+          } 
+      } 
+}
 </code></pre>
 
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
+<p>编译器优化后：</p>
+
+<pre><code>import java.io.PrintStream; 
+ 
+public class StringInSwitchCase{ 
+      public StringInSwitchCase() { } 
+ 
+      public static void main(string args[]) { 
+             String mode = args[0]; 
+            String s; switch ((s = mode).hashCode()) { 
+                  default: break; 
+                  case -74056953: 
+                        if (s.equals(&quot;PASSIVE&quot;)) { 
+                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
+                         } 
+                        break; 
+                  case 2537357: 
+                        if (s.equals(&quot;SAFE&quot;)) { 
+                              System.out.println(&quot;Application is running on Safe mode&quot;); 
+                         } 
+                        break; 
+                  case 1925346054: 
+                        if (s.equals(&quot;ACTIVE&quot;)) { 
+                              System.out.println(&quot;Application is running on Active mode&quot;); 
+                         } 
+                        break; 
+               } 
+          } 
+}
+</code></pre>
+
+<p>参考资料：<br/>
+<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
 
                         
                       </div>
@@ -222,7 +174,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 16:4 下午</span>
+                    <span class="date">2016/9/26 20:52 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -231,7 +183,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
                       
 
                        
@@ -317,6 +269,12 @@
 	      
 		      
 			      <li class="post">
+			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14748770602290.html">1.	九种基本数据类型的大小，以及他们的封装类</a>
 			      </li>
 		     
@@ -340,10 +298,6 @@
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14645437888084.html">iOS开发基础（一）</a>
-			      </li>
-		     
 		  
 		      
 		  
