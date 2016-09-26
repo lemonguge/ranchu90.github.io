@@ -4,7 +4,7 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-09-26T21:57:34+08:00</updated>
+  <updated>2016-09-26T22:00:35+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -18,7 +18,7 @@
     <updated>2016-09-26T21:49:58+08:00</updated>
     <id>http://ranchu90.github.io/14748977980780.html</id>
     <content type="html"><![CDATA[
-<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来三列存储结构中确定对象的存储地址。</p>
+<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来散列存储结构中确定对象的存储地址。</p>
 
 <p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
 
