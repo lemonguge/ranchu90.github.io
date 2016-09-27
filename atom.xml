@@ -4,13 +4,222 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-09-26T22:00:35+08:00</updated>
+  <updated>2016-09-26T22:05:08+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[9. Map、Set、List、Queue、Stack的特点与用法]]></title>
+    <link href="http://ranchu90.github.io/14749474920939.html"/>
+    <updated>2016-09-27T11:38:12+08:00</updated>
+    <id>http://ranchu90.github.io/14749474920939.html</id>
+    <content type="html"><![CDATA[
+<p>Collections框架中包含了大量的集合接口及这些接口的实现。主要提供了9种Map、Set、List、Queue、Stack等数据结构。</p>
+
+<ul>
+<li>Set接口表示数学中集合的概念。其主要特点是集合中的元素不重复。</li>
+<li>List接口表示有序的集合。它按照对象进入的顺序保存对象，所以能对每个元素的插入和删除具体的位置进行精确的控制。它能存放重复的对象。</li>
+<li>Map接口提供了一个从Key到Value的数据结构，保存键值对。其中Value可以重复，但是Key不能重复。</li>
+<li>Queue接口提供了“先进先出”队列的数据结构。只能在队尾添加元素，只能在对头弹出元素。</li>
+<li>Stack继承自Vector，它实现了先进后出的栈结构。</li>
+</ul>
+
+<p>我在网络上找到一张实现Collection接口的类图，可以一目了然地看到实现的类及他们之间的关系。<br/>
+<img src="media/14749474920939/14749600076300.jpg" alt=""/></p>
+
+<p>Collection接口定义了一套统一的操作方法：</p>
+
+<pre><code>int size();
+返回容器中元素的个数
+boolean isEmpty();
+判断容器是否为空，空则返回true，否则false
+boolean contains(Object o);
+判段容器是否包含o对象
+Iterator&lt;E&gt; iterator();
+获得该容器的迭代器
+Object[] toArray();
+将容器转换为对象数组
+boolean add(E e);
+向容器中添加元素
+boolean remove(Object o);
+移除容器中的对象
+boolean containsAll(Collection&lt;?&gt; c);
+判断是否包含c中的所有元素
+boolean addAll(Collection&lt;? extends E&gt; c);
+添加c容器中的所有元素
+boolean removeAll(Collection&lt;?&gt; c);
+移除c中包含的所有元素
+boolean retainAll(Collection&lt;?&gt; c);
+保留c中存在的元素，移除c中不存在的元素
+void clear();
+清除容器中的所有元素
+</code></pre>
+
+<p>Stack类中除了继承了Vector的方法外还实现了</p>
+
+<pre><code>boolean empty() 
+测试堆栈是否为空。
+Object peek( )
+查看堆栈顶部的对象，但不从堆栈中移除它。
+Object pop( )
+移除堆栈顶部的对象，并作为此函数的值返回该对象。
+Object push(Object element)
+把项压入堆栈顶部。
+int search(Object element)
+返回对象在堆栈中的位置，以 1 为基数。
+</code></pre>
+
+<p>Queue类中常用方法</p>
+
+<pre><code>boolean add(E e);        
+增加一个元素              若队列已满，则抛出一个IIIegaISlabEepeplian异常
+boolean remove();   
+移除并返回队列头部的元素    若队列为空，则抛出一个NoSuchElementException异常
+E element()  
+返回队列头部的元素         若队列为空，则抛出一个NoSuchElementException异常
+offer(E e)      
+添加一个元素并返回true     若队列已满，则返回false
+E poll()      
+移除并返问队列头部的元素    若队列为空，则返回null
+E peek()     
+返回队列头部的元素         若队列为空，则返回null
+void put()     
+添加一个元素              若队列满，则阻塞
+void take()
+移除并返回队列头部的元素    若队列为空，则阻塞
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[8. String、StringBuffer与StringBuilder的区别]]></title>
+    <link href="http://ranchu90.github.io/14749467173553.html"/>
+    <updated>2016-09-27T11:25:17+08:00</updated>
+    <id>http://ranchu90.github.io/14749467173553.html</id>
+    <content type="html"><![CDATA[
+<table>
+<thead>
+<tr>
+<th></th>
+<th>String</th>
+<th>StringBuffer</th>
+<th>StringBuilder</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>可变性</td>
+<td>不可变类</td>
+<td>可变</td>
+<td>可变</td>
+</tr>
+<tr>
+<td>线程安全</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>适用场合</td>
+<td>被共享的场合 少量数据</td>
+<td>经常修改的场合 避免附加操作 无用对象 提高效率 多线程大量数据</td>
+<td>单线程下大量数据</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>构造函数 ==赋值</td>
+<td>构造函数</td>
+<td>构造函数</td>
+</tr>
+<tr>
+<td>执行效率</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[7. ArrayList、LinkedList、Vector的区别]]></title>
+    <link href="http://ranchu90.github.io/14748992011687.html"/>
+    <updated>2016-09-26T22:13:21+08:00</updated>
+    <id>http://ranchu90.github.io/14748992011687.html</id>
+    <content type="html"><![CDATA[
+<p>Collection包结构，Collection是一个集合接口，它提供了对集合对象进行基本操作的通用接口方法。实现该接口的类主要有List和Set，其目的在于为各种具体的集合提供最大化的统一的操作方式。<br/>
+Collection包结构</p>
+
+<pre><code>Collection
+├List
+│├LinkedList
+│├ArrayList
+│└Vector
+│　└Stack
+└Set
+</code></pre>
+
+<p>ArrayList和Vector是顺序存储（物理上连续的内存空间）的集合，使用的时候可以根据下标进行访问，索引数据的效率高。但是在删除或者插入时，需要移动容器中的元素，因此插入删除时，效率低。<br/>
+另外，Vector的大多数方法前都有synchronized关键字，因此是线程安全的，ArrayList则不是。</p>
+
+<p>容量扩充：当ArrayList或Vector中设定的容量不够容纳新的节点时，会自动调用grow()方法进行容量的扩充。ArrayList默认扩充原来大小的1.5倍。Vector默认扩充原来大小的2倍，指定capacityIncrement的话，每次扩充指定的大小。</p>
+
+<pre><code>//ArrayList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+    
+//LinkedList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?
+                                         capacityIncrement : oldCapacity);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+</code></pre>
+
+<p>LinkedList采用双向链表实现，无法使用下标访问。每次由下标获取元素的时候，先判断其在前半段还是后半段，在前半段从头结点开始查找，在后半段从尾节点从后往前查找。因此，查找时，效率较ArrayList和Vector低。但是插入或者删除操作，只需要进行节点的删除或者连接操作，因此效率较前二者高。</p>
+
+<pre><code>Node&lt;E&gt; node(int index) {
+        // assert isElementIndex(index);
+
+        if (index &lt; (size &gt;&gt; 1)) {
+            Node&lt;E&gt; x = first;
+            for (int i = 0; i &lt; index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node&lt;E&gt; x = last;
+            for (int i = size - 1; i &gt; index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[6. Hashcode的作用]]></title>

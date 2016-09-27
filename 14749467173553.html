@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Objective-C复习笔记(二) - cd's blog
+  8. String、StringBuffer与StringBuilder的区别 - cd's blog
   
   </title>
   
@@ -103,17 +103,17 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Objective-C复习笔记(二)</h1>
+          <h1>8. String、StringBuffer与StringBuilder的区别</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/5/20 10:46 上午</span>
+          <span class="date">2016/9/27 11:25 上午</span>
 
           
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14637124055346.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14749467173553.html#disqus_thread">comments</a>
             
 
             
@@ -123,194 +123,49 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h2 id="toc_0">ARC机制</h2>
-
-<p>以往的OBJC是通过程序员手动地管理对象的释放。ARC(Automatic Reference Counting)自动引用计数，现在是OBJC的默认内存管理机制，针对堆上的对象，由编译器自动生成操作引用计数的指令(retain,release)来管理对象的释放。</p>
-
-<h3 id="toc_1">管理的对象</h3>
-
-<table>
+      <table>
 <thead>
 <tr>
-<th>受ARC管理</th>
-<th>不受ARC管理</th>
+<th></th>
+<th>String</th>
+<th>StringBuffer</th>
+<th>StringBuilder</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>OC对象指针</td>
-<td>值类型(基本类型，struct)</td>
+<td>可变性</td>
+<td>不可变类</td>
+<td>可变</td>
+<td>可变</td>
 </tr>
 <tr>
-<td>Block指针</td>
-<td>其他方式分配的资源(c语言的malloc)</td>
+<td>线程安全</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
 </tr>
 <tr>
-<td>使用_attribute_((NSObject))定义的typedef</td>
-<td>非内存资源</td>
+<td>适用场合</td>
+<td>被共享的场合 少量数据</td>
+<td>经常修改的场合 避免附加操作 无用对象 提高效率 多线程大量数据</td>
+<td>单线程下大量数据</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>构造函数 ==赋值</td>
+<td>构造函数</td>
+<td>构造函数</td>
+</tr>
+<tr>
+<td>执行效率</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
 </tr>
 </tbody>
 </table>
-
-<h3 id="toc_2">管理的方式</h3>
-
-<pre><code>//新创建一个引用类型的对象，这个对象的引用计数初始为1；
-NSString *name = [[NSString alloc] initWithString:@&quot;Mono&quot;];
-//将对象引用赋值给其它变量或者常量，引用计数+1；
-NSString *otherName = name;
-//或者将将该对象引用赋值给其它对象的属性或实例变量，引用计数+1；
-person.name = name;
-//将对象传入函数参数，或者返回值，引用计数+1
-print(name);//函数结束后，参数或者局部变量离开函数，该对象的引用计数-1；
-//将对象加入集合之中，引用计数+1；
-[array addObject];
-
-//将变量或者常量,或者属性赋值为nil或者其他值，引用计数-1；
-otherName = nil; or otherName = @&quot;Other Name&quot;;
-person.name = nil;
-//实例变量和属性所在的对象呗释放，该对象引用计数-1；
-[person release];
-//将对象从集合中移除的时候，该对象的引用计数-1；
-[array removeObject:name];
-
-//当该对象的引用计数变为0的时候，内存自动被释放。
-</code></pre>
-
-<h2 id="toc_3">自动释放池(Autorelease Pool)</h2>
-
-<p>如果对象频繁的进行释放和分配，那么会造成琐碎的内存管理负担。autorelease可以讲release的调用延迟到自动释放池被释放时。</p>
-
-<p>当自动释放池结束时，所有接受autorelease消息的对象都将被立即释放(对象被发送一条release消息);</p>
-
-<p>AppKit和UIKit框架在处理每一次事件循环迭代时，都会讲其放入一个Autorelease Pool中，大多数情况无须程序员干预。</p>
-
-<h3 id="toc_4">需要手动管理Autorelease Pool的情况</h3>
-
-<p>1.当编写的程序不是基于UI框架，而是命令行程序时。<br/>
-2.如果在循环中创建大量临时对象，需要更早地释放，避免临时对象聚集导致内存峰值过大。<br/>
-3.在主线程之外创建新的线程，在新线程开始执行处，需要创建自己的Autorelease Pool。<br/>
-4.嵌套使用Autorelease Pool的时候。</p>
-
-<h2 id="toc_5">协议 Protocol</h2>
-
-<p>类型的合同约定，只描述外部接口，不提供具体的实现。<br/>
-协议中无法包含实例变量，但可以包含以下的成员：<br/>
-属性 （本质上是访问器方法，编译器不会合成实例变量）<br/>
-实例方法<br/>
-类方法<br/>
-初始化器，析构器(不常用)</p>
-
-<h3 id="toc_6">使用协议</h3>
-
-<p>1.一个类遵守协议，需实现该协议约定的所有@required的成员，即必须要实现的成员。<br/>
-协议中的属性必须在实现类的.h接口文件中声明(编译器合成实例变量)<br/>
-2.协议本质上是一种类型，可以作为声明类型，但是不能创建实例。<br/>
-3.可以使用conformsToProtocl:检查是否实现了协议。<br/>
-4.编译警告：1）未实现必选方法。2）协议类型变量被赋值为非协议类型变量。运行会出错。</p>
-
-<h4 id="toc_7">协议的继承</h4>
-
-<p>一个协议可以继承一个或者多个协议。<br/>
-实现子协议的类型，同时也要实现父协议中必须是实现的成员。</p>
-
-<h4 id="toc_8">协议的组合</h4>
-
-<p>一个类可以同时实现多个协议，protocal<A,B,C....>来组合多个协议<br/>
-实现组合协议的类型，必须实现组合协议中的每一个协议</p>
-
-<h4 id="toc_9">协议中的可选</h4>
-
-<p>协议中使用关键字@optional定义的成员是可以选择不必实现的。</p>
-
-<h3 id="toc_10">常用的协议</h3>
-
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>描述</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>NSObject</td>
-<td>包含对象的常用操作，相等、字符串表示、哈希。</td>
-</tr>
-<tr>
-<td>NSCopying</td>
-<td>支持复制的类型必须遵守该协议。</td>
-</tr>
-<tr>
-<td>NSMutableCopying</td>
-<td>在NSCopying协议的基础上，支持复制数据的可变性。</td>
-</tr>
-<tr>
-<td>NSFastEnumeration</td>
-<td>实现快速枚举for-in的类型采用</td>
-</tr>
-<tr>
-<td>NSCoding</td>
-<td>支持将对象图进行编码或解码以支持对象的序列化</td>
-</tr>
-</tbody>
-</table>
-
-<h2 id="toc_11">类别 Categroy</h2>
-
-<p>在没有源代码的情况下，基于某些场合的需要，为一个类增加功能。<br/>
-可增加 | 不可增加<br/>
---------- | -------------<br/>
-类方法 | 属性<br/>
-实例方法| 实例变量<br/>
-重写父类方法 | 已存在的同名方法</p>
-
-<h3 id="toc_12">命名规范</h3>
-
-<p>文件名：类名+扩展方法，如：Person+Sport.h/m</p>
-
-<h3 id="toc_13">类别的使用</h3>
-
-<h4 id="toc_14">场景</h4>
-
-<p>1.适合在没有源代码的情况下，想已经封装的类中添加方法。<br/>
-2.为一个类在某些特殊场景下增加功能。<br/>
-3.对于复杂的大型文件分割实现。<br/>
-4.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
-
-<h4 id="toc_15">添加类别的对象</h4>
-
-<p>1.自己创建的类。<br/>
-2.系统的类。<br/>
-3.第三方库。</p>
-
-<h4 id="toc_16">类别限制</h4>
-
-<p>1.类别不能在扩展类中添加任何成员变量。<br/>
-2.重写现有方法时，无法调用原始现有对象方法。<br/>
-3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
-
-<h2 id="toc_17">扩展 Extension</h2>
-
-<p>扩展支持在编译时，在有类的源代码的前提下，向类添加功能。可看做是匿名的类别。</p>
-
-<p>接口在.m文件中的@implementation前声明，实现代码在@implementation 内实现。</p>
-
-<p>扩展支持添加以下成员：<br/>
-1.属性。<br/>
-2.实例成员。<br/>
-3.类方法。<br/>
-4.实例方法。<br/>
-5.改写属性的读写属性。</p>
-
-<h3 id="toc_18">扩展的使用</h3>
-
-<p>扩展实现的成员只能在。m文件内部访问，类外无法直接往访问。</p>
-
-<p>扩展的主要用途在于信息隐藏，隐藏一些外部无须访问、而内部实现又需要使用的属性、方法：<br/>
-1.类的主要接口用于“对类以外公开”<br/>
-2.类的扩展接口用于“对类内可见”</p>
 
       </div>
 
@@ -318,16 +173,16 @@ person.name = nil;
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14645437888084.html" 
-          title="Previous Post: iOS开发基础（一）">&laquo; iOS开发基础（一）</a>
+          <a href="14749474920939.html" 
+          title="Previous Post: 9. Map、Set、List、Queue、Stack的特点与用法">&laquo; 9. Map、Set、List、Queue、Stack的特点与用法</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14632363806380.html" 
-          title="Next Post: Objective-C复习笔记">Objective-C复习笔记 &raquo;</a>
+          <a  href="14748992011687.html" 
+          title="Next Post: 7. ArrayList、LinkedList、Vector的区别">7. ArrayList、LinkedList、Vector的区别 &raquo;</a>
       
       </p>
         </div>
