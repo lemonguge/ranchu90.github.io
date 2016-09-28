@@ -4,13 +4,316 @@
   <title><![CDATA[cd's blog]]></title>
   <link href="http://ranchu90.github.io/atom.xml" rel="self"/>
   <link href="http://ranchu90.github.io/"/>
-  <updated>2016-09-26T22:05:08+08:00</updated>
+  <updated>2016-09-27T16:13:38+08:00</updated>
   <id>http://ranchu90.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[14. try catch finally，try里有return，finally还执行么]]></title>
+    <link href="http://ranchu90.github.io/14750561415107.html"/>
+    <updated>2016-09-28T17:49:01+08:00</updated>
+    <id>http://ranchu90.github.io/14750561415107.html</id>
+    <content type="html"><![CDATA[
+<p>finally中的内容一定会执行的</p>
+
+<pre><code>try{
+    return 0;
+} catch(Exception e){
+    return 1;
+} finally{
+    return 2;
+}
+</code></pre>
+
+<p>finally中的return会覆盖try，catch中的return，所以最后返回的是finally中的值</p>
+
+<pre><code>class Main{
+    public static String lem(){
+        System.out.println(&quot;lem&quot;);
+        return &quot;return from lem&quot;;
+    }
+    
+    public static String foo(){
+        int x = 0;
+        int y = 5;
+        try {
+            System.out.println(&quot;start try&quot;);
+            int b = y/x;
+            System.out.println(&quot;end try&quot;);
+            return &quot;return from try&quot;;
+        } catch (Exception e) {
+            System.out.println(&quot;catch&quot;);
+            return lem() + &quot;| return from catch&quot;;
+        } finally {
+            System.out.println(&quot;finally&quot;);
+            return &quot;return from finally&quot;;
+        }
+    }
+    
+    public static void main(String[] args) {
+        String v = foo();
+        
+        System.out.println(v);
+    }
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>start try
+catch
+lem
+finally
+return from finally
+</code></pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[12. TreeMap、HashMap、LinkedHashMap的区别]]></title>
+    <link href="http://ranchu90.github.io/14750544918726.html"/>
+    <updated>2016-09-28T17:21:31+08:00</updated>
+    <id>http://ranchu90.github.io/14750544918726.html</id>
+    <content type="html"><![CDATA[
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HashMap</th>
+<th>TreeMap</th>
+<th>LinkedHashMap</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>遍历顺序</td>
+<td>随机</td>
+<td>实现了sortMap接口，按自然顺序或自定义顺序</td>
+<td>与输入顺序相同</td>
+</tr>
+</tbody>
+</table>
+
+<p>weakHashMap与HashMap类似，它从用若引用，其中key不再被外部引用时即被JVM回收，HashMap采用强引用，key不被外部引用时，必须从Map中删除才能被GC回收</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[11. HashMap、Hashtable、ConcurrentHashMap的区别]]></title>
+    <link href="http://ranchu90.github.io/14749678612341.html"/>
+    <updated>2016-09-27T17:17:41+08:00</updated>
+    <id>http://ranchu90.github.io/14749678612341.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">多线程下的HashMap</h2>
+
+<p>HashMap是线程不安全的，在多线程环境中并发操作会存在以下问题：</p>
+
+<ul>
+<li>  多线程使用put()，触发resize(rehash)操作，创建多个newTable，再同时rehash，导致链表错乱。这时候，再使用get()操作将进入无线循环。getEntry获取table中的链表，链表成了一个循环链表，所以进入无线循环。</li>
+</ul>
+
+<pre><code>public V get(Object key) {
+        Node&lt;K,V&gt; e;
+        return (e = getNode(hash(key), key)) == null ? null : e.value;
+    }
+    
+ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+        if ((p = tab[i = (n - 1) &amp; hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node&lt;K,V&gt; e; K k;
+            if (p.hash == hash &amp;&amp;
+                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+                e = p;
+            else if (p instanceof TreeNode)
+                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &amp;&amp;
+                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size &gt; threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }
+</code></pre>
+
+<ul>
+<li>remove()，遍历map时调用remove，可能会导致丢失删除的数据后面的数据，跳到下一个槽位。</li>
+</ul>
+
+<h2 id="toc_1">ConcurrentHashMap和Hashtable</h2>
+
+<p>concurrent,同时发生的。同时发生的hashmap，从名字就可以知道它专门用于多线程的情况。<br/>
+它不同于hashtable，hashtable在方法前使用synchronized来保证同步这会导致被当一个对象被锁住的时候，另一个线程无法使用get()方法，而ConcurrentHashMap对map进行分段，在插入时使用段（继承自重用锁），来实现线程之间的同步。<br/>
+但是在最新的java源码里我看到的是在put方法中使用synchronized块来实现同步。</p>
+
+<pre><code> /** Implementation for put and putIfAbsent */
+    final V putVal(K key, V value, boolean onlyIfAbsent) {
+        if (key == null || value == null) throw new NullPointerException();
+        int hash = spread(key.hashCode());
+        int binCount = 0;
+        for (Node&lt;K,V&gt;[] tab = table;;) {
+            Node&lt;K,V&gt; f; int n, i, fh;
+            if (tab == null || (n = tab.length) == 0)
+                tab = initTable();
+            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) {
+                if (casTabAt(tab, i, null,
+                             new Node&lt;K,V&gt;(hash, key, value, null)))
+                    break;                   // no lock when adding to empty bin
+            }
+            else if ((fh = f.hash) == MOVED)
+                tab = helpTransfer(tab, f);
+            else {
+                V oldVal = null;
+                synchronized (f) {
+                    if (tabAt(tab, i) == f) {
+                        if (fh &gt;= 0) {
+                            binCount = 1;
+                            for (Node&lt;K,V&gt; e = f;; ++binCount) {
+                                K ek;
+                                if (e.hash == hash &amp;&amp;
+                                    ((ek = e.key) == key ||
+                                     (ek != null &amp;&amp; key.equals(ek)))) {
+                                    oldVal = e.val;
+                                    if (!onlyIfAbsent)
+                                        e.val = value;
+                                    break;
+                                }
+                                Node&lt;K,V&gt; pred = e;
+                                if ((e = e.next) == null) {
+                                    pred.next = new Node&lt;K,V&gt;(hash, key,
+                                                              value, null);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (f instanceof TreeBin) {
+                            Node&lt;K,V&gt; p;
+                            binCount = 2;
+                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,
+                                                           value)) != null) {
+                                oldVal = p.val;
+                                if (!onlyIfAbsent)
+                                    p.val = value;
+                            }
+                        }
+                    }
+                }
+                if (binCount != 0) {
+                    if (binCount &gt;= TREEIFY_THRESHOLD)
+                        treeifyBin(tab, i);
+                    if (oldVal != null)
+                        return oldVal;
+                    break;
+                }
+            }
+        }
+        addCount(1L, binCount);
+        return null;
+    }
+</code></pre>
+
+<p>以下三篇文章中有详细的说明可以参考下</p>
+
+<p><a href="http://ifeve.com/concurrenthashmap/">http://ifeve.com/concurrenthashmap/</a><br/>
+<a href="http://ifeve.com/java-concurrent-hashmap-1/">http://ifeve.com/java-concurrent-hashmap-1/</a><br/>
+<a href="http://ifeve.com/java-concurrent-hashmap-2/">http://ifeve.com/java-concurrent-hashmap-2/</a></p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[10. HashMap和HashTable的区别]]></title>
+    <link href="http://ranchu90.github.io/14749657860314.html"/>
+    <updated>2016-09-27T16:43:06+08:00</updated>
+    <id>http://ranchu90.github.io/14749657860314.html</id>
+    <content type="html"><![CDATA[
+<p>Map<br/>
+├Hashtable<br/>
+├HashMap<br/>
+└WeakHashMap</p>
+
+<p>HashMap和HashTable都是Java中哈希表的实现方式。其中HashTable里的大多数方法比如add、remove..等前有synchronized修饰，所以它在多线程的环境下是线程安全的，也因此需要耗费性能在同步的问题上。而HashMap不是，所以它的效率较HashTable高。<br/>
+HashMap中可以使用null作为key，这在HashTable中是不允许的。<br/>
+HashMap中的contains方法因为语义不明改为containsKey()和containsValue()。<br/>
+(key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HashMap</th>
+<th>Hashtable</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>null作为key</td>
+<td>能</td>
+<td>否</td>
+</tr>
+<tr>
+<td>contains()</td>
+<td>改为containsKey() constainsValue()</td>
+<td>继承Dicitionary</td>
+</tr>
+<tr>
+<td>线程安全</td>
+<td>否 效率较高</td>
+<td>是 效率较低</td>
+</tr>
+<tr>
+<td>迭代</td>
+<td>iterator</td>
+<td>enumeration</td>
+</tr>
+<tr>
+<td>hash性能</td>
+<td>几乎一样 使用hashcode()方法</td>
+<td></td>
+</tr>
+<tr>
+<td>hash值</td>
+<td>(key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</td>
+<td>直接hashcode方法的值</td>
+</tr>
+</tbody>
+</table>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[9. Map、Set、List、Queue、Stack的特点与用法]]></title>
@@ -519,7 +822,7 @@ public class StringInSwitchCase{
 8. String、StringBuffer与StringBuilder的区别
 9. Map、Set、List、Queue、Stack的特点与用法
 10. HashMap和HashTable的区别
-11. HashMap和ConcurrentHashMap的区别，HashMap的底层源码
+11. HashMap和ConcurrentHashMap的区别
 12. TreeMap、HashMap、LinkedHashMap的区别。
 13. Collection包结构，与Collections的区别
 14. try catch finally，try里有return，finally还执行么
@@ -1472,157 +1775,6 @@ Objective-C只能使用单继承。 </p>
 </code></pre>
 
 <p>解决方法，在Bar.h中加入@protocol Foo，告诉编译器Foo是一个协议，不用导入Foo.h。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Objective-C中的类别]]></title>
-    <link href="http://ranchu90.github.io/14598725533534.html"/>
-    <updated>2016-04-06T00:09:13+08:00</updated>
-    <id>http://ranchu90.github.io/14598725533534.html</id>
-    <content type="html"><![CDATA[
-<blockquote>
-<p>刚刚翻看了OC的书中关于类别的一章，现将OC中类别的使用和限制总结如下。</p>
-</blockquote>
-
-<h2 id="toc_0">定义及使用</h2>
-
-<p>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
-2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
-3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
-
-<h3 id="toc_1">声明</h3>
-
-<h4 id="toc_2">头文件</h4>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-@interface NSMutableString (GUID) //括号里为类别的名字
-
--(void) appendGUID;
-+(id) stringWithGUID;
-@end
-</code></pre>
-
-<h4 id="toc_3">实现</h4>
-
-<pre><code>#import &quot;NSMutableString+GUID.h&quot;
-
-@implementation NSMutableString (GUID)
-
--(void) appendGUID{
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    NSString *string = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
-    [self appendString:string];
-   // CFRelease(uuid);
-}
-
-+(id) stringWithGUID{
-    NSMutableString *string = [self string];
-    [string appendGUID];
-    return string;
-}
-
-@end
-</code></pre>
-
-<p>扩展成员方法：可访问类的所有成员变量、可以通过self调用类的其它方法、可以使用super关键字调用父类的方法。self关键字指实例对象。<br/>
-扩展类方法：无法访问成员变量。self关键字指类对象。</p>
-
-<h4 id="toc_4">使用</h4>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
-#import &quot;NSMutableString+GUID.h&quot;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        NSMutableString *str = [NSMutableString stringWithGUID];
-        NSLog(@&quot;GUID=%@&quot;, str);
-    }
-    return 0;
-}
-</code></pre>
-
-<h2 id="toc_5">限制</h2>
-
-<p>1.类别不能在扩展类中添加任何成员变量。<br/>
-2.重写现有方法时，无法调用原始现有对象方法。<br/>
-3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[二维数组作为参数在C语言函数中如何传递]]></title>
-    <link href="http://ranchu90.github.io/14596175387256.html"/>
-    <updated>2016-04-03T01:18:58+08:00</updated>
-    <id>http://ranchu90.github.io/14596175387256.html</id>
-    <content type="html"><![CDATA[
-<blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
-
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
-</code></pre>
-
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
-
-<hr/>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
-
-<hr/>
-
-<p>手工寻址</p>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[First blog]]></title>
-    <link href="http://ranchu90.github.io/14595804338386.html"/>
-    <updated>2016-04-02T15:00:33+08:00</updated>
-    <id>http://ranchu90.github.io/14595804338386.html</id>
-    <content type="html"><![CDATA[
-<p>今天由zjb同学介绍，学会了使用github搭建个人的blog。<br/>
-从今天开始，我将在这个地方记录自己在技术上的成长。<br/>
-我的目标是成为优秀的软件工程师。加油！</p>
 
 ]]></content>
   </entry>

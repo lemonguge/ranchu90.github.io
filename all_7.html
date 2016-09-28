@@ -103,50 +103,64 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14747925084160.html">
+                <a class="clearlink" href="14596175387256.html">
                 
-                  <h1>求职</h1>
+                  <h1>二维数组作为参数在C语言函数中如何传递</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
                         	<blockquote>
-<p>9月开始到现在，陆陆续续也面了5、6个公司，现在暂时告一个段落。<br/>
-每家公司面试的风格都不一样，根据面试官问的问题可以分为以下几类：</p>
+<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
+现在把方法整理出来，以备能很快地回忆起来。</p>
 </blockquote>
 
-<h2 id="toc_0">面试</h2>
+<pre><code>void printArray(int a[3][2]);
+void printArray(int a[][2]);
+void printArray(int (*a)[2]);
+</code></pre>
 
-<p>现在对过去的几次面试做个总结，每家公司面试的风格都不一样，根据面试官问的问题可以分为以下几类：</p>
+<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
 
-<ul>
-<li>1.智力类。这类公司喜欢问智力题，比如10个人互相有握手，那么他们总共握了几次手？一个凸多边形的外接矩阵怎么求？等等，从头到尾都是。</li>
-<li>2.代码类。直接上来就给题目让写代码。leet code上的题目。</li>
-<li>3.工程类。主要关注的点在你做的项目上，使用了什么技术，怎么实现的，还有没有其它的实现方式，这样做有什么缺陷，等等。</li>
-<li>4.基础类。对编程语言方面问的很深入，比如JVM模型，GC机制，GC算法，分配过程等等。</li>
-<li>5.常规问题。怎么学习的？对未来有什么规划？你还有什么要问我的？</li>
-</ul>
+<hr/>
 
-<h2 id="toc_1">笔试</h2>
+<pre><code>#include&lt;stdio.h&gt;
+void printArray(int a[][2]){
+        for(int i=0; i&lt;3; ++i){
+                for(int j=0; j&lt;2; ++j){
+                        printf(&quot;%d\n&quot;, a[i][j]);
+                }
+        }
+}
+int main(){
+        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
+        printArray(test);
+        return 1;
+}
+</code></pre>
 
-<p>笔试题依据类型可以分为以下几类：</p>
+<hr/>
 
-<ul>
-<li>1.智力题。特别是BAT，选择题基本上都是智力题。这方面只能靠平时的积累和总结了。</li>
-<li>2.基础题。在试卷中有出现，占比根据不同的公司来决定，有些的比例远不如智力题。</li>
-<li>3.编程题。几乎是重中之重。最爱考的是字符串处理及动态规划问题。</li>
-<li>4.应用题。这类题实际上也是在变相地考察基础，但是比单纯直接地考察基础的要求要高的多。阿里最后一个题是让设计实现一个HotSpot虚拟机。当时我就？？？也有让直接设计一个数据库的题型。</li>
-</ul>
+<p>手工寻址</p>
 
-<h2 id="toc_2">总结</h2>
+<pre><code>#include&lt;stdio.h&gt;
+void printArray(int **a, int m, int n){
+        for(int i=0; i&lt;m; ++i){
+                for(int j=0; j&lt;n; ++j){
+                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
+                }
+        }
+}
+int main(){
+        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
+        printArray((int**)test, 3, 2);
+        return 1;
+}
+</code></pre>
 
-<p>准备了很多，但仍然不够充分，每次面试总有答不上来的题。那些题实际上也不是很难，而是没有听说过和接触过。这也是这么多面试的一次收获，我还有那么多需要知道的东西。</p>
+<p><code>int **a;</code></p>
 
-<p>这个过程中，对于JAVA基础，JVM内存管理方面的内容我有做一个笔记总结，放在word文档中。这几天会陆陆续续整理后放上来。一来是这段时间学习的总结以便以后在复习的时候可以快速定位不牢固的知识，二来希望我的总结对别人也能有帮助。</p>
-
-<p>对于动态规划的思想还需要更多的练习，简单的可以，复杂一点总是让我花很多时间，最后还总不能全部AC，总是差那么一点。</p>
-
-<p>感谢网络上积极分享知识心得的朋友。我现在准备好好睡一觉。</p>
+<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
 
                         
                       </div>
@@ -155,7 +169,44 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/25 16:35 下午</span>
+                    <span class="date">2016/4/3 1:18 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14595804338386.html">
+                
+                  <h1>First blog</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>今天由zjb同学介绍，学会了使用github搭建个人的blog。<br/>
+从今天开始，我将在这个地方记录自己在技术上的成长。<br/>
+我的目标是成为优秀的软件工程师。加油！</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/4/2 15:0 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='diary.html'>Diary</a></span>
@@ -164,7 +215,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14747925084160.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14595804338386.html#disqus_thread">comments</a>
                       
 
                        
@@ -184,7 +235,7 @@
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			 <a href="all_8.html">&raquo; Next Page</a> 
+			
 			</p>
 			  </div>
 			</div>
@@ -250,33 +301,41 @@
 	      
 		      
 			      <li class="post">
-			        <a href="14748977980780.html">6. Hashcode的作用</a>
+			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748971773098.html">5. Java的四种引用，强弱软虚，用到的场景</a>
+			        <a href="14750544918726.html">12. TreeMap、HashMap、LinkedHashMap的区别</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748970236814.html">4.Object有哪些公用方法？</a>
+			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748960344939.html">3.equals()和==的区别</a>
+			        <a href="14749657860314.html">10. HashMap和HashTable的区别</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
+			        <a href="14749474920939.html">9. Map、Set、List、Queue、Stack的特点与用法</a>
 			      </li>
 		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
 		  
 		      
 		  

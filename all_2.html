@@ -103,18 +103,75 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748960344939.html">
+                <a class="clearlink" href="14748992011687.html">
                 
-                  <h1>3.equals()和==的区别</h1>
+                  <h1>7. ArrayList、LinkedList、Vector的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
+                        	<p>Collection包结构，Collection是一个集合接口，它提供了对集合对象进行基本操作的通用接口方法。实现该接口的类主要有List和Set，其目的在于为各种具体的集合提供最大化的统一的操作方式。<br/>
+Collection包结构</p>
 
-<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
+<pre><code>Collection
+├List
+│├LinkedList
+│├ArrayList
+│└Vector
+│　└Stack
+└Set
+</code></pre>
 
-<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
+<p>ArrayList和Vector是顺序存储（物理上连续的内存空间）的集合，使用的时候可以根据下标进行访问，索引数据的效率高。但是在删除或者插入时，需要移动容器中的元素，因此插入删除时，效率低。<br/>
+另外，Vector的大多数方法前都有synchronized关键字，因此是线程安全的，ArrayList则不是。</p>
+
+<p>容量扩充：当ArrayList或Vector中设定的容量不够容纳新的节点时，会自动调用grow()方法进行容量的扩充。ArrayList默认扩充原来大小的1.5倍。Vector默认扩充原来大小的2倍，指定capacityIncrement的话，每次扩充指定的大小。</p>
+
+<pre><code>//ArrayList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+    
+//LinkedList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?
+                                         capacityIncrement : oldCapacity);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+</code></pre>
+
+<p>LinkedList采用双向链表实现，无法使用下标访问。每次由下标获取元素的时候，先判断其在前半段还是后半段，在前半段从头结点开始查找，在后半段从尾节点从后往前查找。因此，查找时，效率较ArrayList和Vector低。但是插入或者删除操作，只需要进行节点的删除或者连接操作，因此效率较前二者高。</p>
+
+<pre><code>Node&lt;E&gt; node(int index) {
+        // assert isElementIndex(index);
+
+        if (index &lt; (size &gt;&gt; 1)) {
+            Node&lt;E&gt; x = first;
+            for (int i = 0; i &lt; index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node&lt;E&gt; x = last;
+            for (int i = size - 1; i &gt; index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
+</code></pre>
 
                         
                       </div>
@@ -123,16 +180,14 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:20 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+                    <span class="date">2016/9/26 22:13 下午</span>
+                    
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748992011687.html#disqus_thread">comments</a>
                       
 
                        
@@ -142,69 +197,20 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748943230133.html">
+                <a class="clearlink" href="14748977980780.html">
                 
-                  <h1>2.  Switch能否用String做参数？</h1>
+                  <h1>6. Hashcode的作用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
-2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
-原理：hashCode()+equals()<br/>
-编译器在编译期间给代码做了转换。<br/>
-原始：</p>
+                        	<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来散列存储结构中确定对象的存储地址。</p>
 
-<pre><code>public class StringInSwitchCase { 
-      public static void main(String[] args) { 
-            String mode = args[0]; 
-            switch (mode) { 
-                  case &quot;ACTIVE&quot;: 
-                        System.out.println(&quot;Application is running on Active mode&quot;); 
-                        break; 
-                  case &quot;PASSIVE&quot;:
-                        System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         break; 
-                  case &quot;SAFE&quot;: 
-                          System.out.println(&quot;Application is running on Safe mode&quot;); 
-          } 
-      } 
-}
-</code></pre>
+<p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
 
-<p>编译器优化后：</p>
+<p>3.如果equals()被重写，那么该对象的hashCode()也要被重写，以保证2中的条件成立。</p>
 
-<pre><code>import java.io.PrintStream; 
- 
-public class StringInSwitchCase{ 
-      public StringInSwitchCase() { } 
- 
-      public static void main(string args[]) { 
-             String mode = args[0]; 
-            String s; switch ((s = mode).hashCode()) { 
-                  default: break; 
-                  case -74056953: 
-                        if (s.equals(&quot;PASSIVE&quot;)) { 
-                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         } 
-                        break; 
-                  case 2537357: 
-                        if (s.equals(&quot;SAFE&quot;)) { 
-                              System.out.println(&quot;Application is running on Safe mode&quot;); 
-                         } 
-                        break; 
-                  case 1925346054: 
-                        if (s.equals(&quot;ACTIVE&quot;)) { 
-                              System.out.println(&quot;Application is running on Active mode&quot;); 
-                         } 
-                        break; 
-               } 
-          } 
-}
-</code></pre>
-
-<p>参考资料：<br/>
-<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
+<p>4.由邻接矩阵的结构可知，hashCode值相同的对象，其内容不一定相同，只能说明他们存放在同一条链表中。</p>
 
                         
                       </div>
@@ -213,7 +219,7 @@ public class StringInSwitchCase{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 20:52 下午</span>
+                    <span class="date">2016/9/26 21:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -222,7 +228,7 @@ public class StringInSwitchCase{
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748977980780.html#disqus_thread">comments</a>
                       
 
                        
@@ -232,117 +238,21 @@ public class StringInSwitchCase{
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748770602290.html">
+                <a class="clearlink" href="14748971773098.html">
                 
-                  <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
+                  <h1>5. Java的四种引用，强弱软虚，用到的场景</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<table>
-<thead>
-<tr>
-<th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
-</tr>
-</thead>
+                        	<p>Java对对象的引用分为四种：<br/>
+1.强引用。强引用的对象不会被垃圾回收器回收。内存不足时，宁可抛出OOM错误也不会回收强引用。</p>
 
-<tbody>
-<tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
-</tr>
-</tbody>
-</table>
+<p>2.软引用。可有可无的引用，当JVM内存足够的时候不会被回收；当JVM内存不足的时候，发现软引用的存在，会回收软引用。</p>
 
-<h2 id="toc_0">使用封装类的目的</h2>
+<p>3.若引用。可有可无的引用，一旦被垃圾回收器发现，马上就被其回收。</p>
 
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
-
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
-
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
-
-<h2 id="toc_2">void类型</h2>
-
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
-
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
-</code></pre>
-
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
+<p>4.幽灵引用。它一般用来标记被回收的对象，当对象被回收后，会受到一条消息。虚引用与软引用和弱引用的一个区别在于：虚引用必须和引用队列 （ReferenceQueue）联合使用。</p>
 
                         
                       </div>
@@ -351,7 +261,7 @@ public class StringInSwitchCase{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 16:4 下午</span>
+                    <span class="date">2016/9/26 21:39 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -360,7 +270,7 @@ public class StringInSwitchCase{
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748971773098.html#disqus_thread">comments</a>
                       
 
                        
@@ -446,33 +356,35 @@ public class StringInSwitchCase{
 	      
 		      
 			      <li class="post">
+			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14750544918726.html">12. TreeMap、HashMap、LinkedHashMap的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14749657860314.html">10. HashMap和HashTable的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14749474920939.html">9. Map、Set、List、Queue、Stack的特点与用法</a>
 			      </li>
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="14749467173553.html">8. String、StringBuffer与StringBuilder的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14748992011687.html">7. ArrayList、LinkedList、Vector的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14748977980780.html">6. Hashcode的作用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14748971773098.html">5. Java的四种引用，强弱软虚，用到的场景</a>
-			      </li>
-		     
 		  
 		      
 		  
