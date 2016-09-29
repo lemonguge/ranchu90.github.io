@@ -103,6 +103,144 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14751214147355.html">
+                
+                  <h1>16. Java面向对象的三个特征与含义</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h3 id="toc_0">封装</h3>
+
+<p>封装：Java将现实中的对象抽象成一个类，并对它的属性和方法进行屏蔽保护，只允许特定的类可以访问，其它的进行隐藏，这个过程叫做封装。</p>
+
+<h3 id="toc_1">继承</h3>
+
+<p>继承：当两个类的关系是is-a的时候，可以考虑使用继承。它是一种层次结构，类的重用方式。当一个新类从现有类中派生出来，这个过程叫做继承。新类继承了原有类的属性和方法。缺点是继承树过于庞大之后,会导致子类继承后负担重,很多不需要的成员变量也被继承下来,整个类结构过于臃肿。</p>
+
+<h3 id="toc_2">多态</h3>
+
+<p>多态：允许不同类的对象对同一消息做出不同的响应。灵活抽象行为共享的优势。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。</p>
+
+<p>多态存在的三个必要条件<br/>
+一、要有继承；<br/>
+二、要有重写；<br/>
+三、父类引用指向子类对象。</p>
+
+<pre><code>class A {
+    public void show(){
+        System.out.println(&quot;This is A.&quot;);
+    }
+}
+
+class B extends A{
+    public void show(){
+        System.out.println(&quot;This is B.&quot;);
+    }
+}
+
+class C extends A{
+    public void show(){
+        System.out.println(&quot;This is C.&quot;);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        A a = new A();
+        a.show();
+        A b = new B();
+        b.show();
+        A c = new C();
+        c.show(); 
+    }
+}
+</code></pre>
+
+<p>输出</p>
+
+<pre><code>This is A.
+This is B.
+This is C.
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/29 11:56 上午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14751214147355.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14751149362443.html">
+                
+                  <h1>15. Exception与Error包结构。常见的OOM和SOF</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p><img src="media/14751149362443/14751149641985.jpg" alt=""/></p>
+
+<p>Java提供了两种错误的异常，分别为Exception和Error，它们继承自共同的父类Throwable。</p>
+
+<h2 id="toc_0">Error</h2>
+
+<p>Error表示程序在运行期间出现了非常严重的错误，且这个错误是不可恢复的。将导致程序终止执行。如OutOfMemoryError、ThreadDeath。错误发生时，JVM一般会终止程序的运行。</p>
+
+<h2 id="toc_1">Exception</h2>
+
+<p>Exception表示可恢复的异常，编译可以捕获。</p>
+
+<p>1.检查异常（checked exception）<br/>
+编译阶段发生，编译器强制在程序里捕获这类异常，放入try代码块中，把对异常的处理代码放到catch块中。常见的有IOException和SQLException。一般在以下情况中使用：<br/>
+1）异常的发生并不导致程序出错，进行处理后可以继续执行后续的操作。<br/>
+2）程序依赖于不可靠的外部条件，如IO。</p>
+
+<p>2.运行时异常（runtime exception）<br/>
+编译器不强制进行捕获。若不捕获的话，由JVM来处理。常见的运行时异常包括NullPointerException、ClassCastException、ArrayIndexOutOfBoundsException、StoreException、BufferOverflowException、ArithmeticException。</p>
+
+<p>出现运行时异常之后，系统会将异常一直往上次抛出，知道遇到处理代码位置。若没有处理代码，则抛到最上层。多线程run()方法抛出，线程终止，或单线程main()方法抛出，整个程序退出。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/29 10:8 上午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14751149362443.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14750561415107.html">
                 
                   <h1>14. try catch finally，try里有return，finally还执行么</h1>
@@ -178,229 +316,6 @@ return from finally
                   <span class="comments">
                       
                         <a href="http://ranchu90.github.io/14750561415107.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14750544918726.html">
-                
-                  <h1>12. TreeMap、HashMap、LinkedHashMap的区别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<table>
-<thead>
-<tr>
-<th></th>
-<th>HashMap</th>
-<th>TreeMap</th>
-<th>LinkedHashMap</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>遍历顺序</td>
-<td>随机</td>
-<td>实现了sortMap接口，按自然顺序或自定义顺序</td>
-<td>与输入顺序相同</td>
-</tr>
-</tbody>
-</table>
-
-<p>weakHashMap与HashMap类似，它从用若引用，其中key不再被外部引用时即被JVM回收，HashMap采用强引用，key不被外部引用时，必须从Map中删除才能被GC回收</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/28 17:21 下午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14750544918726.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14749678612341.html">
-                
-                  <h1>11. HashMap、Hashtable、ConcurrentHashMap的区别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">多线程下的HashMap</h2>
-
-<p>HashMap是线程不安全的，在多线程环境中并发操作会存在以下问题：</p>
-
-<ul>
-<li>  多线程使用put()，触发resize(rehash)操作，创建多个newTable，再同时rehash，导致链表错乱。这时候，再使用get()操作将进入无线循环。getEntry获取table中的链表，链表成了一个循环链表，所以进入无线循环。</li>
-</ul>
-
-<pre><code>public V get(Object key) {
-        Node&lt;K,V&gt; e;
-        return (e = getNode(hash(key), key)) == null ? null : e.value;
-    }
-    
- final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
-                   boolean evict) {
-        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
-        if ((tab = table) == null || (n = tab.length) == 0)
-            n = (tab = resize()).length;
-        if ((p = tab[i = (n - 1) &amp; hash]) == null)
-            tab[i] = newNode(hash, key, value, null);
-        else {
-            Node&lt;K,V&gt; e; K k;
-            if (p.hash == hash &amp;&amp;
-                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
-                e = p;
-            else if (p instanceof TreeNode)
-                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
-            else {
-                for (int binCount = 0; ; ++binCount) {
-                    if ((e = p.next) == null) {
-                        p.next = newNode(hash, key, value, null);
-                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
-                            treeifyBin(tab, hash);
-                        break;
-                    }
-                    if (e.hash == hash &amp;&amp;
-                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
-                        break;
-                    p = e;
-                }
-            }
-            if (e != null) { // existing mapping for key
-                V oldValue = e.value;
-                if (!onlyIfAbsent || oldValue == null)
-                    e.value = value;
-                afterNodeAccess(e);
-                return oldValue;
-            }
-        }
-        ++modCount;
-        if (++size &gt; threshold)
-            resize();
-        afterNodeInsertion(evict);
-        return null;
-    }
-</code></pre>
-
-<ul>
-<li>remove()，遍历map时调用remove，可能会导致丢失删除的数据后面的数据，跳到下一个槽位。</li>
-</ul>
-
-<h2 id="toc_1">ConcurrentHashMap和Hashtable</h2>
-
-<p>concurrent,同时发生的。同时发生的hashmap，从名字就可以知道它专门用于多线程的情况。<br/>
-它不同于hashtable，hashtable在方法前使用synchronized来保证同步这会导致被当一个对象被锁住的时候，另一个线程无法使用get()方法，而ConcurrentHashMap对map进行分段，在插入时使用段（继承自重用锁），来实现线程之间的同步。<br/>
-但是在最新的java源码里我看到的是在put方法中使用synchronized块来实现同步。</p>
-
-<pre><code> /** Implementation for put and putIfAbsent */
-    final V putVal(K key, V value, boolean onlyIfAbsent) {
-        if (key == null || value == null) throw new NullPointerException();
-        int hash = spread(key.hashCode());
-        int binCount = 0;
-        for (Node&lt;K,V&gt;[] tab = table;;) {
-            Node&lt;K,V&gt; f; int n, i, fh;
-            if (tab == null || (n = tab.length) == 0)
-                tab = initTable();
-            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) {
-                if (casTabAt(tab, i, null,
-                             new Node&lt;K,V&gt;(hash, key, value, null)))
-                    break;                   // no lock when adding to empty bin
-            }
-            else if ((fh = f.hash) == MOVED)
-                tab = helpTransfer(tab, f);
-            else {
-                V oldVal = null;
-                synchronized (f) {
-                    if (tabAt(tab, i) == f) {
-                        if (fh &gt;= 0) {
-                            binCount = 1;
-                            for (Node&lt;K,V&gt; e = f;; ++binCount) {
-                                K ek;
-                                if (e.hash == hash &amp;&amp;
-                                    ((ek = e.key) == key ||
-                                     (ek != null &amp;&amp; key.equals(ek)))) {
-                                    oldVal = e.val;
-                                    if (!onlyIfAbsent)
-                                        e.val = value;
-                                    break;
-                                }
-                                Node&lt;K,V&gt; pred = e;
-                                if ((e = e.next) == null) {
-                                    pred.next = new Node&lt;K,V&gt;(hash, key,
-                                                              value, null);
-                                    break;
-                                }
-                            }
-                        }
-                        else if (f instanceof TreeBin) {
-                            Node&lt;K,V&gt; p;
-                            binCount = 2;
-                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,
-                                                           value)) != null) {
-                                oldVal = p.val;
-                                if (!onlyIfAbsent)
-                                    p.val = value;
-                            }
-                        }
-                    }
-                }
-                if (binCount != 0) {
-                    if (binCount &gt;= TREEIFY_THRESHOLD)
-                        treeifyBin(tab, i);
-                    if (oldVal != null)
-                        return oldVal;
-                    break;
-                }
-            }
-        }
-        addCount(1L, binCount);
-        return null;
-    }
-</code></pre>
-
-<p>以下三篇文章中有详细的说明可以参考下</p>
-
-<p><a href="http://ifeve.com/concurrenthashmap/">http://ifeve.com/concurrenthashmap/</a><br/>
-<a href="http://ifeve.com/java-concurrent-hashmap-1/">http://ifeve.com/java-concurrent-hashmap-1/</a><br/>
-<a href="http://ifeve.com/java-concurrent-hashmap-2/">http://ifeve.com/java-concurrent-hashmap-2/</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/27 17:17 下午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14749678612341.html#disqus_thread">comments</a>
                       
 
                        
@@ -486,6 +401,18 @@ return from finally
 	      
 		      
 			      <li class="post">
+			        <a href="14751214147355.html">16. Java面向对象的三个特征与含义</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14751149362443.html">15. Exception与Error包结构。常见的OOM和SOF</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
 			      </li>
 		     
@@ -499,18 +426,6 @@ return from finally
 		      
 			      <li class="post">
 			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14749657860314.html">10. HashMap和HashTable的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14749474920939.html">9. Map、Set、List、Queue、Stack的特点与用法</a>
 			      </li>
 		     
 		  

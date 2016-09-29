@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  1.	九种基本数据类型的大小，以及他们的封装类 - cd's blog
+  16. Java面向对象的三个特征与含义 - cd's blog
   
   </title>
   
@@ -103,19 +103,17 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
+          <h1>16. Java面向对象的三个特征与含义</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/9/26 16:4 下午</span>
+          <span class="date">2016/9/29 11:56 上午</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Java.html'>Java</a></span>
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14751214147355.html#disqus_thread">comments</a>
             
 
             
@@ -125,110 +123,59 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <table>
-<thead>
-<tr>
-<th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
-</tr>
-</thead>
+      <h3 id="toc_0">封装</h3>
 
-<tbody>
-<tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
-</tr>
-</tbody>
-</table>
+<p>封装：Java将现实中的对象抽象成一个类，并对它的属性和方法进行屏蔽保护，只允许特定的类可以访问，其它的进行隐藏，这个过程叫做封装。</p>
 
-<h2 id="toc_0">使用封装类的目的</h2>
+<h3 id="toc_1">继承</h3>
 
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
+<p>继承：当两个类的关系是is-a的时候，可以考虑使用继承。它是一种层次结构，类的重用方式。当一个新类从现有类中派生出来，这个过程叫做继承。新类继承了原有类的属性和方法。缺点是继承树过于庞大之后,会导致子类继承后负担重,很多不需要的成员变量也被继承下来,整个类结构过于臃肿。</p>
 
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
+<h3 id="toc_2">多态</h3>
 
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
+<p>多态：允许不同类的对象对同一消息做出不同的响应。灵活抽象行为共享的优势。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。</p>
 
-<h2 id="toc_2">void类型</h2>
+<p>多态存在的三个必要条件<br/>
+一、要有继承；<br/>
+二、要有重写；<br/>
+三、父类引用指向子类对象。</p>
 
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
+<pre><code>class A {
+    public void show(){
+        System.out.println(&quot;This is A.&quot;);
+    }
+}
 
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
+class B extends A{
+    public void show(){
+        System.out.println(&quot;This is B.&quot;);
+    }
+}
+
+class C extends A{
+    public void show(){
+        System.out.println(&quot;This is C.&quot;);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        A a = new A();
+        a.show();
+        A b = new B();
+        b.show();
+        A c = new C();
+        c.show(); 
+    }
+}
 </code></pre>
 
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
+<p>输出</p>
+
+<pre><code>This is A.
+This is B.
+This is C.
+</code></pre>
 
       </div>
 
@@ -236,16 +183,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14748943230133.html" 
-          title="Previous Post: 2.  Switch能否用String做参数？">&laquo; 2.  Switch能否用String做参数？</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14748751468195.html" 
-          title="Next Post: J2SE基础问题汇总">J2SE基础问题汇总 &raquo;</a>
+          <a  href="14751149362443.html" 
+          title="Next Post: 15. Exception与Error包结构。常见的OOM和SOF">15. Exception与Error包结构。常见的OOM和SOF &raquo;</a>
       
       </p>
         </div>

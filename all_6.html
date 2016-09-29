@@ -103,6 +103,465 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14645437888084.html">
+                
+                  <h1>iOS开发基础（一）</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>iOS的应用程序是运行在沙盒中的，也就是说各个应用无法访问除自己外的其它应用的地址。<br/>
+接下来，我将对iOS开发中常用的组件NSButton，NSImage，NSLabel做一个总结。<br/>
+Xcode提供了Interface Builder来方便快速地创建应用界面。<br/>
+<img src="media/14645437888084/14645440555938.jpg" alt=""/><br/>
+我们可以将想要的控件从这里拖到view上，完成添加。<br/>
+通过Outlet插座，按住Ctrl+控件拖拽到对应的ViewController的.h文件中可以将IB中的组件添加到代码里，方便代码的操作。包括添加属性(IBOutlet)和相应方法(IBAction)。<br/>
+<img src="media/14645437888084/14645442657409.jpg" alt=""/></p>
+
+<h2 id="toc_0">通过代码添加控件</h2>
+
+<p>把控件加入页面view[self.view addSubview:(UIView)]<br/>
+    1   这个方法会retain一次view，并且设置它的下一个响应者是receiver，即它的新的父视图。<br/>
+    2   每一个视图只能有唯一的一个父视图。如果当前操作视图已经有另外的一个父视图，则addsubview的操作会把它先从上一个父视图中移除（包括响应者链），再加到新的父视图上面。</p>
+
+<h2 id="toc_1">UILabel</h2>
+
+<pre><code>1   建立UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(x, y, width, height)]; 
+2   
+3   常用属性 //设置显示文字     
+4   label.text = @&quot;label1&quot;;
+5   //设置字体:粗体，正常的是 SystemFontOfSize     
+6   label.font = [UIFont boldSystemFontOfSize:20];     
+7   //设置文字颜色  
+8   label.textColor = [UIColor orangeColor];   
+9   //设置文字排版方式     
+10  label.textAlignment = UITextAlignmentRight;     
+11  label.textAlignment = UITextAlignmentCenter;     
+12  //设置字体大小适应label宽度     
+13  label.adjustsFontSizeToFitWidth = YES;
+14  //设置label的显示行数  
+15  label.numberOfLines = 2; 
+16  //背景色，也可以设置背景图   
+17  label.backgroundColor=[UIColor clearColor]; //可以去掉背景色   
+18  //设置高亮     
+19  label.highlighted = YES;     
+20  label.highlightedTextColor = [UIColor orangeColor];     
+21  //设置阴影     
+22  label.shadowColor = [UIColor redColor];     
+23  label.shadowOffset = CGSizeMake(1.0,1.0);     
+24  //设置是否能与用户进行交互     
+25  label.userInteractionEnabled = YES;     
+26  //设置label中的文字是否可变，默认值是YES     
+27  label.enabled = NO;     
+28  //设置文字过长时的显示格式     
+29  label.lineBreakMode = UILineBreakModeMiddleTruncation;//截去中间     
+30  //  typedef enum {     
+31  //      UILineBreakModeWordWrap = 0,     
+32  //      UILineBreakModeCharacterWrap,     
+33  //      UILineBreakModeClip,//截去多余部分     
+34  //      UILineBreakModeHeadTruncation,//截去头部     
+35  //      UILineBreakModeTailTruncation,//截去尾部     
+36  //      UILineBreakModeMiddleTruncation,//截去中间     
+37  //  } UILineBreakMode;     
+38  
+</code></pre>
+
+<h2 id="toc_2">UIButton</h2>
+
+<pre><code>1   建立 //UIButton的定义
+2   UIButton *button=[[UIButton buttonWithType:(UIButtonType);
+3   //typedef enum {
+4   //  UIButtonTypeCustom = 0, 自定义风格
+5   //  UIButtonTypeRoundedRect, 圆角矩形
+6   //  UIButtonTypeDetailDisclosure, 蓝色小箭头按钮，主要做详细说明用
+7   //  UIButtonTypeInfoLight, 亮色感叹号
+8   //  UIButtonTypeInfoDark, 暗色感叹号
+9   //  UIButtonTypeContactAdd, 十字加号按钮
+10  //} UIButtonType;
+11  
+12  常用方法//设置frame
+13  button.frame = CGRectMake(20, 20, 280, 40);
+14  [button setFrame:CGRectMake(20,20,50,50)];
+15  
+16  //button背景色
+17  button.backgroundColor = [UIColor clearColor];
+18  [button setBackgroundColor:[UIColor blueColor]];
+19  
+20  //是否可点击，默认为YES
+21  button.enable = NO;                          
+22  //设置button填充图片和背景图片
+23  [button setImage:(UIImage) forState:UIControlStateNormal];
+24  [button setBackgroundImage:(UIImage)forState:UIControlStateNormal];
+25  //设置button标题和标题颜色
+26  [button1 setTitle:@&quot;点击&quot; forState:UIControlStateNormal];
+27  [button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+28  
+29  //添加或删除事件处理
+30  [button addTarget:self action:@selector(butClick:)forControlEvents:UIControlEventTouchUpInside];
+31  [button removeTarget:nil action:nil forControlEvents:UIControlEventTouchUpInside];
+32  
+</code></pre>
+
+<h2 id="toc_3">UIImageView</h2>
+
+<pre><code>1   建立UIImageView *imageView = [[UIImageView alloc ] init];
+2   //UIImage加载有两种方式
+3   //方案1
+4   UIImage *image = [UIImage imageNamed:@&quot;image_photo&quot;];
+5   //方案2
+6   NSString *filePath=[[NSBundle mainBundle] pathForResource:@&quot;image_photo&quot; ofType:@&quot;jpg&quot;];
+7   UIImage *image=[UIImage imageWithContentsOfFile:filePath];
+8   
+9   imageView.image = image;
+10   
+</code></pre>
+
+<p>方案一：用imageNamed的方式加载时，系统会把图像Cache到内存。如果图像比较大，或者图像比较多，用这种方式会消耗很大的内存，而且释放图像的内存是一件相对来说比较麻烦的事情。例如：如果利用imageNamed的方式加载图像到一个动态数组NSMutableArray，然后将将数组赋予一个UIView的对象的animationImages进行逐帧动画，那么这将会很有可能造成内存泄露。并且释放图像所占据的内存也不会那么简单。但是利用imageNamed加载图像也有自己的优势。对于同一个图像系统只会把它Cache到内存一次，这对于图像的重复利用是非常有优势的。例如：你需要在一个TableView里重复加载同样一个图标，那么用imageNamed加载图像，系统会把那个图标Cache到内存，在Table里每次利用那个图像的时候，只会把图片指针指向同一块内存。这种情况使用imageNamed加载图像就会变得非常有效。方案二：就是每次单独加载图片，系统不缓存。使用完后记得释放。</p>
+
+<pre><code>1   常用方法 //设置圆角
+2   imageView.layer.masksToBounds = YES;
+3   imageView.layer.cornerRadius = 10;
+4   
+5   //设置边框颜色和大小
+6   imageView.layer.borderColor = [UIColor orangeColor].CGColor;
+7   imageView.layer.borderWidth = 2;
+8   
+9   //播放一系列图片
+10  UIImage *image1 = [UIImage imageNamed:@&quot;1&quot;];
+11  UIImage *image2 = [UIImage imageNamed:@&quot;2&quot;];
+12  UIImage *image3 = [UIImage imageNamed:@&quot;3&quot;];
+13  NSArray *imagesArray = @[image1,image2,image3];
+14  imageView.animationImages = imagesArray;
+15  // 设定所有的图片在多少秒内播放完毕
+16  imageView.animationDuration = [imagesArray count];
+17  // 重复播放多少遍，0表示无数遍
+18  imageView.animationRepeatCount = 0;
+19  // 开始播放
+20  [imageView startAnimating];
+21  
+22   //为图片添加单击事件：一定要先将userInteractionEnabled置为YES，这样才能响应单击事件
+23  imageView.userInteractionEnabled = YES;
+24  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapImageView:)];
+25  [imageView addGestureRecognizer:singleTap];
+26  
+27  //其他设置
+28  imageView.hidden = YES或者NO;    // 隐藏或者显示图片
+29  imageView.alpha =0.5;    // 设置透明度
+30  // 设置高亮时显示的图片
+31  imageView.highlightedImage = (UIImage *)hightlightedImage;
+32  imageView.image = (UIImage *)image; // 设置正常显示的图片
+</code></pre>
+
+<h2 id="toc_4">UITextField</h2>
+
+<pre><code>1   建立UITextField* textField = [[UITextField alloc] initWithFrame:CGRectMake(x, y, width, height)];
+2   
+3   常用方法textField setBorderStyle:UITextBorderStyleRoundedRect]; //外框类型
+4   textField.placeholder = @&quot;password&quot;; //默认显示的字 
+5   textField.secureTextEntry = YES; //密码 
+6   
+7   textField.autocorrectionType = UITextAutocorrectionType; //设置是否自动纠错
+8   typedef enum {
+9       UITextAutocorrectionTypeDefault, //默认
+10      UITextAutocorrectionTypeNo, 　//不自动纠错
+11      UITextAutocorrectionTypeYes,　//自动纠错
+12  }UITextAutocorrectionType;
+13  
+14  textField.clearButtonMode = UITextFieldViewMode; //编辑时会出现个修改X
+15  typedef enum {
+16      UITextFieldViewModeNever,　//重不出现
+17      UITextFieldViewModeWhileEditing, //编辑时出现
+18      UITextFieldViewModeUnlessEditing,　//除了编辑外都出现
+19      UITextFieldViewModeAlways 　//一直出现
+20  }UITextFieldViewMode; 
+21  
+22  //可以在UITextField使用下面方法，按return键返回
+23  -(IBAction) textFieldDone:(id) sender
+24  {
+25   [textFieldName resignFirstResponder]; 
+26  }
+27  //链接TextField控件的&quot;Did end on exit&quot;
+28  
+29  //再次编辑就清空
+30  textField.clearsOnBeginEditing = YES; 
+31  
+32  //设置键盘样式
+33  textField.keyboardType = UIKeyboardType;
+34  typedef enum {
+35          UIKeyboardTypeDefault,     　//默认键盘，支持所有字符         
+36          UIKeyboardTypeASCIICapable,　//支持ASCII的默认键盘
+37          UIKeyboardTypeNumbersAndPunctuation,　//标准电话键盘，支持＋＊＃字符
+38          UIKeyboardTypeURL,            //URL键盘，支持.com按钮 只支持URL字符
+39          UIKeyboardTypeNumberPad,       //数字键盘
+40          UIKeyboardTypePhonePad,　 　//电话键盘
+41          UIKeyboardTypeNamePhonePad, 　//电话键盘，也支持输入人名
+42          UIKeyboardTypeEmailAddress, 　//用于输入电子邮件地址的键盘     
+43          UIKeyboardTypeDecimalPad,   　//数字键盘有数字和小数点
+44          UIKeyboardTypeTwitter,      　//优化的键盘，方便输入@、#字符
+45          UIKeyboardTypeAlphabet = UIKeyboardTypeASCIICapable, 
+46  }UIKeyboardType;
+47  
+48  //return键样式
+49  text.returnKeyType =UIReturnKeyType;
+50  typedef enum {
+51      UIReturnKeyDefault, 默认 灰色按钮，标有Return
+52      UIReturnKeyGo,    　标有Go的蓝色按钮
+53      UIReturnKeyGoogle,标有Google的蓝色按钮，用语搜索
+54      UIReturnKeyJoin,标有Join的蓝色按钮
+55      UIReturnKeyNext,标有Next的蓝色按钮
+56      UIReturnKeyRoute,标有Route的蓝色按钮
+57      UIReturnKeySearch,标有Search的蓝色按钮
+58      UIReturnKeySend,标有Send的蓝色按钮
+59      UIReturnKeyYahoo,标有Yahoo的蓝色按钮
+60      UIReturnKeyYahoo,标有Yahoo的蓝色按钮
+61      UIReturnKeyEmergencyCall, 紧急呼叫按钮
+62  } UIReturnKeyType;
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/5/30 1:43 上午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14645437888084.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14637124055346.html">
+                
+                  <h1>Objective-C复习笔记(二)</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">ARC机制</h2>
+
+<p>以往的OBJC是通过程序员手动地管理对象的释放。ARC(Automatic Reference Counting)自动引用计数，现在是OBJC的默认内存管理机制，针对堆上的对象，由编译器自动生成操作引用计数的指令(retain,release)来管理对象的释放。</p>
+
+<h3 id="toc_1">管理的对象</h3>
+
+<table>
+<thead>
+<tr>
+<th>受ARC管理</th>
+<th>不受ARC管理</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>OC对象指针</td>
+<td>值类型(基本类型，struct)</td>
+</tr>
+<tr>
+<td>Block指针</td>
+<td>其他方式分配的资源(c语言的malloc)</td>
+</tr>
+<tr>
+<td>使用_attribute_((NSObject))定义的typedef</td>
+<td>非内存资源</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_2">管理的方式</h3>
+
+<pre><code>//新创建一个引用类型的对象，这个对象的引用计数初始为1；
+NSString *name = [[NSString alloc] initWithString:@&quot;Mono&quot;];
+//将对象引用赋值给其它变量或者常量，引用计数+1；
+NSString *otherName = name;
+//或者将将该对象引用赋值给其它对象的属性或实例变量，引用计数+1；
+person.name = name;
+//将对象传入函数参数，或者返回值，引用计数+1
+print(name);//函数结束后，参数或者局部变量离开函数，该对象的引用计数-1；
+//将对象加入集合之中，引用计数+1；
+[array addObject];
+
+//将变量或者常量,或者属性赋值为nil或者其他值，引用计数-1；
+otherName = nil; or otherName = @&quot;Other Name&quot;;
+person.name = nil;
+//实例变量和属性所在的对象呗释放，该对象引用计数-1；
+[person release];
+//将对象从集合中移除的时候，该对象的引用计数-1；
+[array removeObject:name];
+
+//当该对象的引用计数变为0的时候，内存自动被释放。
+</code></pre>
+
+<h2 id="toc_3">自动释放池(Autorelease Pool)</h2>
+
+<p>如果对象频繁的进行释放和分配，那么会造成琐碎的内存管理负担。autorelease可以讲release的调用延迟到自动释放池被释放时。</p>
+
+<p>当自动释放池结束时，所有接受autorelease消息的对象都将被立即释放(对象被发送一条release消息);</p>
+
+<p>AppKit和UIKit框架在处理每一次事件循环迭代时，都会讲其放入一个Autorelease Pool中，大多数情况无须程序员干预。</p>
+
+<h3 id="toc_4">需要手动管理Autorelease Pool的情况</h3>
+
+<p>1.当编写的程序不是基于UI框架，而是命令行程序时。<br/>
+2.如果在循环中创建大量临时对象，需要更早地释放，避免临时对象聚集导致内存峰值过大。<br/>
+3.在主线程之外创建新的线程，在新线程开始执行处，需要创建自己的Autorelease Pool。<br/>
+4.嵌套使用Autorelease Pool的时候。</p>
+
+<h2 id="toc_5">协议 Protocol</h2>
+
+<p>类型的合同约定，只描述外部接口，不提供具体的实现。<br/>
+协议中无法包含实例变量，但可以包含以下的成员：<br/>
+属性 （本质上是访问器方法，编译器不会合成实例变量）<br/>
+实例方法<br/>
+类方法<br/>
+初始化器，析构器(不常用)</p>
+
+<h3 id="toc_6">使用协议</h3>
+
+<p>1.一个类遵守协议，需实现该协议约定的所有@required的成员，即必须要实现的成员。<br/>
+协议中的属性必须在实现类的.h接口文件中声明(编译器合成实例变量)<br/>
+2.协议本质上是一种类型，可以作为声明类型，但是不能创建实例。<br/>
+3.可以使用conformsToProtocl:检查是否实现了协议。<br/>
+4.编译警告：1）未实现必选方法。2）协议类型变量被赋值为非协议类型变量。运行会出错。</p>
+
+<h4 id="toc_7">协议的继承</h4>
+
+<p>一个协议可以继承一个或者多个协议。<br/>
+实现子协议的类型，同时也要实现父协议中必须是实现的成员。</p>
+
+<h4 id="toc_8">协议的组合</h4>
+
+<p>一个类可以同时实现多个协议，protocal<A,B,C....>来组合多个协议<br/>
+实现组合协议的类型，必须实现组合协议中的每一个协议</p>
+
+<h4 id="toc_9">协议中的可选</h4>
+
+<p>协议中使用关键字@optional定义的成员是可以选择不必实现的。</p>
+
+<h3 id="toc_10">常用的协议</h3>
+
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>NSObject</td>
+<td>包含对象的常用操作，相等、字符串表示、哈希。</td>
+</tr>
+<tr>
+<td>NSCopying</td>
+<td>支持复制的类型必须遵守该协议。</td>
+</tr>
+<tr>
+<td>NSMutableCopying</td>
+<td>在NSCopying协议的基础上，支持复制数据的可变性。</td>
+</tr>
+<tr>
+<td>NSFastEnumeration</td>
+<td>实现快速枚举for-in的类型采用</td>
+</tr>
+<tr>
+<td>NSCoding</td>
+<td>支持将对象图进行编码或解码以支持对象的序列化</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_11">类别 Categroy</h2>
+
+<p>在没有源代码的情况下，基于某些场合的需要，为一个类增加功能。<br/>
+可增加 | 不可增加<br/>
+--------- | -------------<br/>
+类方法 | 属性<br/>
+实例方法| 实例变量<br/>
+重写父类方法 | 已存在的同名方法</p>
+
+<h3 id="toc_12">命名规范</h3>
+
+<p>文件名：类名+扩展方法，如：Person+Sport.h/m</p>
+
+<h3 id="toc_13">类别的使用</h3>
+
+<h4 id="toc_14">场景</h4>
+
+<p>1.适合在没有源代码的情况下，想已经封装的类中添加方法。<br/>
+2.为一个类在某些特殊场景下增加功能。<br/>
+3.对于复杂的大型文件分割实现。<br/>
+4.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
+
+<h4 id="toc_15">添加类别的对象</h4>
+
+<p>1.自己创建的类。<br/>
+2.系统的类。<br/>
+3.第三方库。</p>
+
+<h4 id="toc_16">类别限制</h4>
+
+<p>1.类别不能在扩展类中添加任何成员变量。<br/>
+2.重写现有方法时，无法调用原始现有对象方法。<br/>
+3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
+
+<h2 id="toc_17">扩展 Extension</h2>
+
+<p>扩展支持在编译时，在有类的源代码的前提下，向类添加功能。可看做是匿名的类别。</p>
+
+<p>接口在.m文件中的@implementation前声明，实现代码在@implementation 内实现。</p>
+
+<p>扩展支持添加以下成员：<br/>
+1.属性。<br/>
+2.实例成员。<br/>
+3.类方法。<br/>
+4.实例方法。<br/>
+5.改写属性的读写属性。</p>
+
+<h3 id="toc_18">扩展的使用</h3>
+
+<p>扩展实现的成员只能在。m文件内部访问，类外无法直接往访问。</p>
+
+<p>扩展的主要用途在于信息隐藏，隐藏一些外部无须访问、而内部实现又需要使用的属性、方法：<br/>
+1.类的主要接口用于“对类以外公开”<br/>
+2.类的扩展接口用于“对类内可见”</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/5/20 10:46 上午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14637124055346.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14632363806380.html">
                 
                   <h1>Objective-C复习笔记</h1>
@@ -377,202 +836,6 @@ super无多态性，仅指向当前父类。</p>
                 </div>
               </div><!-- article -->
         
-			<div class="article">
-                <a class="clearlink" href="14609059782704.html">
-                
-                  <h1>Objective-C中的协议</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">一.问题的产生</h2>
-
-<p><img src="media/14609059782704/14609061125330.jpg" alt=""/><br/>
-NetworkConnector类提供所有和网络服务器的交互，包括连接、断开连接和手法数据。BusinessLogic类会接收NetworkConnector收到的数据，并确定它的走向。<br/>
-网络连接是一个在其他应用或同一个应用的其他地方一定会复用的东西。所以必须将它与BusinessLogic类设计成没有紧密耦合。<br/>
-<img src="media/14609059782704/14609063607549.jpg" alt=""/><br/>
-C++等语言使用多继承来解决这类问题，强制BusinessLogic类继承自NetworkConnector可以依赖的类。但是多继承会产生新的问题，即砖石问题。如果D类同时继承自B类和C类，同时B、C也继承自共同的超类A，这种情况下，如果D没有重写A中的方法，当D调用A类的方法的时候，无法确定会调用哪一个父类的方法B类的还是C类的？<br/>
-Objective-C只能使用单继承。 </p>
-
-<h2 id="toc_1">二.Objective-C的解决方案</h2>
-
-<p>Objective-C使用协议来声明一个接口来解决这个问题。<br/>
-接口是在不提供默认实现时由一个类来具体实现，它只提供声明这些方法的接口机制，让可复用组件不依赖于特定的类来实现，而依赖于以协议形式存在的接口。</p>
-
-<h3 id="toc_2">协议的声明</h3>
-
-<pre><code>@protocol NetworkClient
-@required
--(void) networkConnector:(NetworkConnector *) in gotData:(NSData *) data;
-@optional
--(void) networkConnectorDisconnected:(NetworkConnector *) in;
-@end
-
-</code></pre>
-
-<p>@required关键字表明其后的方法是该协议必须实现的方法。<br/>
-@optional关键字表明其后的方法是实现类可以选择性实现的方法。<br/>
-同时，协议不能有成员变量。</p>
-
-<h3 id="toc_3">声明一个必须实现协议的对象</h3>
-
-<pre><code>id&lt;NerworkClient&gt; *delegate; //&lt;&gt;中是该对象必须实现的协议
-</code></pre>
-
-<p>通常使用id数据类型来声明实现给定协议的实例变量。编译器会通过&lt;&gt;中的协议类型来确认协议的必须按方法是否在该对象上实现了。</p>
-
-<h3 id="toc_4">非正式协议</h3>
-
-<p>它是在Cocoa和Objective-C中的旧协议，通常是NSObject类的类别。</p>
-
-<h3 id="toc_5">正式协议</h3>
-
-<p>正式协议可以提供更好的类型安全。用@protocol关键字来声明。有@required和@optional关键字来保证必须实现的和可选的方法。</p>
-
-<h3 id="toc_6">避免协议循环依赖</h3>
-
-<p>协议在各自的声明中可以引用另一个协议。</p>
-
-<pre><code>@protocol Foo
--(void)someMethodRequiringBar:(id&lt;Bar&gt;)inBar;
-@end
-</code></pre>
-
-<p>如果Bar也需要Foo协议的话，就会导致协议之间的循环依赖，发生编译器错误。</p>
-
-<pre><code>@protocol Bar
--(void)someMethodRequiringFoo:(id&lt;Foo&gt;)inFoo;
-@end
-</code></pre>
-
-<p>解决方法，在Bar.h中加入@protocol Foo，告诉编译器Foo是一个协议，不用导入Foo.h。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/4/17 23:12 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14609059782704.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14598725533534.html">
-                
-                  <h1>Objective-C中的类别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<blockquote>
-<p>刚刚翻看了OC的书中关于类别的一章，现将OC中类别的使用和限制总结如下。</p>
-</blockquote>
-
-<h2 id="toc_0">定义及使用</h2>
-
-<p>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
-2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
-3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
-
-<h3 id="toc_1">声明</h3>
-
-<h4 id="toc_2">头文件</h4>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
-
-@interface NSMutableString (GUID) //括号里为类别的名字
-
--(void) appendGUID;
-+(id) stringWithGUID;
-@end
-</code></pre>
-
-<h4 id="toc_3">实现</h4>
-
-<pre><code>#import &quot;NSMutableString+GUID.h&quot;
-
-@implementation NSMutableString (GUID)
-
--(void) appendGUID{
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    NSString *string = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
-    [self appendString:string];
-   // CFRelease(uuid);
-}
-
-+(id) stringWithGUID{
-    NSMutableString *string = [self string];
-    [string appendGUID];
-    return string;
-}
-
-@end
-</code></pre>
-
-<p>扩展成员方法：可访问类的所有成员变量、可以通过self调用类的其它方法、可以使用super关键字调用父类的方法。self关键字指实例对象。<br/>
-扩展类方法：无法访问成员变量。self关键字指类对象。</p>
-
-<h4 id="toc_4">使用</h4>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
-#import &quot;NSMutableString+GUID.h&quot;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        NSMutableString *str = [NSMutableString stringWithGUID];
-        NSLog(@&quot;GUID=%@&quot;, str);
-    }
-    return 0;
-}
-</code></pre>
-
-<h2 id="toc_5">限制</h2>
-
-<p>1.类别不能在扩展类中添加任何成员变量。<br/>
-2.重写现有方法时，无法调用原始现有对象方法。<br/>
-3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/4/6 0:9 上午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14598725533534.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
               
 
 
@@ -650,6 +913,18 @@ int main(int argc, const char * argv[]) {
 	      
 		      
 			      <li class="post">
+			        <a href="14751214147355.html">16. Java面向对象的三个特征与含义</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14751149362443.html">15. Exception与Error包结构。常见的OOM和SOF</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
 			      </li>
 		     
@@ -663,18 +938,6 @@ int main(int argc, const char * argv[]) {
 		      
 			      <li class="post">
 			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14749657860314.html">10. HashMap和HashTable的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14749474920939.html">9. Map、Set、List、Queue、Stack的特点与用法</a>
 			      </li>
 		     
 		  

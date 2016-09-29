@@ -103,6 +103,89 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
+                <a class="clearlink" href="14748977980780.html">
+                
+                  <h1>6. Hashcode的作用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来散列存储结构中确定对象的存储地址。</p>
+
+<p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
+
+<p>3.如果equals()被重写，那么该对象的hashCode()也要被重写，以保证2中的条件成立。</p>
+
+<p>4.由邻接矩阵的结构可知，hashCode值相同的对象，其内容不一定相同，只能说明他们存放在同一条链表中。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/26 21:49 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14748977980780.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14748971773098.html">
+                
+                  <h1>5. Java的四种引用，强弱软虚，用到的场景</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Java对对象的引用分为四种：<br/>
+1.强引用。强引用的对象不会被垃圾回收器回收。内存不足时，宁可抛出OOM错误也不会回收强引用。</p>
+
+<p>2.软引用。可有可无的引用，当JVM内存足够的时候不会被回收；当JVM内存不足的时候，发现软引用的存在，会回收软引用。</p>
+
+<p>3.若引用。可有可无的引用，一旦被垃圾回收器发现，马上就被其回收。</p>
+
+<p>4.幽灵引用。它一般用来标记被回收的对象，当对象被回收后，会受到一条消息。虚引用与软引用和弱引用的一个区别在于：虚引用必须和引用队列 （ReferenceQueue）联合使用。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/26 21:39 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14748971773098.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
                 <a class="clearlink" href="14748970236814.html">
                 
                   <h1>4.Object有哪些公用方法？</h1>
@@ -170,135 +253,6 @@
                   <span class="comments">
                       
                         <a href="http://ranchu90.github.io/14748970236814.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14748960344939.html">
-                
-                  <h1>3.equals()和==的区别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
-
-<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
-
-<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/26 21:20 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14748943230133.html">
-                
-                  <h1>2.  Switch能否用String做参数？</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
-2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
-原理：hashCode()+equals()<br/>
-编译器在编译期间给代码做了转换。<br/>
-原始：</p>
-
-<pre><code>public class StringInSwitchCase { 
-      public static void main(String[] args) { 
-            String mode = args[0]; 
-            switch (mode) { 
-                  case &quot;ACTIVE&quot;: 
-                        System.out.println(&quot;Application is running on Active mode&quot;); 
-                        break; 
-                  case &quot;PASSIVE&quot;:
-                        System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         break; 
-                  case &quot;SAFE&quot;: 
-                          System.out.println(&quot;Application is running on Safe mode&quot;); 
-          } 
-      } 
-}
-</code></pre>
-
-<p>编译器优化后：</p>
-
-<pre><code>import java.io.PrintStream; 
- 
-public class StringInSwitchCase{ 
-      public StringInSwitchCase() { } 
- 
-      public static void main(string args[]) { 
-             String mode = args[0]; 
-            String s; switch ((s = mode).hashCode()) { 
-                  default: break; 
-                  case -74056953: 
-                        if (s.equals(&quot;PASSIVE&quot;)) { 
-                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         } 
-                        break; 
-                  case 2537357: 
-                        if (s.equals(&quot;SAFE&quot;)) { 
-                              System.out.println(&quot;Application is running on Safe mode&quot;); 
-                         } 
-                        break; 
-                  case 1925346054: 
-                        if (s.equals(&quot;ACTIVE&quot;)) { 
-                              System.out.println(&quot;Application is running on Active mode&quot;); 
-                         } 
-                        break; 
-               } 
-          } 
-}
-</code></pre>
-
-<p>参考资料：<br/>
-<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/26 20:52 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
                       
 
                        
@@ -384,6 +338,18 @@ public class StringInSwitchCase{
 	      
 		      
 			      <li class="post">
+			        <a href="14751214147355.html">16. Java面向对象的三个特征与含义</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14751149362443.html">15. Exception与Error包结构。常见的OOM和SOF</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
 			      </li>
 		     
@@ -397,18 +363,6 @@ public class StringInSwitchCase{
 		      
 			      <li class="post">
 			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14749657860314.html">10. HashMap和HashTable的区别</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14749474920939.html">9. Map、Set、List、Queue、Stack的特点与用法</a>
 			      </li>
 		     
 		  

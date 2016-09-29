@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  1.	九种基本数据类型的大小，以及他们的封装类 - cd's blog
+  15. Exception与Error包结构。常见的OOM和SOF - cd's blog
   
   </title>
   
@@ -103,19 +103,17 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
+          <h1>15. Exception与Error包结构。常见的OOM和SOF</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/9/26 16:4 下午</span>
+          <span class="date">2016/9/29 10:8 上午</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Java.html'>Java</a></span>
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14751149362443.html#disqus_thread">comments</a>
             
 
             
@@ -125,110 +123,27 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <table>
-<thead>
-<tr>
-<th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
-</tr>
-</thead>
+      <p><img src="media/14751149362443/14751149641985.jpg" alt=""/></p>
 
-<tbody>
-<tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
-</tr>
-</tbody>
-</table>
+<p>Java提供了两种错误的异常，分别为Exception和Error，它们继承自共同的父类Throwable。</p>
 
-<h2 id="toc_0">使用封装类的目的</h2>
+<h2 id="toc_0">Error</h2>
 
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
+<p>Error表示程序在运行期间出现了非常严重的错误，且这个错误是不可恢复的。将导致程序终止执行。如OutOfMemoryError、ThreadDeath。错误发生时，JVM一般会终止程序的运行。</p>
 
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
+<h2 id="toc_1">Exception</h2>
 
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
+<p>Exception表示可恢复的异常，编译可以捕获。</p>
 
-<h2 id="toc_2">void类型</h2>
+<p>1.检查异常（checked exception）<br/>
+编译阶段发生，编译器强制在程序里捕获这类异常，放入try代码块中，把对异常的处理代码放到catch块中。常见的有IOException和SQLException。一般在以下情况中使用：<br/>
+1）异常的发生并不导致程序出错，进行处理后可以继续执行后续的操作。<br/>
+2）程序依赖于不可靠的外部条件，如IO。</p>
 
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
+<p>2.运行时异常（runtime exception）<br/>
+编译器不强制进行捕获。若不捕获的话，由JVM来处理。常见的运行时异常包括NullPointerException、ClassCastException、ArrayIndexOutOfBoundsException、StoreException、BufferOverflowException、ArithmeticException。</p>
 
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
-</code></pre>
-
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
+<p>出现运行时异常之后，系统会将异常一直往上次抛出，知道遇到处理代码位置。若没有处理代码，则抛到最上层。多线程run()方法抛出，线程终止，或单线程main()方法抛出，整个程序退出。</p>
 
       </div>
 
@@ -236,16 +151,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14748943230133.html" 
-          title="Previous Post: 2.  Switch能否用String做参数？">&laquo; 2.  Switch能否用String做参数？</a>
+          <a href="14751214147355.html" 
+          title="Previous Post: 16. Java面向对象的三个特征与含义">&laquo; 16. Java面向对象的三个特征与含义</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14748751468195.html" 
-          title="Next Post: J2SE基础问题汇总">J2SE基础问题汇总 &raquo;</a>
+          <a  href="14750561415107.html" 
+          title="Next Post: 14. try catch finally，try里有return，finally还执行么">14. try catch finally，try里有return，finally还执行么 &raquo;</a>
       
       </p>
         </div>
