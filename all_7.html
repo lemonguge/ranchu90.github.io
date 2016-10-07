@@ -103,74 +103,69 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14609059782704.html">
+                <a class="clearlink" href="14748943230133.html">
                 
-                  <h1>Objective-C中的协议</h1>
+                  <h1>2.  Switch能否用String做参数？</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">一.问题的产生</h2>
+                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
+2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
+原理：hashCode()+equals()<br/>
+编译器在编译期间给代码做了转换。<br/>
+原始：</p>
 
-<p><img src="media/14609059782704/14609061125330.jpg" alt=""/><br/>
-NetworkConnector类提供所有和网络服务器的交互，包括连接、断开连接和手法数据。BusinessLogic类会接收NetworkConnector收到的数据，并确定它的走向。<br/>
-网络连接是一个在其他应用或同一个应用的其他地方一定会复用的东西。所以必须将它与BusinessLogic类设计成没有紧密耦合。<br/>
-<img src="media/14609059782704/14609063607549.jpg" alt=""/><br/>
-C++等语言使用多继承来解决这类问题，强制BusinessLogic类继承自NetworkConnector可以依赖的类。但是多继承会产生新的问题，即砖石问题。如果D类同时继承自B类和C类，同时B、C也继承自共同的超类A，这种情况下，如果D没有重写A中的方法，当D调用A类的方法的时候，无法确定会调用哪一个父类的方法B类的还是C类的？<br/>
-Objective-C只能使用单继承。 </p>
-
-<h2 id="toc_1">二.Objective-C的解决方案</h2>
-
-<p>Objective-C使用协议来声明一个接口来解决这个问题。<br/>
-接口是在不提供默认实现时由一个类来具体实现，它只提供声明这些方法的接口机制，让可复用组件不依赖于特定的类来实现，而依赖于以协议形式存在的接口。</p>
-
-<h3 id="toc_2">协议的声明</h3>
-
-<pre><code>@protocol NetworkClient
-@required
--(void) networkConnector:(NetworkConnector *) in gotData:(NSData *) data;
-@optional
--(void) networkConnectorDisconnected:(NetworkConnector *) in;
-@end
-
+<pre><code>public class StringInSwitchCase { 
+      public static void main(String[] args) { 
+            String mode = args[0]; 
+            switch (mode) { 
+                  case &quot;ACTIVE&quot;: 
+                        System.out.println(&quot;Application is running on Active mode&quot;); 
+                        break; 
+                  case &quot;PASSIVE&quot;:
+                        System.out.println(&quot;Application is running on Passive mode&quot;); 
+                         break; 
+                  case &quot;SAFE&quot;: 
+                          System.out.println(&quot;Application is running on Safe mode&quot;); 
+          } 
+      } 
+}
 </code></pre>
 
-<p>@required关键字表明其后的方法是该协议必须实现的方法。<br/>
-@optional关键字表明其后的方法是实现类可以选择性实现的方法。<br/>
-同时，协议不能有成员变量。</p>
+<p>编译器优化后：</p>
 
-<h3 id="toc_3">声明一个必须实现协议的对象</h3>
-
-<pre><code>id&lt;NerworkClient&gt; *delegate; //&lt;&gt;中是该对象必须实现的协议
+<pre><code>import java.io.PrintStream; 
+ 
+public class StringInSwitchCase{ 
+      public StringInSwitchCase() { } 
+ 
+      public static void main(string args[]) { 
+             String mode = args[0]; 
+            String s; switch ((s = mode).hashCode()) { 
+                  default: break; 
+                  case -74056953: 
+                        if (s.equals(&quot;PASSIVE&quot;)) { 
+                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
+                         } 
+                        break; 
+                  case 2537357: 
+                        if (s.equals(&quot;SAFE&quot;)) { 
+                              System.out.println(&quot;Application is running on Safe mode&quot;); 
+                         } 
+                        break; 
+                  case 1925346054: 
+                        if (s.equals(&quot;ACTIVE&quot;)) { 
+                              System.out.println(&quot;Application is running on Active mode&quot;); 
+                         } 
+                        break; 
+               } 
+          } 
+}
 </code></pre>
 
-<p>通常使用id数据类型来声明实现给定协议的实例变量。编译器会通过&lt;&gt;中的协议类型来确认协议的必须按方法是否在该对象上实现了。</p>
-
-<h3 id="toc_4">非正式协议</h3>
-
-<p>它是在Cocoa和Objective-C中的旧协议，通常是NSObject类的类别。</p>
-
-<h3 id="toc_5">正式协议</h3>
-
-<p>正式协议可以提供更好的类型安全。用@protocol关键字来声明。有@required和@optional关键字来保证必须实现的和可选的方法。</p>
-
-<h3 id="toc_6">避免协议循环依赖</h3>
-
-<p>协议在各自的声明中可以引用另一个协议。</p>
-
-<pre><code>@protocol Foo
--(void)someMethodRequiringBar:(id&lt;Bar&gt;)inBar;
-@end
-</code></pre>
-
-<p>如果Bar也需要Foo协议的话，就会导致协议之间的循环依赖，发生编译器错误。</p>
-
-<pre><code>@protocol Bar
--(void)someMethodRequiringFoo:(id&lt;Foo&gt;)inFoo;
-@end
-</code></pre>
-
-<p>解决方法，在Bar.h中加入@protocol Foo，告诉编译器Foo是一个协议，不用导入Foo.h。</p>
+<p>参考资料：<br/>
+<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
 
                         
                       </div>
@@ -179,16 +174,16 @@ Objective-C只能使用单继承。 </p>
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/4/17 23:12 下午</span>
+                    <span class="date">2016/9/26 20:52 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14609059782704.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
                       
 
                        
@@ -198,80 +193,117 @@ Objective-C只能使用单继承。 </p>
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14598725533534.html">
+                <a class="clearlink" href="14748770602290.html">
                 
-                  <h1>Objective-C中的类别</h1>
+                  <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<blockquote>
-<p>刚刚翻看了OC的书中关于类别的一章，现将OC中类别的使用和限制总结如下。</p>
-</blockquote>
+                        	<table>
+<thead>
+<tr>
+<th></th>
+<th>大小</th>
+<th>最小值</th>
+<th>最大值</th>
+<th>包装类型</th>
+</tr>
+</thead>
 
-<h2 id="toc_0">定义及使用</h2>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>32-bit</td>
+<td>-</td>
+<td>-</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>char</td>
+<td>16-bit</td>
+<td>Unicode 0</td>
+<td>Unicode 2<sup>16</sup> -1</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>8-bit</td>
+<td>-2<sup>7</sup></td>
+<td>2<sup>7</sup> -1</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>short</td>
+<td>16-bit</td>
+<td>-2<sup>15</sup></td>
+<td>2<sup>15</sup> -1</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>32-bit</td>
+<td>-2<sup>31</sup></td>
+<td>2<sup>31</sup> -1</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>long</td>
+<td>64-bit</td>
+<td>-2<sup>63</sup></td>
+<td>2<sup>63</sup> -1</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>32-bit</td>
+<td>IEEE754</td>
+<td>IEEE754</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>64-bit</td>
+<td>IEEE754</td>
+<td>IEEE754</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>void</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>Void</td>
+</tr>
+</tbody>
+</table>
 
-<p>1.通过在类上声明和实现方法来扩展现有类的功能，且不需要访问要扩展类的原有代码。<br/>
-2.类别不是子类，添加的方法可以直接在操作的类中使用，因此可以避免通过继承的方式添加某些方法的实现。<br/>
-3.可以通过类别重写现有方法，但一般不推荐，这样会导致无法调用被扩展的类的初始方法，只能访问重写过的方法。</p>
+<h2 id="toc_0">使用封装类的目的</h2>
 
-<h3 id="toc_1">声明</h3>
+<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
 
-<h4 id="toc_2">头文件</h4>
+<h2 id="toc_1">封装类与基本数据类型的区别</h2>
 
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
+<ol>
+<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
+<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
+</ol>
 
-@interface NSMutableString (GUID) //括号里为类别的名字
+<h2 id="toc_2">void类型</h2>
 
--(void) appendGUID;
-+(id) stringWithGUID;
-@end
+<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
+
+<pre><code>/**
+ * The {@code Void} class is an uninstantiable placeholder class to hold a
+ * reference to the {@code Class} object representing the Java keyword
+ * void.
+ *
+ * @author  unascribed
+ * @since   JDK1.1
+ */
 </code></pre>
 
-<h4 id="toc_3">实现</h4>
-
-<pre><code>#import &quot;NSMutableString+GUID.h&quot;
-
-@implementation NSMutableString (GUID)
-
--(void) appendGUID{
-    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
-    NSString *string = (NSString *)CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
-    [self appendString:string];
-   // CFRelease(uuid);
-}
-
-+(id) stringWithGUID{
-    NSMutableString *string = [self string];
-    [string appendGUID];
-    return string;
-}
-
-@end
-</code></pre>
-
-<p>扩展成员方法：可访问类的所有成员变量、可以通过self调用类的其它方法、可以使用super关键字调用父类的方法。self关键字指实例对象。<br/>
-扩展类方法：无法访问成员变量。self关键字指类对象。</p>
-
-<h4 id="toc_4">使用</h4>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;
-#import &quot;NSMutableString+GUID.h&quot;
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        NSMutableString *str = [NSMutableString stringWithGUID];
-        NSLog(@&quot;GUID=%@&quot;, str);
-    }
-    return 0;
-}
-</code></pre>
-
-<h2 id="toc_5">限制</h2>
-
-<p>1.类别不能在扩展类中添加任何成员变量。<br/>
-2.重写现有方法时，无法调用原始现有对象方法。<br/>
-3.若两个类别都定义了一个相同类的相同方法，运行时实际无法确定调用哪一个。</p>
+<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
 
                         
                       </div>
@@ -280,16 +312,16 @@ int main(int argc, const char * argv[]) {
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/4/6 0:9 上午</span>
+                    <span class="date">2016/9/26 16:4 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='Objective%20C.html'>Objective C</a></span>
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14598725533534.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
                       
 
                        
@@ -299,64 +331,51 @@ int main(int argc, const char * argv[]) {
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14596175387256.html">
+                <a class="clearlink" href="14748751468195.html">
                 
-                  <h1>二维数组作为参数在C语言函数中如何传递</h1>
+                  <h1>J2SE基础问题汇总</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
-
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
+                        	<pre><code>1.  九种基本数据类型的大小，以及他们的封装类
+2.  Switch能否用string做参数？
+3. equals()与==的区别
+4. Object有哪些公用方法？
+5. Java的四种引用，强弱软虚，用到的场景。
+6. Hashcode的作用
+7. ArrayList、LinkedList、Vector的区别
+8. String、StringBuffer与StringBuilder的区别
+9. Map、Set、List、Queue、Stack的特点与用法
+10. HashMap和HashTable的区别
+11. HashMap和ConcurrentHashMap的区别
+12. TreeMap、HashMap、LinkedHashMap的区别。
+13. Collection包结构，与Collections的区别
+14. try catch finally，try里有return，finally还执行么
+15. Exception与Error包结构。常见的OOM和SOF。
+16. Java面向对象的三个特征与含义
+17. Override和Overload的含义去区别
+18. Interface与abstract类的区别
+19. Static inner class 与non static inner class的区别
+20. Java多态的实现原理
+21. 实现多线程的两种方法：Thread与Runnable
+22. 线程同步的方法：synchronized、lock、reentrantLock等
+23. 锁的等级：方法锁、对象锁、类锁。
+24. 写出生产者消费者模式。
+25. ThreadLocal的设计理念与作用。
+26. ThreadPool用法与优势。
+27. Concurrent包里的其他东西：ArrayBlockingQueue、CountDownLatch等等
+28. wait()和sleep()的区别
+29. foreach与正常for循环效率对比
+30. Java IO与NIO
+31. 反射的作用与原理
+32. 泛型常用特点：List&lt;String&gt;能否转为List&lt;Object&gt;
+33. 解析XML的几种方式的原理与特点：DOM、SAX、PULL
+34. Java与C++对比
+35. Java 1.7与1.8新特性
+36. 设计模式：单例、工厂、适配器、责任链、观察者等等
+37. JNI的使用
 </code></pre>
-
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
-
-<hr/>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
-
-<hr/>
-
-<p>手工寻址</p>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
 
                         
                       </div>
@@ -365,16 +384,16 @@ int main(){
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/4/3 1:18 上午</span>
+                    <span class="date">2016/9/26 15:32 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748751468195.html#disqus_thread">comments</a>
                       
 
                        
@@ -460,31 +479,31 @@ int main(){
 	      
 		      
 			      <li class="post">
-			        <a href="14751214147355.html">16. Java面向对象的三个特征与含义</a>
+			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14751149362443.html">15. Exception与Error包结构。常见的OOM和SOF</a>
+			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
+			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14750544918726.html">12. TreeMap、HashMap、LinkedHashMap的区别</a>
+			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
+			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  

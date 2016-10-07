@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  1.	九种基本数据类型的大小，以及他们的封装类 - cd's blog
+  21. 实现多线程的两种方法：Thread与Runnable - cd's blog
   
   </title>
   
@@ -103,19 +103,17 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
+          <h1>21. 实现多线程的两种方法：Thread与Runnable</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/9/26 16:4 下午</span>
+          <span class="date">2016/9/30 21:28 下午</span>
 
-          <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='Java.html'>Java</a></span>
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14752420902330.html#disqus_thread">comments</a>
             
 
             
@@ -125,110 +123,268 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <table>
+      <p>实现多线程在java中有三种方法，前两种比较常用。</p>
+
+<h3 id="toc_0">继承Thread</h3>
+
+<p>1）继承Thread类，重写run方法</p>
+
+<pre><code>class MyThread extends Thread {
+    @Override
+    public void run(){
+        
+    }
+}
+</code></pre>
+
+<h3 id="toc_1">实现Runnable</h3>
+
+<p>2）实现Runnable接口<br/>
+1.重写run方法，实例化后，再创建一个Thread的对象，将其传入Thread（object）方法中<br/>
+2.创建一个Thread对象，使用匿名内部类实现Runnable接口。</p>
+
+<p>Runnable接口中只声明了一个方法，返回类型为void。</p>
+
+<pre><code>public interface Runnable {
+    public abstract void run();
+}
+</code></pre>
+
+<pre><code>class MyThread implements Runnable {
+    @Override
+    public void run(){
+        System.out.println(&quot;runnable&quot;);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        MyThread th = new MyThread();
+        Thread run = new Thread(th);
+        Thread run2 = new Thread(new Runnable(){
+            public void run(){
+                System.out.println(&quot;inner runnable&quot;);
+            }
+        });
+        
+        run.start();
+        run2.start();
+    }
+}
+</code></pre>
+
+<h3 id="toc_2">实现Callable</h3>
+
+<p>3）实现Callable（）接口，重写Call方法。<br/>
+前两种创建线程的方式都包含一个缺陷，在执行完任务后无法获得执行结果。如果要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果。</p>
+
+<p>Callable接口位于java.util.concurrent下，只包含一个方法。</p>
+
+<pre><code>public interface Callable&lt;V&gt; {
+    /**
+     * Computes a result, or throws an exception if unable to do so.
+     *
+     * @return computed result
+     * @throws Exception if unable to compute a result
+     */
+    V call() throws Exception;
+}
+</code></pre>
+
+<p>Callable一般配合ExecutorService接口中的submit方法来使用。</p>
+
+<pre><code>&lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task);
+&lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result);
+Future&lt;?&gt; submit(Runnable task);
+</code></pre>
+
+<h4 id="toc_3">Future</h4>
+
+<p>java.util.concurrent<br/>
+Future用于对具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果。可以通过get()获取其执行结果，这个方法或阻塞知道获得任务返回的结果。</p>
+
+<pre><code>public interface Future&lt;V&gt; {
+
+    boolean cancel(boolean mayInterruptIfRunning);
+
+    boolean isCancelled();
+
+    boolean isDone();
+
+    V get() throws InterruptedException, ExecutionException;
+
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+</code></pre>
+
+<ul>
+<li><p>cancel用来取消任务，若取消成功则返回true，取消失败则返回false。mayInterruptIfRunning用于表示是否取消（中断）正在执行却没有完成的任务，true表示可以取消。任务未开始执行和任务执行完成时，无论其值为true或false，都返回false，取消失败。若果任务正在执行，其值为true，则返回true，其值为false，则返回fasle。</p></li>
+<li><p>isCancelled()用来查看任务是否被取消成功，取消成功返回true否则false。</p></li>
+<li><p>isDone()用来判断任务是否执行完。</p></li>
+<li><p>get()用来获取执行结果。</p></li>
+<li><p>get(timeout, unit)用来在执行时间内获取结果，超时返回null。</p></li>
+</ul>
+
+<p>由此可见，Future接口提供了三种功能：<br/>
+1.判断任务是否完成。<br/>
+2.设定是否中断任务。<br/>
+3.可以获取任务的执行结果。</p>
+
+<h4 id="toc_4">FutureTask</h4>
+
+<p>FutureTask是RunnableFuture接口一种实现：</p>
+
+<pre><code>public class FutureTask&lt;V&gt; implements RunnableFuture&lt;V&gt;
+</code></pre>
+
+<p>RunnableFuture接口继承了Runnable和Future接口，FutureTask实现了Runnable接口，它可以作为Runnable接口的实现被线程执行，又可以作为Future得到Callable的返回值。</p>
+
+<pre><code>public interface RunnableFuture&lt;V&gt; extends Runnable, Future&lt;V&gt; {
+    /**
+     * Sets this Future to the result of its computation
+     * unless it has been cancelled.
+     */
+    void run();
+}
+</code></pre>
+
+<p>FutureTask有两个构造器方法，分别可以使用Callable和Runnable的实现。</p>
+
+<pre><code>public FutureTask(Callable&lt;V&gt; callable) {
+}
+public FutureTask(Runnable runnable, V result) {
+}
+</code></pre>
+
+<h4 id="toc_5">使用方法</h4>
+
+<p>1)Callable+Future</p>
+
+<pre><code>import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class Test {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Task task = new Task();
+        Future&lt;String&gt; result = executor.submit(task);
+        executor.shutdown();
+         
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+         
+        System.out.println(&quot;main process is running&quot;);
+         
+        try {
+            System.out.println(&quot;result:&quot;+result.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+         
+        System.out.println(&quot;all tasks finished&quot;);
+    }
+}
+class Task implements Callable&lt;String&gt;{
+    @Override
+    public String call() throws Exception {
+        System.out.println(&quot;sub process is running&quot;);
+        Thread.sleep(3000);
+        
+        return &quot;String result from call&quot;;
+    }
+}
+</code></pre>
+
+<p>2)Callable+FutureTask<br/>
+FutureTask提供了使用Callable和Runnable两种实现。</p>
+
+<pre><code>import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
+public class Test {
+    public static void main(String[] args) {
+        //1.Callable+FutureTask
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Task task = new Task();
+        FutureTask&lt;String&gt; ft = new FutureTask&lt;String&gt;(task);
+        executor.submit(task);
+        executor.shutdown();
+        
+        //2.Callable+FutureTask+Thread
+        Task task = new Task();
+        FutureTask&lt;String&gt; ft = new FutureTask&lt;String&gt;(task);
+        Thread th = new Thread(ft);
+        th.start();
+         
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+         
+        System.out.println(&quot;main process is running&quot;);
+         
+        try {
+            System.out.println(&quot;result:&quot;+ft.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+         
+        System.out.println(&quot;all tasks finished&quot;);
+    }
+}
+class Task implements Callable&lt;String&gt;{
+    @Override
+    public String call() throws Exception {
+        System.out.println(&quot;sub process is running&quot;);
+        Thread.sleep(3000);
+        
+        return &quot;String result from call&quot;;
+    }
+}
+</code></pre>
+
+<p>Callable接口与Runnable接口类似，区别如下：</p>
+
+<table>
 <thead>
 <tr>
 <th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
+<th>Callable</th>
+<th>Runnable</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
+<td>返回值</td>
+<td>提供</td>
+<td>不提供</td>
 </tr>
 <tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
+<td>抛出异常</td>
+<td>call()可以</td>
+<td>run()不可以</td>
 </tr>
 <tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
+<td>异步计算结果</td>
+<td>检查计算是否完成。 Future对象的get方法，阻塞线程</td>
+<td>无</td>
 </tr>
 </tbody>
 </table>
-
-<h2 id="toc_0">使用封装类的目的</h2>
-
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
-
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
-
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
-
-<h2 id="toc_2">void类型</h2>
-
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
-
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
-</code></pre>
-
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
 
       </div>
 
@@ -236,16 +392,16 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14748943230133.html" 
-          title="Previous Post: 2.  Switch能否用String做参数？">&laquo; 2.  Switch能否用String做参数？</a>
+          <a href="14752937281313.html" 
+          title="Previous Post: 22. 线程同步的方法：synchronized、lock、reentrantLock">&laquo; 22. 线程同步的方法：synchronized、lock、reentrantLock</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14748751468195.html" 
-          title="Next Post: J2SE基础问题汇总">J2SE基础问题汇总 &raquo;</a>
+          <a  href="14751378304376.html" 
+          title="Next Post: 19. Static inner class 与non static inner class的区别">19. Static inner class 与non static inner class的区别 &raquo;</a>
       
       </p>
         </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  cd's blog
+  19. Static inner class 与non static inner class的区别 - cd's blog
   
   </title>
   
@@ -94,221 +94,147 @@
        
 
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14751149362443.html">
-                
-                  <h1>15. Exception与Error包结构。常见的OOM和SOF</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p><img src="media/14751149362443/14751149641985.jpg" alt=""/></p>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>19. Static inner class 与non static inner class的区别</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/9/29 16:30 下午</span>
 
-<p>Java提供了两种错误的异常，分别为Exception和Error，它们继承自共同的父类Throwable。</p>
+          
+           
+         
+          <span class="comments">
+            
+              <a href="http://ranchu90.github.io/14751378304376.html#disqus_thread">comments</a>
+            
 
-<h2 id="toc_0">Error</h2>
+            
+          </span>
 
-<p>Error表示程序在运行期间出现了非常严重的错误，且这个错误是不可恢复的。将导致程序终止执行。如OutOfMemoryError、ThreadDeath。错误发生时，JVM一般会终止程序的运行。</p>
+        </div>
+      </div><!-- article -->
 
-<h2 id="toc_1">Exception</h2>
+      <div class="article-content">
+      <p>Java当中一种有四种内部类：</p>
 
-<p>Exception表示可恢复的异常，编译可以捕获。</p>
+<ul>
+<li>静态内部类</li>
+<li>普通内部类</li>
+<li>局部内部类</li>
+<li>匿名内部类</li>
+</ul>
 
-<p>1.检查异常（checked exception）<br/>
-编译阶段发生，编译器强制在程序里捕获这类异常，放入try代码块中，把对异常的处理代码放到catch块中。常见的有IOException和SQLException。一般在以下情况中使用：<br/>
-1）异常的发生并不导致程序出错，进行处理后可以继续执行后续的操作。<br/>
-2）程序依赖于不可靠的外部条件，如IO。</p>
+<p>静态内部类(static inner class)</p>
 
-<p>2.运行时异常（runtime exception）<br/>
-编译器不强制进行捕获。若不捕获的话，由JVM来处理。常见的运行时异常包括NullPointerException、ClassCastException、ArrayIndexOutOfBoundsException、StoreException、BufferOverflowException、ArithmeticException。</p>
-
-<p>出现运行时异常之后，系统会将异常一直往上次抛出，知道遇到处理代码位置。若没有处理代码，则抛到最上层。多线程run()方法抛出，线程终止，或单线程main()方法抛出，整个程序退出。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/29 10:8 上午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14751149362443.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14750561415107.html">
-                
-                  <h1>14. try catch finally，try里有return，finally还执行么</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>finally中的内容一定会执行的</p>
-
-<pre><code>try{
-    return 0;
-} catch(Exception e){
-    return 1;
-} finally{
-    return 2;
-}
-</code></pre>
-
-<p>finally中的return会覆盖try，catch中的return，所以最后返回的是finally中的值</p>
-
-<pre><code>class Main{
-    public static String lem(){
-        System.out.println(&quot;lem&quot;);
-        return &quot;return from lem&quot;;
+<pre><code>class outerClass{
+    //静态内部类
+    static class staticInnerClass{
     }
-    
-    public static String foo(){
-        int x = 0;
-        int y = 5;
-        try {
-            System.out.println(&quot;start try&quot;);
-            int b = y/x;
-            System.out.println(&quot;end try&quot;);
-            return &quot;return from try&quot;;
-        } catch (Exception e) {
-            System.out.println(&quot;catch&quot;);
-            return lem() + &quot;| return from catch&quot;;
-        } finally {
-            System.out.println(&quot;finally&quot;);
-            return &quot;return from finally&quot;;
+    //普通内部类
+    class innerClass{
+    }
+    //局部内部类
+    public void function(){
+        class innerClass{
         }
     }
-    
-    public static void main(String[] args) {
-        String v = foo();
-        
-        System.out.println(v);
-    }
+    //匿名内部类
+    public MyFrame() {
+     addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+            ....
+        }
+    });
 }
 </code></pre>
 
-<p>输出：</p>
-
-<pre><code>start try
-catch
-lem
-finally
-return from finally
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/28 17:49 下午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14750561415107.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14750544918726.html">
-                
-                  <h1>12. TreeMap、HashMap、LinkedHashMap的区别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<table>
+<table>
 <thead>
 <tr>
 <th></th>
-<th>HashMap</th>
-<th>TreeMap</th>
-<th>LinkedHashMap</th>
+<th>静态内部类</th>
+<th>普通内部类</th>
+<th>局部内部类</th>
+<th>匿名内部类</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>遍历顺序</td>
-<td>随机</td>
-<td>实现了sortMap接口，按自然顺序或自定义顺序</td>
-<td>与输入顺序相同</td>
+<td>实例化方式</td>
+<td>不依赖外部类实例</td>
+<td>依赖外部类实例</td>
+<td>方法内部</td>
+<td>只有一个实例</td>
+</tr>
+<tr>
+<td>访问权限</td>
+<td>外部静态成员和静态方法</td>
+<td>外部所有成员方法</td>
+<td>只能访问方法中final局部常量</td>
+<td>同左</td>
+</tr>
+<tr>
+<td>构造函数</td>
+<td>有</td>
+<td>有</td>
+<td>有</td>
+<td>无</td>
+</tr>
+<tr>
+<td>其它</td>
+<td></td>
+<td></td>
+<td>无publi,protected等修饰</td>
+<td>同左；必须继承一个父类或者实现一个接口</td>
 </tr>
 </tbody>
 </table>
 
-<p>weakHashMap与HashMap类似，它从用若引用，其中key不再被外部引用时即被JVM回收，HashMap采用强引用，key不被外部引用时，必须从Map中删除才能被GC回收</p>
+      </div>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/28 17:21 下午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14750544918726.html#disqus_thread">comments</a>
-                      
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14752420902330.html" 
+          title="Previous Post: 21. 实现多线程的两种方法：Thread与Runnable">&laquo; 21. 实现多线程的两种方法：Thread与Runnable</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14751330832847.html" 
+          title="Next Post: 18. interface与abstract类的区别">18. interface与abstract类的区别 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
+          
+            <div id="disqus_thread"></div>
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   <a href="all_2.html">&laquo; Prev Page</a>  
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			 <a href="all_4.html">&raquo; Next Page</a> 
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
+
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

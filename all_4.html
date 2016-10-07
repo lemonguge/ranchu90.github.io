@@ -8,7 +8,7 @@
   cd's blog
   
   </title>
-  
+  <meta name="keywords" content="java collection map set list" />
   
   <link href="atom.xml" rel="alternate" title="cd's blog" type="application/atom+xml">
     <link rel="stylesheet" href="asset/css/foundation.min.css" />
@@ -103,18 +103,151 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748960344939.html">
+                <a class="clearlink" href="14749678612341.html">
                 
-                  <h1>3.equals()和==的区别</h1>
+                  <h1>11. HashMap、Hashtable、ConcurrentHashMap的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
+                        	<h2 id="toc_0">多线程下的HashMap</h2>
 
-<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
+<p>HashMap是线程不安全的，在多线程环境中并发操作会存在以下问题：</p>
 
-<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
+<ul>
+<li>  多线程使用put()，触发resize(rehash)操作，创建多个newTable，再同时rehash，导致链表错乱。这时候，再使用get()操作将进入无线循环。getEntry获取table中的链表，链表成了一个循环链表，所以进入无线循环。</li>
+</ul>
+
+<pre><code>public V get(Object key) {
+        Node&lt;K,V&gt; e;
+        return (e = getNode(hash(key), key)) == null ? null : e.value;
+    }
+    
+ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+        if ((p = tab[i = (n - 1) &amp; hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node&lt;K,V&gt; e; K k;
+            if (p.hash == hash &amp;&amp;
+                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+                e = p;
+            else if (p instanceof TreeNode)
+                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &amp;&amp;
+                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size &gt; threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }
+</code></pre>
+
+<ul>
+<li>remove()，遍历map时调用remove，可能会导致丢失删除的数据后面的数据，跳到下一个槽位。</li>
+</ul>
+
+<h2 id="toc_1">ConcurrentHashMap和Hashtable</h2>
+
+<p>concurrent,同时发生的。同时发生的hashmap，从名字就可以知道它专门用于多线程的情况。<br/>
+它不同于hashtable，hashtable在方法前使用synchronized来保证同步这会导致被当一个对象被锁住的时候，另一个线程无法使用get()方法，而ConcurrentHashMap对map进行分段，在插入时使用段（继承自重用锁），来实现线程之间的同步。<br/>
+但是在最新的java源码里我看到的是在put方法中使用synchronized块来实现同步。</p>
+
+<pre><code> /** Implementation for put and putIfAbsent */
+    final V putVal(K key, V value, boolean onlyIfAbsent) {
+        if (key == null || value == null) throw new NullPointerException();
+        int hash = spread(key.hashCode());
+        int binCount = 0;
+        for (Node&lt;K,V&gt;[] tab = table;;) {
+            Node&lt;K,V&gt; f; int n, i, fh;
+            if (tab == null || (n = tab.length) == 0)
+                tab = initTable();
+            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) {
+                if (casTabAt(tab, i, null,
+                             new Node&lt;K,V&gt;(hash, key, value, null)))
+                    break;                   // no lock when adding to empty bin
+            }
+            else if ((fh = f.hash) == MOVED)
+                tab = helpTransfer(tab, f);
+            else {
+                V oldVal = null;
+                synchronized (f) {
+                    if (tabAt(tab, i) == f) {
+                        if (fh &gt;= 0) {
+                            binCount = 1;
+                            for (Node&lt;K,V&gt; e = f;; ++binCount) {
+                                K ek;
+                                if (e.hash == hash &amp;&amp;
+                                    ((ek = e.key) == key ||
+                                     (ek != null &amp;&amp; key.equals(ek)))) {
+                                    oldVal = e.val;
+                                    if (!onlyIfAbsent)
+                                        e.val = value;
+                                    break;
+                                }
+                                Node&lt;K,V&gt; pred = e;
+                                if ((e = e.next) == null) {
+                                    pred.next = new Node&lt;K,V&gt;(hash, key,
+                                                              value, null);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (f instanceof TreeBin) {
+                            Node&lt;K,V&gt; p;
+                            binCount = 2;
+                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,
+                                                           value)) != null) {
+                                oldVal = p.val;
+                                if (!onlyIfAbsent)
+                                    p.val = value;
+                            }
+                        }
+                    }
+                }
+                if (binCount != 0) {
+                    if (binCount &gt;= TREEIFY_THRESHOLD)
+                        treeifyBin(tab, i);
+                    if (oldVal != null)
+                        return oldVal;
+                    break;
+                }
+            }
+        }
+        addCount(1L, binCount);
+        return null;
+    }
+</code></pre>
+
+<p>以下三篇文章中有详细的说明可以参考下</p>
+
+<p><a href="http://ifeve.com/concurrenthashmap/">http://ifeve.com/concurrenthashmap/</a><br/>
+<a href="http://ifeve.com/java-concurrent-hashmap-1/">http://ifeve.com/java-concurrent-hashmap-1/</a><br/>
+<a href="http://ifeve.com/java-concurrent-hashmap-2/">http://ifeve.com/java-concurrent-hashmap-2/</a></p>
 
                         
                       </div>
@@ -123,16 +256,14 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:20 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+                    <span class="date">2016/9/27 17:17 下午</span>
+                    
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14749678612341.html#disqus_thread">comments</a>
                       
 
                        
@@ -142,207 +273,65 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748943230133.html">
+                <a class="clearlink" href="14749657860314.html">
                 
-                  <h1>2.  Switch能否用String做参数？</h1>
+                  <h1>10. HashMap和HashTable的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
-2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
-原理：hashCode()+equals()<br/>
-编译器在编译期间给代码做了转换。<br/>
-原始：</p>
+                        	<p>Map<br/>
+├Hashtable<br/>
+├HashMap<br/>
+└WeakHashMap</p>
 
-<pre><code>public class StringInSwitchCase { 
-      public static void main(String[] args) { 
-            String mode = args[0]; 
-            switch (mode) { 
-                  case &quot;ACTIVE&quot;: 
-                        System.out.println(&quot;Application is running on Active mode&quot;); 
-                        break; 
-                  case &quot;PASSIVE&quot;:
-                        System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         break; 
-                  case &quot;SAFE&quot;: 
-                          System.out.println(&quot;Application is running on Safe mode&quot;); 
-          } 
-      } 
-}
-</code></pre>
+<p>HashMap和HashTable都是Java中哈希表的实现方式。其中HashTable里的大多数方法比如add、remove..等前有synchronized修饰，所以它在多线程的环境下是线程安全的，也因此需要耗费性能在同步的问题上。而HashMap不是，所以它的效率较HashTable高。<br/>
+HashMap中可以使用null作为key，这在HashTable中是不允许的。<br/>
+HashMap中的contains方法因为语义不明改为containsKey()和containsValue()。<br/>
+(key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</p>
 
-<p>编译器优化后：</p>
-
-<pre><code>import java.io.PrintStream; 
- 
-public class StringInSwitchCase{ 
-      public StringInSwitchCase() { } 
- 
-      public static void main(string args[]) { 
-             String mode = args[0]; 
-            String s; switch ((s = mode).hashCode()) { 
-                  default: break; 
-                  case -74056953: 
-                        if (s.equals(&quot;PASSIVE&quot;)) { 
-                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         } 
-                        break; 
-                  case 2537357: 
-                        if (s.equals(&quot;SAFE&quot;)) { 
-                              System.out.println(&quot;Application is running on Safe mode&quot;); 
-                         } 
-                        break; 
-                  case 1925346054: 
-                        if (s.equals(&quot;ACTIVE&quot;)) { 
-                              System.out.println(&quot;Application is running on Active mode&quot;); 
-                         } 
-                        break; 
-               } 
-          } 
-}
-</code></pre>
-
-<p>参考资料：<br/>
-<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/26 20:52 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14748770602290.html">
-                
-                  <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<table>
+<table>
 <thead>
 <tr>
 <th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
+<th>HashMap</th>
+<th>Hashtable</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
+<td>null作为key</td>
+<td>能</td>
+<td>否</td>
 </tr>
 <tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
+<td>contains()</td>
+<td>改为containsKey() constainsValue()</td>
+<td>继承Dicitionary</td>
 </tr>
 <tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
+<td>线程安全</td>
+<td>否 效率较高</td>
+<td>是 效率较低</td>
 </tr>
 <tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
+<td>迭代</td>
+<td>iterator</td>
+<td>enumeration</td>
 </tr>
 <tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
+<td>hash性能</td>
+<td>几乎一样 使用hashcode()方法</td>
+<td></td>
 </tr>
 <tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
+<td>hash值</td>
+<td>(key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</td>
+<td>直接hashcode方法的值</td>
 </tr>
 </tbody>
 </table>
-
-<h2 id="toc_0">使用封装类的目的</h2>
-
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
-
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
-
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
-
-<h2 id="toc_2">void类型</h2>
-
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
-
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
-</code></pre>
-
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
 
                         
                       </div>
@@ -351,16 +340,120 @@ public class StringInSwitchCase{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 16:4 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+                    <span class="date">2016/9/27 16:43 下午</span>
+                    
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14749657860314.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14749474920939.html">
+                
+                  <h1>9. Map、Set、List、Queue、Stack的特点与用法</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Collections框架中包含了大量的集合接口及这些接口的实现。主要提供了9种Map、Set、List、Queue、Stack等数据结构。</p>
+
+<ul>
+<li>Set接口表示数学中集合的概念。其主要特点是集合中的元素不重复。</li>
+<li>List接口表示有序的集合。它按照对象进入的顺序保存对象，所以能对每个元素的插入和删除具体的位置进行精确的控制。它能存放重复的对象。</li>
+<li>Map接口提供了一个从Key到Value的数据结构，保存键值对。其中Value可以重复，但是Key不能重复。</li>
+<li>Queue接口提供了“先进先出”队列的数据结构。只能在队尾添加元素，只能在对头弹出元素。</li>
+<li>Stack继承自Vector，它实现了先进后出的栈结构。</li>
+</ul>
+
+<p>我在网络上找到一张实现Collection接口的类图，可以一目了然地看到实现的类及他们之间的关系。<br/>
+<img src="media/14749474920939/14749600076300.jpg" alt=""/></p>
+
+<p>Collection接口定义了一套统一的操作方法：</p>
+
+<pre><code>int size();
+返回容器中元素的个数
+boolean isEmpty();
+判断容器是否为空，空则返回true，否则false
+boolean contains(Object o);
+判段容器是否包含o对象
+Iterator&lt;E&gt; iterator();
+获得该容器的迭代器
+Object[] toArray();
+将容器转换为对象数组
+boolean add(E e);
+向容器中添加元素
+boolean remove(Object o);
+移除容器中的对象
+boolean containsAll(Collection&lt;?&gt; c);
+判断是否包含c中的所有元素
+boolean addAll(Collection&lt;? extends E&gt; c);
+添加c容器中的所有元素
+boolean removeAll(Collection&lt;?&gt; c);
+移除c中包含的所有元素
+boolean retainAll(Collection&lt;?&gt; c);
+保留c中存在的元素，移除c中不存在的元素
+void clear();
+清除容器中的所有元素
+</code></pre>
+
+<p>Stack类中除了继承了Vector的方法外还实现了</p>
+
+<pre><code>boolean empty() 
+测试堆栈是否为空。
+Object peek( )
+查看堆栈顶部的对象，但不从堆栈中移除它。
+Object pop( )
+移除堆栈顶部的对象，并作为此函数的值返回该对象。
+Object push(Object element)
+把项压入堆栈顶部。
+int search(Object element)
+返回对象在堆栈中的位置，以 1 为基数。
+</code></pre>
+
+<p>Queue接口中常用方法</p>
+
+<pre><code>boolean add(E e);        
+增加一个元素              若队列已满，则抛出一个IIIegaISlabEepeplian异常
+boolean remove();   
+移除并返回队列头部的元素    若队列为空，则抛出一个NoSuchElementException异常
+E element()  
+返回队列头部的元素         若队列为空，则抛出一个NoSuchElementException异常
+offer(E e)      
+添加一个元素并返回true     若队列已满，则返回false
+E poll()      
+移除并返问队列头部的元素    若队列为空，则返回null
+E peek()     
+返回队列头部的元素         若队列为空，则返回null
+void put()     
+添加一个元素              若队列满，则阻塞
+void take()
+移除并返回队列头部的元素    若队列为空，则阻塞
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/27 11:38 上午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14749474920939.html#disqus_thread">comments</a>
                       
 
                        
@@ -446,31 +539,31 @@ public class StringInSwitchCase{
 	      
 		      
 			      <li class="post">
-			        <a href="14751214147355.html">16. Java面向对象的三个特征与含义</a>
+			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14751149362443.html">15. Exception与Error包结构。常见的OOM和SOF</a>
+			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
+			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14750544918726.html">12. TreeMap、HashMap、LinkedHashMap的区别</a>
+			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
+			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  

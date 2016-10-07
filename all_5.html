@@ -103,50 +103,149 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748751468195.html">
+                <a class="clearlink" href="14749467173553.html">
                 
-                  <h1>J2SE基础问题汇总</h1>
+                  <h1>8. String、StringBuffer与StringBuilder的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<pre><code>1.  九种基本数据类型的大小，以及他们的封装类
-2.  Switch能否用string做参数？
-3. equals()与==的区别
-4. Object有哪些公用方法？
-5. Java的四种引用，强弱软虚，用到的场景。
-6. Hashcode的作用
-7. ArrayList、LinkedList、Vector的区别
-8. String、StringBuffer与StringBuilder的区别
-9. Map、Set、List、Queue、Stack的特点与用法
-10. HashMap和HashTable的区别
-11. HashMap和ConcurrentHashMap的区别
-12. TreeMap、HashMap、LinkedHashMap的区别。
-13. Collection包结构，与Collections的区别
-14. try catch finally，try里有return，finally还执行么
-15. Exception与Error包结构。常见的OOM和SOF。
-16. Java面向对象的三个特征与含义
-17. Override和Overload的含义去区别
-18. Interface与abstract类的区别
-19. Static inner class 与non static inner class的区别
-20. Java多态的实现原理
-21. 实现多线程的两种方法：Thread与Runable
-22. 线程同步的方法：synchronized、lock、reentrantLock等
-23. 锁的等级：方法锁、对象锁、类锁。
-24. 写出生产者消费者模式。
-25. ThreadLocal的设计理念与作用。
-26. ThreadPool用法与优势。
-27. Concurrent包里的其他东西：ArrayBlockingQueue、CountDownLatch等等
-28. wait()和sleep()的区别
-29. foreach与正常for循环效率对比
-30. Java IO与NIO
-31. 反射的作用与原理
-32. 泛型常用特点：List&lt;String&gt;能否转为List&lt;Object&gt;
-33. 解析XML的几种方式的原理与特点：DOM、SAX、PULL
-34. Java与C++对比
-35. Java 1.7与1.8新特性
-36. 设计模式：单例、工厂、适配器、责任链、观察者等等
-37. JNI的使用
+                        	<table>
+<thead>
+<tr>
+<th></th>
+<th>String</th>
+<th>StringBuffer</th>
+<th>StringBuilder</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>可变性</td>
+<td>不可变类</td>
+<td>可变</td>
+<td>可变</td>
+</tr>
+<tr>
+<td>线程安全</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>适用场合</td>
+<td>被共享的场合 少量数据</td>
+<td>经常修改的场合 避免附加操作 无用对象 提高效率 多线程大量数据</td>
+<td>单线程下大量数据</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>构造函数 ==赋值</td>
+<td>构造函数</td>
+<td>构造函数</td>
+</tr>
+<tr>
+<td>执行效率</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/27 11:25 上午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14749467173553.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14748992011687.html">
+                
+                  <h1>7. ArrayList、LinkedList、Vector的区别</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Collection包结构，Collection是一个集合接口，它提供了对集合对象进行基本操作的通用接口方法。实现该接口的类主要有List和Set，其目的在于为各种具体的集合提供最大化的统一的操作方式。<br/>
+Collection包结构</p>
+
+<pre><code>Collection
+├List
+│├LinkedList
+│├ArrayList
+│└Vector
+│　└Stack
+└Set
+</code></pre>
+
+<p>ArrayList和Vector是顺序存储（物理上连续的内存空间）的集合，使用的时候可以根据下标进行访问，索引数据的效率高。但是在删除或者插入时，需要移动容器中的元素，因此插入删除时，效率低。<br/>
+另外，Vector的大多数方法前都有synchronized关键字，因此是线程安全的，ArrayList则不是。</p>
+
+<p>容量扩充：当ArrayList或Vector中设定的容量不够容纳新的节点时，会自动调用grow()方法进行容量的扩充。ArrayList默认扩充原来大小的1.5倍。Vector默认扩充原来大小的2倍，指定capacityIncrement的话，每次扩充指定的大小。</p>
+
+<pre><code>//ArrayList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+    
+//LinkedList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?
+                                         capacityIncrement : oldCapacity);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+</code></pre>
+
+<p>LinkedList采用双向链表实现，无法使用下标访问。每次由下标获取元素的时候，先判断其在前半段还是后半段，在前半段从头结点开始查找，在后半段从尾节点从后往前查找。因此，查找时，效率较ArrayList和Vector低。但是插入或者删除操作，只需要进行节点的删除或者连接操作，因此效率较前二者高。</p>
+
+<pre><code>Node&lt;E&gt; node(int index) {
+        // assert isElementIndex(index);
+
+        if (index &lt; (size &gt;&gt; 1)) {
+            Node&lt;E&gt; x = first;
+            for (int i = 0; i &lt; index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node&lt;E&gt; x = last;
+            for (int i = size - 1; i &gt; index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
 </code></pre>
 
                         
@@ -156,7 +255,46 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 15:32 下午</span>
+                    <span class="date">2016/9/26 22:13 下午</span>
+                    
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14748992011687.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14748977980780.html">
+                
+                  <h1>6. Hashcode的作用</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来散列存储结构中确定对象的存储地址。</p>
+
+<p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
+
+<p>3.如果equals()被重写，那么该对象的hashCode()也要被重写，以保证2中的条件成立。</p>
+
+<p>4.由邻接矩阵的结构可知，hashCode值相同的对象，其内容不一定相同，只能说明他们存放在同一条链表中。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/26 21:49 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -165,241 +303,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748751468195.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14747925084160.html">
-                
-                  <h1>求职</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<blockquote>
-<p>9月开始到现在，陆陆续续也面了5、6个公司，现在暂时告一个段落。<br/>
-每家公司面试的风格都不一样，根据面试官问的问题可以分为以下几类：</p>
-</blockquote>
-
-<h2 id="toc_0">面试</h2>
-
-<p>现在对过去的几次面试做个总结，每家公司面试的风格都不一样，根据面试官问的问题可以分为以下几类：</p>
-
-<ul>
-<li>1.智力类。这类公司喜欢问智力题，比如10个人互相有握手，那么他们总共握了几次手？一个凸多边形的外接矩阵怎么求？等等，从头到尾都是。</li>
-<li>2.代码类。直接上来就给题目让写代码。leet code上的题目。</li>
-<li>3.工程类。主要关注的点在你做的项目上，使用了什么技术，怎么实现的，还有没有其它的实现方式，这样做有什么缺陷，等等。</li>
-<li>4.基础类。对编程语言方面问的很深入，比如JVM模型，GC机制，GC算法，分配过程等等。</li>
-<li>5.常规问题。怎么学习的？对未来有什么规划？你还有什么要问我的？</li>
-</ul>
-
-<h2 id="toc_1">笔试</h2>
-
-<p>笔试题依据类型可以分为以下几类：</p>
-
-<ul>
-<li>1.智力题。特别是BAT，选择题基本上都是智力题。这方面只能靠平时的积累和总结了。</li>
-<li>2.基础题。在试卷中有出现，占比根据不同的公司来决定，有些的比例远不如智力题。</li>
-<li>3.编程题。几乎是重中之重。最爱考的是字符串处理及动态规划问题。</li>
-<li>4.应用题。这类题实际上也是在变相地考察基础，但是比单纯直接地考察基础的要求要高的多。阿里最后一个题是让设计实现一个HotSpot虚拟机。当时我就？？？也有让直接设计一个数据库的题型。</li>
-</ul>
-
-<h2 id="toc_2">总结</h2>
-
-<p>准备了很多，但仍然不够充分，每次面试总有答不上来的题。那些题实际上也不是很难，而是没有听说过和接触过。这也是这么多面试的一次收获，我还有那么多需要知道的东西。</p>
-
-<p>这个过程中，对于JAVA基础，JVM内存管理方面的内容我有做一个笔记总结，放在word文档中。这几天会陆陆续续整理后放上来。一来是这段时间学习的总结以便以后在复习的时候可以快速定位不牢固的知识，二来希望我的总结对别人也能有帮助。</p>
-
-<p>对于动态规划的思想还需要更多的练习，简单的可以，复杂一点总是让我花很多时间，最后还总不能全部AC，总是差那么一点。</p>
-
-<p>感谢网络上积极分享知识心得的朋友。我现在准备好好睡一觉。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/25 16:35 下午</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='diary.html'>Diary</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14747925084160.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14648586354104.html">
-                
-                  <h1>iOS开发基础（二）</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">ViewController</h2>
-
-<p>作为连接视图View和模型Model的桥梁(控制器Controller)，从名字就可以看得出来，它是用来管理View的。除此之外，它还承担着传递数据，相应用户操作，内存管理，状态保持和适应设备的功能。</p>
-
-<p>先来看看它的生存周期：<br/>
-<img src="media/14648586354104/14648590059763.jpg" alt=""/><br/>
-当一个viewController它管理的view出现或者消失的时候会引发相应的方法，如果有需求，可以在对应的方法里写代码来处理相应的事务。</p>
-
-<p>默认状态下，Xcode会将与ViewController同名的Xib文件关联到对应的Controller上。如MyViewController关联到MyView.xib或者MyViewCon.xib。</p>
-
-<p>除此之外也可以用代码来制定加载制定的xib：<br/>
-<code><br/>
-[UIViewController initWithNibName:@&quot;MyView&quot;];<br/>
-</code></p>
-
-<p>或者在IB中指定ViewController，如下：<br/>
-<img src="media/14648586354104/14648600281167.jpg" alt=""/></p>
-
-<h3 id="toc_1">跳转</h3>
-
-<p>在viewcontroller中可以跳转到另一个viewcontoller：<br/>
-<code><br/>
-[self presentViewController: animated: completion:];<br/>
-[self showViewController: sender:];<br/>
-</code><br/>
-撤销当前的view可以使用：<br/>
-<code><br/>
-[self dismissViewControllerAnimated: completion:];<br/>
-</code></p>
-
-<h3 id="toc_2">回传数据</h3>
-
-<p>在其中可以设定回传数据或者在撤销当前view之后执行一段代码。completion是一个代码块block。<br/>
-实际上是使用了观察者模式来通知第一个view，并将数据传给它。</p>
-
-<pre><code>//在第二个view中，发送do发生变化的消息，并且将数据存在字典中回转给第一个view
-[self dismissViewControllerAnimated:YES completion:^{
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:@&quot;value1&quot;, @&quot;key1&quot;, @&quot;value2&quot;, @&quot;key2&quot;, nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;do&quot; object:self userInfo:dict];
-    }];
-
-//在第一个view中的viewDidLoad方法中
-//注册观察者，如果do对象有变化就执行Test方法
-[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(Test:) name:@&quot;do&quot; object:nil];
-
-- (void)Test:(id)sender{
-    NSLog(@&quot;%@&quot;, sender);
-}
-
-</code></pre>
-
-<p>执行结果：</p>
-
-<pre><code>2016-06-02 17:52:33.594 NibVC[37096:5919151] NSConcreteNotification 0x7fd6495118e0 {name = do; object = &lt;SecondViewController: 0x7fd6494b82d0&gt;; userInfo = {
-    key1 = value1;
-    key2 = value2;
-}
-
-</code></pre>
-
-<p>这种方法不仅可以用于viewController的回传值，还可以用于各个对象之间的消息传递，只需要注册观察者，和发送消息即可。</p>
-
-<h2 id="toc_3">Storyboard</h2>
-
-<p>Storyboard中文译为故事版，也就是做界面的地方，app的应用逻辑和导演讲故事是不是很像呢？在这之前，苹果使用的是xib文件来做的界面。storyboard的有点在于对多个view的管理比xib的要好。</p>
-
-<p>大多数操作就是托控件到view上，如果要关联到.m文件中则要按住Ctrl键+上控件拖到对应的.m文件上即可选择是添加为属性IBOutlet还是方法IBAction。</p>
-
-<h3 id="toc_4">场景的跳转</h3>
-
-<p>Storyboard的场景跳转使用的是Segue，按下Ctrl拖住一个按钮到下一个场景上即可实现。<br/>
-可以对Segue进行命名，以便在代码中使用Segue。<br/>
-<code><br/>
-[self performSegueWithIdentifier:@&quot;&quot; sender:sender];<br/>
-</code><br/>
-也可以在代码中显示Storyboard里的View Controller：<br/>
-<code><br/>
-id vc = [self.storyboard instantiateViewControllerWithIdentifier:@&quot;&quot;];<br/>
-[self showViewController:vc sender:sender];<br/>
-</code></p>
-
-<h3 id="toc_5">返回</h3>
-
-<p>在对应的vc中添加，再在Storyboard中将按钮的方法设置为以下方法。ForSegue可以改变为其它的名字。<br/>
-```<br/>
-- (void)unwindForSegue:(UIStoryboardSegue*)unwindSegue{</p>
-
-<p>}<br/>
-```</p>
-
-<h2 id="toc_6">App的声明周期</h2>
-
-<p><img src="media/14648586354104/14648697010376.jpg" alt=""/></p>
-
-<p><img src="media/14648586354104/14648697197812.jpg" alt=""/></p>
-
-<p><img src="media/14648586354104/14648697311911.jpg" alt=""/></p>
-
-<h2 id="toc_7">Navigation Controller</h2>
-
-<p>NavigationController是一种高效管理多个界面的工具，它可以提供在多个view之间方面地跳转。<br/>
-<img src="media/14648586354104/14648707096843.jpg" alt=""/></p>
-
-<p>每个被管理的ViewController自己提供：<br/>
-内容，导航栏标题，导航栏上的自定义按钮，或者可选的工具栏按钮。</p>
-
-<p>数据的传递可以通过Segue或者Delegate，Segue上面提到过，下面就列出使用Delegate的方法：<br/>
-<code><br/>
-- (void)navigationController: willShowViewController: animated:<br/>
-- (void)nagivationController: didShowViewController: animated:<br/>
-</code></p>
-
-<p>代码中使用</p>
-
-<pre><code>//创建
-- initWithRootViewController:
-- initWithNavigationBarClass:toolbarClass:
-//跳转
-- pushViewController:animated:
-- popViewControllerAnimated:
-- popToRootViewControllerAnimated:
-- popToViewController:animated:
-</code></pre>
-
-<h2 id="toc_8">Tabbar Controller</h2>
-
-<p><img src="media/14648586354104/14648725794206.jpg" alt=""/><br/>
-TabbarController是另一种管理多个ViewController的方式。<br/>
-使用方法和NavigationController非常相似。还可以和它结合起来一起使用。</p>
-
-<p><img src="media/14648586354104/14648735896274.jpg" alt=""/></p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/6/2 17:10 下午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14648586354104.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748977980780.html#disqus_thread">comments</a>
                       
 
                        
@@ -485,31 +389,31 @@ TabbarController是另一种管理多个ViewController的方式。<br/>
 	      
 		      
 			      <li class="post">
-			        <a href="14751214147355.html">16. Java面向对象的三个特征与含义</a>
+			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14751149362443.html">15. Exception与Error包结构。常见的OOM和SOF</a>
+			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14750561415107.html">14. try catch finally，try里有return，finally还执行么</a>
+			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14750544918726.html">12. TreeMap、HashMap、LinkedHashMap的区别</a>
+			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14749678612341.html">11. HashMap、Hashtable、ConcurrentHashMap的区别</a>
+			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  
