@@ -103,26 +103,51 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14751330832847.html">
+                <a class="clearlink" href="14752943139261.html">
                 
-                  <h1>18. interface与abstract类的区别</h1>
+                  <h1>23. 锁的等级：方法锁、对象锁、类锁</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>interface中不能有变量，只能有公有静态常量，没有构造方法，默认为public abstract，一个类可实现多个interface，表示has-a关系，实现一个接口必须实现其中所以的方法。</p>
+                        	<p>synchornized锁的对象可以是方法、对象、和类。</p>
 
-<p>抽象类中可以有自己的变量，可以有私有方法和非抽象方法，需要继承，一个类只继承一个，继承类如果不是抽象类必须实现抽象方法，如果是则不需要被重写。is-a关系。</p>
+<p>比如</p>
 
-<p>接口和抽象类的相同点：<br/>
-1.都不能被实例化<br/>
-2.接口的实现类或抽象类的子类都只有实现了接口或抽象类中的方法后才能被实例化。</p>
+<pre><code>class Test {
+    public int share;
+    public static share2;
+    
+    synchronized public void getShare(){
+        
+        Thread.sleep(5000);
+        
+        return share;
+    }
+    
+    synchronized public void getShare2(){
+        
+        Thread.sleep(5000);
+        
+        return share;
+    }
+    
+    public void print(){
+        
+        System.out.println(&quot;print test&quot;);
+    }
+    
+    static public void print(String ok){
+        
+        System.out.println(&quot;print test : &quot; + ok);
+    }
+}
+</code></pre>
 
-<p>不同：<br/>
-1.接口中的方法只能有定义。抽象类中可以有定义和实现。<br/>
-2.接口可以实现（implement）多个，但是继承抽象类只能继承一个<br/>
-3.接口中不能有变量只能包含public static final常量。所有方法默认为public abstract。抽象类中可以有普通成员变量和成员方法。<br/>
-4.接口用于实现常用功能，便于日后维护或者添加删除方法；抽象类则充当公共类的角色，不适用于日后重新对代码进行修改。</p>
+<p>如果对Test的实例上锁，那么其它的线程就无法访问该实例的synchronized方法，但是可以访问该实例没有synchronized的方法和静态的方法。<br/>
+如果该方法内部调用了wait()方法，那么其它的线程可以访问该对象的synchronized方法。</p>
+
+<p>如果对Test这个类上锁，那么该类的静态方法不能被其它的线程访问。但是实例方法可以被访问到，如果该实例为被上锁的话。</p>
 
                         
                       </div>
@@ -131,14 +156,16 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/29 15:11 下午</span>
-                    
+                    <span class="date">2016/10/1 11:58 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14751330832847.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14752943139261.html#disqus_thread">comments</a>
                       
 
                        
@@ -148,81 +175,80 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14751246036816.html">
+                <a class="clearlink" href="14752937281313.html">
                 
-                  <h1>17. Override和Overload的含义去区别</h1>
+                  <h1>22. 线程同步的方法：synchronized、lock、reentrantLock</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>Override<br/>
-覆盖（又称重写）指重写父类的同名方法，参数，名称，返回值都必须一样，子类不能降低父类方法的可见性（否则无法实现多态）</p>
+                        	<p>sychronized用法两种1)锁方法2）锁对象（sychronized块），可作用于静态方法、类、实例。对效率有较大影响。</p>
 
-<p>Overload<br/>
-重载，在同一个类中，使用同名方法，但方法参数必须有不同，个数或类型</p>
+<p>Lock是jdk5新增的一个接口，reentrantLock是它的一个实现类。</p>
 
-<pre><code>class Father{
-    public void show(){
-        System.out.println(&quot;Father&quot;);
-    }
-}
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
 
-class Sub extends Father{
-    
-    public void show(){
-        System.out.println(&quot;Sub&quot;);
-    }
-    
-    public void show(String msg){
-        System.out.println(&quot;reload:&quot; + msg);
-    }
-    
-    public void show(String msg, String time){
-        System.out.println(&quot;reload:&quot; + msg + &quot; time:&quot; + time);
-    }
-    
-    public void show(int number){
-        System.out.println(&quot;reload:&quot; + number);
-    }
-}
-</code></pre>
+<tbody>
+<tr>
+<td>lock()</td>
+<td>以阻塞的方式获取锁</td>
+</tr>
+<tr>
+<td>tryLock()</td>
+<td>以非阻塞的方式获取。如取得锁立即返回true，否则false。</td>
+</tr>
+<tr>
+<td>tryLock(long timeout, TimeOut unit)</td>
+<td>取得锁返回true；否则等待给定的单元时间，等待中获得锁返回true，等待结束，返回fasle。</td>
+</tr>
+<tr>
+<td>lockInterruptibly()</td>
+<td>获得所立即返回，否则当前线程处于阻塞状态直到获得锁，这个过程中，该线程可以被别的线程中断(InterruptedException)</td>
+</tr>
+</tbody>
+</table>
 
-<p>若子类尝试降覆盖方法的可见性，编译会报错。</p>
+<p>synchronized和lock的区别<br/>
+总的来说可以从用法，性能，锁的机制及功能上来区别。</p>
 
-<pre><code>class Father{
-    public void show(){
-        System.out.println(&quot;Father&quot;);
-    }
-}
+<table>
+<thead>
+<tr>
+<th></th>
+<th>synchronized</th>
+<th>lock</th>
+</tr>
+</thead>
 
-class Sub extends Father{
-    
-    private void show(){
-        System.out.println(&quot;Sub&quot;);
-    }
-    
-    public void show(String msg){
-        System.out.println(&quot;reload:&quot; + msg);
-    }
-    
-    public void show(String msg, String time){
-        System.out.println(&quot;reload:&quot; + msg + &quot; time:&quot; + time);
-    }
-    
-    public void show(int number){
-        System.out.println(&quot;reload:&quot; + number);
-    }
-}
-</code></pre>
-
-<p>输出</p>
-
-<pre><code>Untitled.java:9: 错误: Sub中的show()无法覆盖Father中的show()
-    private void show(){
-                 ^
-  正在尝试分配更低的访问权限; 以前为public
-1 个错误
-</code></pre>
+<tbody>
+<tr>
+<td>用法</td>
+<td>需要同步的对象中，1）锁方法，2）特定的代码块(锁对象或类），给JVM托管</td>
+<td>需要显示地指定起始位置和终止位置。更精准的线程语义</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>资源竞争不激烈时，优于lock，激烈时，性能下降很快</td>
+<td>ReentrantLock性能比较稳定</td>
+</tr>
+<tr>
+<td>锁机制</td>
+<td>锁的获得与释放都在块结构中，获得多个锁，以相反的顺序释放，自动释放</td>
+<td>手动释放做，必须在finally中释放。</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>无法非阻塞获取锁，进入临界区无法中断，必须阻塞等待释放资源</td>
+<td>包含synchronized的功能，提供非阻塞方式获取所、可中断线程的功能</td>
+</tr>
+</tbody>
+</table>
 
                         
                       </div>
@@ -231,14 +257,16 @@ class Sub extends Father{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/29 12:50 下午</span>
-                    
+                    <span class="date">2016/10/1 11:48 上午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14751246036816.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14752937281313.html#disqus_thread">comments</a>
                       
 
                        
@@ -248,66 +276,275 @@ class Sub extends Father{
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14751214147355.html">
+                <a class="clearlink" href="14752420902330.html">
                 
-                  <h1>16. Java面向对象的三个特征与含义</h1>
+                  <h1>21. 实现多线程的两种方法：Thread与Runnable</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h3 id="toc_0">封装</h3>
+                        	<p>实现多线程在java中有三种方法，前两种比较常用。</p>
 
-<p>封装：Java将现实中的对象抽象成一个类，并对它的属性和方法进行屏蔽保护，只允许特定的类可以访问，其它的进行隐藏，这个过程叫做封装。</p>
+<h3 id="toc_0">继承Thread</h3>
 
-<h3 id="toc_1">继承</h3>
+<p>1）继承Thread类，重写run方法</p>
 
-<p>继承：当两个类的关系是is-a的时候，可以考虑使用继承。它是一种层次结构，类的重用方式。当一个新类从现有类中派生出来，这个过程叫做继承。新类继承了原有类的属性和方法。缺点是继承树过于庞大之后,会导致子类继承后负担重,很多不需要的成员变量也被继承下来,整个类结构过于臃肿。</p>
-
-<h3 id="toc_2">多态</h3>
-
-<p>多态：允许不同类的对象对同一消息做出不同的响应。灵活抽象行为共享的优势。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。</p>
-
-<p>多态存在的三个必要条件<br/>
-一、要有继承；<br/>
-二、要有重写；<br/>
-三、父类引用指向子类对象。</p>
-
-<pre><code>class A {
-    public void show(){
-        System.out.println(&quot;This is A.&quot;);
+<pre><code>class MyThread extends Thread {
+    @Override
+    public void run(){
+        
     }
 }
+</code></pre>
 
-class B extends A{
-    public void show(){
-        System.out.println(&quot;This is B.&quot;);
-    }
+<h3 id="toc_1">实现Runnable</h3>
+
+<p>2）实现Runnable接口<br/>
+1.重写run方法，实例化后，再创建一个Thread的对象，将其传入Thread（object）方法中<br/>
+2.创建一个Thread对象，使用匿名内部类实现Runnable接口。</p>
+
+<p>Runnable接口中只声明了一个方法，返回类型为void。</p>
+
+<pre><code>public interface Runnable {
+    public abstract void run();
 }
+</code></pre>
 
-class C extends A{
-    public void show(){
-        System.out.println(&quot;This is C.&quot;);
+<pre><code>class MyThread implements Runnable {
+    @Override
+    public void run(){
+        System.out.println(&quot;runnable&quot;);
     }
 }
 
 class Main {
     public static void main(String[] args) {
-        A a = new A();
-        a.show();
-        A b = new B();
-        b.show();
-        A c = new C();
-        c.show(); 
+        MyThread th = new MyThread();
+        Thread run = new Thread(th);
+        Thread run2 = new Thread(new Runnable(){
+            public void run(){
+                System.out.println(&quot;inner runnable&quot;);
+            }
+        });
+        
+        run.start();
+        run2.start();
     }
 }
 </code></pre>
 
-<p>输出</p>
+<h3 id="toc_2">实现Callable</h3>
 
-<pre><code>This is A.
-This is B.
-This is C.
+<p>3）实现Callable（）接口，重写Call方法。<br/>
+前两种创建线程的方式都包含一个缺陷，在执行完任务后无法获得执行结果。如果要获取执行结果，就必须通过共享变量或者使用线程通信的方式来达到效果。</p>
+
+<p>Callable接口位于java.util.concurrent下，只包含一个方法。</p>
+
+<pre><code>public interface Callable&lt;V&gt; {
+    /**
+     * Computes a result, or throws an exception if unable to do so.
+     *
+     * @return computed result
+     * @throws Exception if unable to compute a result
+     */
+    V call() throws Exception;
+}
 </code></pre>
+
+<p>Callable一般配合ExecutorService接口中的submit方法来使用。</p>
+
+<pre><code>&lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task);
+&lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result);
+Future&lt;?&gt; submit(Runnable task);
+</code></pre>
+
+<h4 id="toc_3">Future</h4>
+
+<p>java.util.concurrent<br/>
+Future用于对具体的Runnable或者Callable任务的执行结果进行取消、查询是否完成、获取结果。可以通过get()获取其执行结果，这个方法或阻塞知道获得任务返回的结果。</p>
+
+<pre><code>public interface Future&lt;V&gt; {
+
+    boolean cancel(boolean mayInterruptIfRunning);
+
+    boolean isCancelled();
+
+    boolean isDone();
+
+    V get() throws InterruptedException, ExecutionException;
+
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+</code></pre>
+
+<ul>
+<li><p>cancel用来取消任务，若取消成功则返回true，取消失败则返回false。mayInterruptIfRunning用于表示是否取消（中断）正在执行却没有完成的任务，true表示可以取消。任务未开始执行和任务执行完成时，无论其值为true或false，都返回false，取消失败。若果任务正在执行，其值为true，则返回true，其值为false，则返回fasle。</p></li>
+<li><p>isCancelled()用来查看任务是否被取消成功，取消成功返回true否则false。</p></li>
+<li><p>isDone()用来判断任务是否执行完。</p></li>
+<li><p>get()用来获取执行结果。</p></li>
+<li><p>get(timeout, unit)用来在执行时间内获取结果，超时返回null。</p></li>
+</ul>
+
+<p>由此可见，Future接口提供了三种功能：<br/>
+1.判断任务是否完成。<br/>
+2.设定是否中断任务。<br/>
+3.可以获取任务的执行结果。</p>
+
+<h4 id="toc_4">FutureTask</h4>
+
+<p>FutureTask是RunnableFuture接口一种实现：</p>
+
+<pre><code>public class FutureTask&lt;V&gt; implements RunnableFuture&lt;V&gt;
+</code></pre>
+
+<p>RunnableFuture接口继承了Runnable和Future接口，FutureTask实现了Runnable接口，它可以作为Runnable接口的实现被线程执行，又可以作为Future得到Callable的返回值。</p>
+
+<pre><code>public interface RunnableFuture&lt;V&gt; extends Runnable, Future&lt;V&gt; {
+    /**
+     * Sets this Future to the result of its computation
+     * unless it has been cancelled.
+     */
+    void run();
+}
+</code></pre>
+
+<p>FutureTask有两个构造器方法，分别可以使用Callable和Runnable的实现。</p>
+
+<pre><code>public FutureTask(Callable&lt;V&gt; callable) {
+}
+public FutureTask(Runnable runnable, V result) {
+}
+</code></pre>
+
+<h4 id="toc_5">使用方法</h4>
+
+<p>1)Callable+Future</p>
+
+<pre><code>import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class Test {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Task task = new Task();
+        Future&lt;String&gt; result = executor.submit(task);
+        executor.shutdown();
+         
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+         
+        System.out.println(&quot;main process is running&quot;);
+         
+        try {
+            System.out.println(&quot;result:&quot;+result.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+         
+        System.out.println(&quot;all tasks finished&quot;);
+    }
+}
+class Task implements Callable&lt;String&gt;{
+    @Override
+    public String call() throws Exception {
+        System.out.println(&quot;sub process is running&quot;);
+        Thread.sleep(3000);
+        
+        return &quot;String result from call&quot;;
+    }
+}
+</code></pre>
+
+<p>2)Callable+FutureTask<br/>
+FutureTask提供了使用Callable和Runnable两种实现。</p>
+
+<pre><code>import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
+public class Test {
+    public static void main(String[] args) {
+        //1.Callable+FutureTask
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Task task = new Task();
+        FutureTask&lt;String&gt; ft = new FutureTask&lt;String&gt;(task);
+        executor.submit(task);
+        executor.shutdown();
+        
+        //2.Callable+FutureTask+Thread
+        Task task = new Task();
+        FutureTask&lt;String&gt; ft = new FutureTask&lt;String&gt;(task);
+        Thread th = new Thread(ft);
+        th.start();
+         
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+         
+        System.out.println(&quot;main process is running&quot;);
+         
+        try {
+            System.out.println(&quot;result:&quot;+ft.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+         
+        System.out.println(&quot;all tasks finished&quot;);
+    }
+}
+class Task implements Callable&lt;String&gt;{
+    @Override
+    public String call() throws Exception {
+        System.out.println(&quot;sub process is running&quot;);
+        Thread.sleep(3000);
+        
+        return &quot;String result from call&quot;;
+    }
+}
+</code></pre>
+
+<p>Callable接口与Runnable接口类似，区别如下：</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Callable</th>
+<th>Runnable</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>返回值</td>
+<td>提供</td>
+<td>不提供</td>
+</tr>
+<tr>
+<td>抛出异常</td>
+<td>call()可以</td>
+<td>run()不可以</td>
+</tr>
+<tr>
+<td>异步计算结果</td>
+<td>检查计算是否完成。 Future对象的get方法，阻塞线程</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
 
                         
                       </div>
@@ -316,14 +553,16 @@ This is C.
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/29 11:56 上午</span>
-                    
+                    <span class="date">2016/9/30 21:28 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
           				   
                   </div>
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14751214147355.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14752420902330.html#disqus_thread">comments</a>
                       
 
                        
@@ -409,31 +648,31 @@ This is C.
 	      
 		      
 			      <li class="post">
+			        <a href="14759831063023.html">30. Java IO与NIO</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759174977641.html">29. foreach与正常for循环效率对比</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759170796736.html">28. wait()和sleep()的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14757460203014.html">26. ThreadPool用法与优势</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  

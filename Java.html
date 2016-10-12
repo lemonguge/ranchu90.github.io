@@ -103,20 +103,39 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748977980780.html">
+                <a class="clearlink" href="14759831063023.html">
                 
-                  <h1>6. Hashcode的作用</h1>
+                  <h1>30. Java IO与NIO</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来散列存储结构中确定对象的存储地址。</p>
+                        	<p>NIO，全称non-blocking IO，由jdk1.4推出，它是一种非阻塞的IO方式，为所有的基本类型提供了缓存支持。</p>
 
-<p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
+<p>IO操作包括，对硬盘的读写，对socket的读写及外设的读写。</p>
 
-<p>3.如果equals()被重写，那么该对象的hashCode()也要被重写，以保证2中的条件成立。</p>
+<p>阻塞和非阻塞<br/>
+阻塞：当某个事件或任务执行过程中，它发出一个请求操作，当该请求所需的条件不满足时，该事件会一直停留在这里，等待直到条件满足。</p>
 
-<p>4.由邻接矩阵的结构可知，hashCode值相同的对象，其内容不一定相同，只能说明他们存放在同一条链表中。</p>
+<p>非阻塞：当某个事件或任务执行过程中，它发出一个请求操作，当该请求所需的条件不满足时，会立即返回一个标志信息告知条件不满足，不会一直等待条件满足。</p>
+
+<p>阻塞IO和非阻塞IO<br/>
+当用户发起一个IO请求操作，内核会去查看要读取的数据是否就绪。<br/>
+对于阻塞IO，如果数据没有准备就绪，就一直等待知道数据就绪。<br/>
+对于非阻塞IO来说，如果数据没准备就绪，就返回一个标识信息告诉用户线程当前的数据没有准备就绪。数据准备就绪后，便将数据拷贝到用户线程，完成一整个完整的IO请求操作。</p>
+
+<p>完整的IO请求包括两个阶段：<br/>
+1）查看数据是否就绪<br/>
+2）进行数据拷贝（内核将数据拷贝到用户线程）</p>
+
+<p>阻塞IO和非阻塞IO区别在于第一个阶段，没有数据的时候是一直等待还是返回一个标志信息。</p>
+
+<p>同步IO和异步IO：<br/>
+       从字面的意思可以看出：同步IO即 如果一个线程请求进行IO操作，在IO操作完成之前，该线程会被阻塞；<br/>
+　　而异步IO为 如果一个线程请求进行IO操作，IO操作不会导致请求线程被阻塞。<br/>
+　　事实上，同步IO和异步IO模型是针对用户线程和内核的交互来说的：<br/>
+　　对于同步IO：当用户发出IO请求操作之后，如果数据没有就绪，需要通过用户线程或者内核不断地去轮询数据是否就绪，当数据就绪时，再将数据从内核拷贝到用户线程；<br/>
+　　而异步IO：只有IO请求操作的发出是由用户线程来进行的，IO操作的两个阶段都是由内核自动完成，然后发送通知告知用户线程IO操作已经完成。也就是说在异步IO中，不会对用户线程产生任何阻塞。</p>
 
                         
                       </div>
@@ -125,7 +144,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:49 下午</span>
+                    <span class="date">2016/10/9 11:18 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -134,7 +153,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748977980780.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14759831063023.html#disqus_thread">comments</a>
                       
 
                        
@@ -144,21 +163,55 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748971773098.html">
+                <a class="clearlink" href="14759174977641.html">
                 
-                  <h1>5. Java的四种引用，强弱软虚，用到的场景</h1>
+                  <h1>29. foreach与正常for循环效率对比</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>Java对对象的引用分为四种：<br/>
-1.强引用。强引用的对象不会被垃圾回收器回收。内存不足时，宁可抛出OOM错误也不会回收强引用。</p>
+                        	<table>
+<thead>
+<tr>
+<th></th>
+<th>for</th>
+<th>foreach</th>
+</tr>
+</thead>
 
-<p>2.软引用。可有可无的引用，当JVM内存足够的时候不会被回收；当JVM内存不足的时候，发现软引用的存在，会回收软引用。</p>
+<tbody>
+<tr>
+<td>跳跃访问</td>
+<td>能</td>
+<td>否</td>
+</tr>
+<tr>
+<td>修改当前访问值</td>
+<td>能（但不能删除）</td>
+<td>否</td>
+</tr>
+<tr>
+<td>集合类型</td>
+<td>效率稍高</td>
+<td>稍低</td>
+</tr>
+<tr>
+<td>数组类型</td>
+<td>效率稍低</td>
+<td>稍高</td>
+</tr>
+<tr>
+<td>链表LinkedList</td>
+<td>稍低</td>
+<td>稍高</td>
+</tr>
+</tbody>
+</table>
 
-<p>3.若引用。可有可无的引用，一旦被垃圾回收器发现，马上就被其回收。</p>
-
-<p>4.幽灵引用。它一般用来标记被回收的对象，当对象被回收后，会受到一条消息。虚引用与软引用和弱引用的一个区别在于：虚引用必须和引用队列 （ReferenceQueue）联合使用。</p>
+<p>两种方式在遍历数组的时候时间普遍都较快，在遍历集合的时候耗时会更久一些。在遍历数组时，foreach的表现要稍微好一点，在遍历集合的时候，for的表现要好一点。但是不管哪种情况，for和foreach这两种遍历方式时间都相差不大。因此对于这两者的比较在时间效率来说应该相差不会很大（上面没有测试复杂数据的情况，以及其他集合结果的情况，可能不准确）。主要是在对于两者的应用场景上的选择：<br/>
+（1）普通for循环可以根据下标来访问；<br/>
+（2）foreach在代码结构上更加清晰、简单；<br/>
+（3）foreach在遍历的时候会锁定集合中的对象，期间不能修改，而for能对集合中的元素进行修改。</p>
 
                         
                       </div>
@@ -167,7 +220,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:39 下午</span>
+                    <span class="date">2016/10/8 17:4 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -176,7 +229,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748971773098.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14759174977641.html#disqus_thread">comments</a>
                       
 
                        
@@ -186,55 +239,73 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748970236814.html">
+                <a class="clearlink" href="14759170796736.html">
                 
-                  <h1>4.Object有哪些公用方法？</h1>
+                  <h1>28. wait()和sleep()的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">1．clone方法</h2>
+                        	<table>
+<thead>
+<tr>
+<th></th>
+<th>wait()</th>
+<th>sleep()</th>
+</tr>
+</thead>
 
-<p>保护方法，实现对象的浅复制，只有实现了Cloneable接口才可以调用该方法，否则抛出CloneNotSupportedException异常。</p>
+<tbody>
+<tr>
+<td>原理</td>
+<td>Object的方法，用于线程通信</td>
+<td>Thread的静态方法</td>
+</tr>
+<tr>
+<td>对锁的处理机制</td>
+<td>释放资源给其它线程使用，在调用notify或notifyAll之后，重新参与争夺资源</td>
+<td>只是放cpu，时间到即恢复运行，不涉及线程通信</td>
+</tr>
+<tr>
+<td>使用区域</td>
+<td>必须在同步控制方法或语句块中使用(synchronized)</td>
+<td>可在任何地方</td>
+</tr>
+</tbody>
+</table>
 
-<h2 id="toc_1">2．getClass方法</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>sleep</th>
+<th>yield</th>
+</tr>
+</thead>
 
-<p>final方法，获得运行时类型。</p>
-
-<h2 id="toc_2">3．toString方法</h2>
-
-<p>该方法用得比较多，一般子类都有覆盖。</p>
-
-<h2 id="toc_3">4．finalize方法</h2>
-
-<p>该方法用于释放资源。因为无法确定该方法什么时候被调用，很少使用。自动垃圾收集 器 会 调用 finalize() 方法。</p>
-
-<h2 id="toc_4">5．equals方法</h2>
-
-<p>该方法是非常重要的一个方法。一般equals和<code>==</code>是不一样的，但是在Object中两者是一样的。子类一般都要重写这个方法。</p>
-
-<h2 id="toc_5">6．hashCode方法</h2>
-
-<p>该方法用于哈希查找，重写了equals方法一般都要重写hashCode方法。这个方法在一些具有哈希功能的Collection中用到。<br/>
-一般必须满足obj1.equals(obj2)<code>==</code>true。可以推出obj1.hashCode()<code>==</code>obj2.hashCode()，但是hashCode相等不一定就满足equals。不过为了提高效率，应该尽量使上面两个条件接近等价。</p>
-
-<h2 id="toc_6">7．wait方法</h2>
-
-<p>wait方法就是使当前线程等待该对象的锁，当前线程必须是该对象的拥有者，也就是具有该对象的锁。wait()方法一直等待，直到获得锁或者被中断。wait(long timeout)设定一个超时间隔，如果在规定时间内没有获得锁就返回。<br/>
-调用该方法后当前线程进入睡眠状态，直到以下事件发生。<br/>
-（1）其他线程调用了该对象的notify方法。<br/>
-（2）其他线程调用了该对象的notifyAll方法。<br/>
-（3）其他线程调用了interrupt中断该线程。<br/>
-（4）时间间隔到了。<br/>
-此时该线程就可以被调度了，如果是被中断的话就抛出一个InterruptedException异常。</p>
-
-<h2 id="toc_7">8．notify方法</h2>
-
-<p>该方法唤醒在该对象上等待的某个线程。</p>
-
-<h2 id="toc_8">9．notifyAll方法</h2>
-
-<p>该方法唤醒在该对象上等待的所有线程。</p>
+<tbody>
+<tr>
+<td>运行机会</td>
+<td>会给低优先级的线程机会运行</td>
+<td>只给相同优先级或更高的线程运行</td>
+</tr>
+<tr>
+<td>转入状态</td>
+<td>使线程转入阻塞状态，短时间内部执行</td>
+<td>使线程转入可执行状态，可参与竞争cpu，所以可能该线程立即又被执行</td>
+</tr>
+<tr>
+<td>异常</td>
+<td>抛出InterruptedException</td>
+<td>无</td>
+</tr>
+<tr>
+<td>移植性</td>
+<td>比yield高</td>
+<td>与操作系统相关</td>
+</tr>
+</tbody>
+</table>
 
                         
                       </div>
@@ -243,7 +314,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:37 下午</span>
+                    <span class="date">2016/10/8 16:57 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -252,7 +323,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748970236814.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14759170796736.html#disqus_thread">comments</a>
                       
 
                        
@@ -338,31 +409,31 @@
 	      
 		      
 			      <li class="post">
+			        <a href="14759831063023.html">30. Java IO与NIO</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759174977641.html">29. foreach与正常for循环效率对比</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759170796736.html">28. wait()和sleep()的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14757460203014.html">26. ThreadPool用法与优势</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  二维数组作为参数在C语言函数中如何传递 - cd's blog
+  Java - cd's blog
   
   </title>
   
@@ -94,125 +94,103 @@
        
 
  <script type="text/javascript">
-  $(function(){
-    $('#menu_item_index').addClass('is_active');
-  });
+	$(function(){
+		$('#menu_item_index').addClass('is_active');
+	});
 </script>
 <div class="row">
-  <div class="large-8 medium-8 columns">
-      <div class="markdown-body article-wrap">
-       <div class="article">
-          
-          <h1>二维数组作为参数在C语言函数中如何传递</h1>
-     
-        <div class="read-more clearfix">
-          <span class="date">2016/4/3 1:18 上午</span>
-
-          <span>posted in&nbsp;</span> 
-          
-              <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
-           
-         
-          <span class="comments">
-            
-              <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
-            
-
-            
-          </span>
-
-        </div>
-      </div><!-- article -->
-
-      <div class="article-content">
-      <blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
-
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
+	<div class="large-8 medium-8 columns">
+		<div class="markdown-body home-categories">
+		
+			<div class="article">
+                <a class="clearlink" href="14748751468195.html">
+                
+                  <h1>J2SE基础问题汇总</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<pre><code>1.  九种基本数据类型的大小，以及他们的封装类
+2.  Switch能否用string做参数？
+3. equals()与==的区别
+4. Object有哪些公用方法？
+5. Java的四种引用，强弱软虚，用到的场景。
+6. Hashcode的作用
+7. ArrayList、LinkedList、Vector的区别
+8. String、StringBuffer与StringBuilder的区别
+9. Map、Set、List、Queue、Stack的特点与用法
+10. HashMap和HashTable的区别
+11. HashMap和ConcurrentHashMap的区别
+12. TreeMap、HashMap、LinkedHashMap的区别。
+13. Collection包结构，与Collections的区别
+14. try catch finally，try里有return，finally还执行么
+15. Exception与Error包结构。常见的OOM和SOF。
+16. Java面向对象的三个特征与含义
+17. Override和Overload的含义去区别
+18. Interface与abstract类的区别
+19. Static inner class 与non static inner class的区别
+20. Java多态的实现原理
+21. 实现多线程的两种方法：Thread与Runnable
+22. 线程同步的方法：synchronized、lock、reentrantLock等
+23. 锁的等级：方法锁、对象锁、类锁。
+24. 写出生产者消费者模式。
+25. ThreadLocal的设计理念与作用。
+26. ThreadPool用法与优势。
+27. Concurrent包里的其他东西：ArrayBlockingQueue、CountDownLatch等等
+28. wait()和sleep()的区别
+29. foreach与正常for循环效率对比
+30. Java IO与NIO
+31. 反射的作用与原理
+32. 泛型常用特点：List&lt;String&gt;能否转为List&lt;Object&gt;
+33. 解析XML的几种方式的原理与特点：DOM、SAX、PULL
+34. Java与C++对比
+35. Java 1.7与1.8新特性
+36. 设计模式：单例、工厂、适配器、责任链、观察者等等
+37. JNI的使用
 </code></pre>
 
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/26 15:32 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14748751468195.html#disqus_thread">comments</a>
+                      
 
-<hr/>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
-
-<hr/>
-
-<p>手工寻址</p>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
-
-      </div>
-
-      <div class="row">
-        <div class="large-6 columns">
-        <p class="text-left" style="padding:15px 0px;">
-      
-          <a href="14598725533534.html" 
-          title="Previous Post: Objective-C中的类别">&laquo; Objective-C中的类别</a>
-      
-        </p>
-        </div>
-        <div class="large-6 columns">
-      <p class="text-right" style="padding:15px 0px;">
-      
-          <a  href="14595804338386.html" 
-          title="Next Post: First blog">First blog &raquo;</a>
-      
-      </p>
-        </div>
-      </div>
-      <div class="comments-wrap">
-        <div class="share-comments">
-          
-
-          
-            <div id="disqus_thread"></div>
-          
-
-          
-        </div>
-      </div>
-    </div><!-- article-wrap -->
-  </div><!-- large 8 -->
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+              
 
 
-
+			<div class="row">
+			  <div class="large-6 columns">
+			  <p class="text-left" style="padding-top:25px;">
+			   <a href="Java_8.html">&laquo; Prev Page</a>  
+			  </p>
+			  </div>
+			  <div class="large-6 columns">
+			<p class="text-right" style="padding-top:25px;">
+			
+			</p>
+			  </div>
+			</div>
+		</div>
+	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

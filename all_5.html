@@ -103,9 +103,9 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14749467173553.html">
+                <a class="clearlink" href="14750544918726.html">
                 
-                  <h1>8. String、StringBuffer与StringBuilder的区别</h1>
+                  <h1>12. TreeMap、HashMap、LinkedHashMap的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
@@ -114,42 +114,278 @@
 <thead>
 <tr>
 <th></th>
-<th>String</th>
-<th>StringBuffer</th>
-<th>StringBuilder</th>
+<th>HashMap</th>
+<th>TreeMap</th>
+<th>LinkedHashMap</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>可变性</td>
-<td>不可变类</td>
-<td>可变</td>
-<td>可变</td>
+<td>遍历顺序</td>
+<td>随机</td>
+<td>实现了sortMap接口，按自然顺序或自定义顺序</td>
+<td>与输入顺序相同</td>
+</tr>
+</tbody>
+</table>
+
+<p>weakHashMap与HashMap类似，它从用若引用，其中key不再被外部引用时即被JVM回收，HashMap采用强引用，key不被外部引用时，必须从Map中删除才能被GC回收</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/28 17:21 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14750544918726.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14749678612341.html">
+                
+                  <h1>11. HashMap、Hashtable、ConcurrentHashMap的区别</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<h2 id="toc_0">多线程下的HashMap</h2>
+
+<p>HashMap是线程不安全的，在多线程环境中并发操作会存在以下问题：</p>
+
+<ul>
+<li>  多线程使用put()，触发resize(rehash)操作，创建多个newTable，再同时rehash，导致链表错乱。这时候，再使用get()操作将进入无线循环。getEntry获取table中的链表，链表成了一个循环链表，所以进入无线循环。</li>
+</ul>
+
+<pre><code>public V get(Object key) {
+        Node&lt;K,V&gt; e;
+        return (e = getNode(hash(key), key)) == null ? null : e.value;
+    }
+    
+ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+        if ((p = tab[i = (n - 1) &amp; hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node&lt;K,V&gt; e; K k;
+            if (p.hash == hash &amp;&amp;
+                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+                e = p;
+            else if (p instanceof TreeNode)
+                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &amp;&amp;
+                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size &gt; threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }
+</code></pre>
+
+<ul>
+<li>remove()，遍历map时调用remove，可能会导致丢失删除的数据后面的数据，跳到下一个槽位。</li>
+</ul>
+
+<h2 id="toc_1">ConcurrentHashMap和Hashtable</h2>
+
+<p>concurrent,同时发生的。同时发生的hashmap，从名字就可以知道它专门用于多线程的情况。<br/>
+它不同于hashtable，hashtable在方法前使用synchronized来保证同步这会导致被当一个对象被锁住的时候，另一个线程无法使用get()方法，而ConcurrentHashMap对map进行分段，在插入时使用段（继承自重用锁），来实现线程之间的同步。<br/>
+但是在最新的java源码里我看到的是在put方法中使用synchronized块来实现同步。</p>
+
+<pre><code> /** Implementation for put and putIfAbsent */
+    final V putVal(K key, V value, boolean onlyIfAbsent) {
+        if (key == null || value == null) throw new NullPointerException();
+        int hash = spread(key.hashCode());
+        int binCount = 0;
+        for (Node&lt;K,V&gt;[] tab = table;;) {
+            Node&lt;K,V&gt; f; int n, i, fh;
+            if (tab == null || (n = tab.length) == 0)
+                tab = initTable();
+            else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) {
+                if (casTabAt(tab, i, null,
+                             new Node&lt;K,V&gt;(hash, key, value, null)))
+                    break;                   // no lock when adding to empty bin
+            }
+            else if ((fh = f.hash) == MOVED)
+                tab = helpTransfer(tab, f);
+            else {
+                V oldVal = null;
+                synchronized (f) {
+                    if (tabAt(tab, i) == f) {
+                        if (fh &gt;= 0) {
+                            binCount = 1;
+                            for (Node&lt;K,V&gt; e = f;; ++binCount) {
+                                K ek;
+                                if (e.hash == hash &amp;&amp;
+                                    ((ek = e.key) == key ||
+                                     (ek != null &amp;&amp; key.equals(ek)))) {
+                                    oldVal = e.val;
+                                    if (!onlyIfAbsent)
+                                        e.val = value;
+                                    break;
+                                }
+                                Node&lt;K,V&gt; pred = e;
+                                if ((e = e.next) == null) {
+                                    pred.next = new Node&lt;K,V&gt;(hash, key,
+                                                              value, null);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (f instanceof TreeBin) {
+                            Node&lt;K,V&gt; p;
+                            binCount = 2;
+                            if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,
+                                                           value)) != null) {
+                                oldVal = p.val;
+                                if (!onlyIfAbsent)
+                                    p.val = value;
+                            }
+                        }
+                    }
+                }
+                if (binCount != 0) {
+                    if (binCount &gt;= TREEIFY_THRESHOLD)
+                        treeifyBin(tab, i);
+                    if (oldVal != null)
+                        return oldVal;
+                    break;
+                }
+            }
+        }
+        addCount(1L, binCount);
+        return null;
+    }
+</code></pre>
+
+<p>以下三篇文章中有详细的说明可以参考下</p>
+
+<p><a href="http://ifeve.com/concurrenthashmap/">http://ifeve.com/concurrenthashmap/</a><br/>
+<a href="http://ifeve.com/java-concurrent-hashmap-1/">http://ifeve.com/java-concurrent-hashmap-1/</a><br/>
+<a href="http://ifeve.com/java-concurrent-hashmap-2/">http://ifeve.com/java-concurrent-hashmap-2/</a></p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/27 17:17 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14749678612341.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14749657860314.html">
+                
+                  <h1>10. HashMap和HashTable的区别</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Map<br/>
+├Hashtable<br/>
+├HashMap<br/>
+└WeakHashMap</p>
+
+<p>HashMap和HashTable都是Java中哈希表的实现方式。其中HashTable里的大多数方法比如add、remove..等前有synchronized修饰，所以它在多线程的环境下是线程安全的，也因此需要耗费性能在同步的问题上。而HashMap不是，所以它的效率较HashTable高。<br/>
+HashMap中可以使用null作为key，这在HashTable中是不允许的。<br/>
+HashMap中的contains方法因为语义不明改为containsKey()和containsValue()。<br/>
+(key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>HashMap</th>
+<th>Hashtable</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>null作为key</td>
+<td>能</td>
+<td>否</td>
+</tr>
+<tr>
+<td>contains()</td>
+<td>改为containsKey() constainsValue()</td>
+<td>继承Dicitionary</td>
 </tr>
 <tr>
 <td>线程安全</td>
-<td>是</td>
-<td>是</td>
-<td>是</td>
+<td>否 效率较高</td>
+<td>是 效率较低</td>
 </tr>
 <tr>
-<td>适用场合</td>
-<td>被共享的场合 少量数据</td>
-<td>经常修改的场合 避免附加操作 无用对象 提高效率 多线程大量数据</td>
-<td>单线程下大量数据</td>
+<td>迭代</td>
+<td>iterator</td>
+<td>enumeration</td>
 </tr>
 <tr>
-<td>构建</td>
-<td>构造函数 ==赋值</td>
-<td>构造函数</td>
-<td>构造函数</td>
+<td>hash性能</td>
+<td>几乎一样 使用hashcode()方法</td>
+<td></td>
 </tr>
 <tr>
-<td>执行效率</td>
-<td>低</td>
-<td>中</td>
-<td>高</td>
+<td>hash值</td>
+<td>(key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);</td>
+<td>直接hashcode方法的值</td>
 </tr>
 </tbody>
 </table>
@@ -161,140 +397,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/27 11:25 上午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14749467173553.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14748992011687.html">
-                
-                  <h1>7. ArrayList、LinkedList、Vector的区别</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>Collection包结构，Collection是一个集合接口，它提供了对集合对象进行基本操作的通用接口方法。实现该接口的类主要有List和Set，其目的在于为各种具体的集合提供最大化的统一的操作方式。<br/>
-Collection包结构</p>
-
-<pre><code>Collection
-├List
-│├LinkedList
-│├ArrayList
-│└Vector
-│　└Stack
-└Set
-</code></pre>
-
-<p>ArrayList和Vector是顺序存储（物理上连续的内存空间）的集合，使用的时候可以根据下标进行访问，索引数据的效率高。但是在删除或者插入时，需要移动容器中的元素，因此插入删除时，效率低。<br/>
-另外，Vector的大多数方法前都有synchronized关键字，因此是线程安全的，ArrayList则不是。</p>
-
-<p>容量扩充：当ArrayList或Vector中设定的容量不够容纳新的节点时，会自动调用grow()方法进行容量的扩充。ArrayList默认扩充原来大小的1.5倍。Vector默认扩充原来大小的2倍，指定capacityIncrement的话，每次扩充指定的大小。</p>
-
-<pre><code>//ArrayList
-private void grow(int minCapacity) {
-        // overflow-conscious code
-        int oldCapacity = elementData.length;
-        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
-        if (newCapacity - minCapacity &lt; 0)
-            newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
-            newCapacity = hugeCapacity(minCapacity);
-        // minCapacity is usually close to size, so this is a win:
-        elementData = Arrays.copyOf(elementData, newCapacity);
-    }
-    
-//LinkedList
-private void grow(int minCapacity) {
-        // overflow-conscious code
-        int oldCapacity = elementData.length;
-        int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?
-                                         capacityIncrement : oldCapacity);
-        if (newCapacity - minCapacity &lt; 0)
-            newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
-            newCapacity = hugeCapacity(minCapacity);
-        elementData = Arrays.copyOf(elementData, newCapacity);
-    }
-</code></pre>
-
-<p>LinkedList采用双向链表实现，无法使用下标访问。每次由下标获取元素的时候，先判断其在前半段还是后半段，在前半段从头结点开始查找，在后半段从尾节点从后往前查找。因此，查找时，效率较ArrayList和Vector低。但是插入或者删除操作，只需要进行节点的删除或者连接操作，因此效率较前二者高。</p>
-
-<pre><code>Node&lt;E&gt; node(int index) {
-        // assert isElementIndex(index);
-
-        if (index &lt; (size &gt;&gt; 1)) {
-            Node&lt;E&gt; x = first;
-            for (int i = 0; i &lt; index; i++)
-                x = x.next;
-            return x;
-        } else {
-            Node&lt;E&gt; x = last;
-            for (int i = size - 1; i &gt; index; i--)
-                x = x.prev;
-            return x;
-        }
-    }
-</code></pre>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/26 22:13 下午</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-                        <a href="http://ranchu90.github.io/14748992011687.html#disqus_thread">comments</a>
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14748977980780.html">
-                
-                  <h1>6. Hashcode的作用</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>1.在HashMap、HashTable..等集合类中，采用邻接矩阵的数据结构实现，hashCode()值用来散列存储结构中确定对象的存储地址。</p>
-
-<p>2.找到目标地址后，在链表的遍历中使用equals()方法判断两个对象的内容是否相同。</p>
-
-<p>3.如果equals()被重写，那么该对象的hashCode()也要被重写，以保证2中的条件成立。</p>
-
-<p>4.由邻接矩阵的结构可知，hashCode值相同的对象，其内容不一定相同，只能说明他们存放在同一条链表中。</p>
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/9/26 21:49 下午</span>
+                    <span class="date">2016/9/27 16:43 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -303,7 +406,7 @@ private void grow(int minCapacity) {
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748977980780.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14749657860314.html#disqus_thread">comments</a>
                       
 
                        
@@ -389,31 +492,31 @@ private void grow(int minCapacity) {
 	      
 		      
 			      <li class="post">
+			        <a href="14759831063023.html">30. Java IO与NIO</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759174977641.html">29. foreach与正常for循环效率对比</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759170796736.html">28. wait()和sleep()的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14757460203014.html">26. ThreadPool用法与优势</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  

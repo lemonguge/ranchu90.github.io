@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  二维数组作为参数在C语言函数中如何传递 - cd's blog
+  30. Java IO与NIO - cd's blog
   
   </title>
   
@@ -103,19 +103,19 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>二维数组作为参数在C语言函数中如何传递</h1>
+          <h1>30. Java IO与NIO</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/4/3 1:18 上午</span>
+          <span class="date">2016/10/9 11:18 上午</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+              <span class="posted-in"><a href='Java.html'>Java</a></span>
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14759831063023.html#disqus_thread">comments</a>
             
 
             
@@ -125,57 +125,32 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
+      <p>NIO，全称non-blocking IO，由jdk1.4推出，它是一种非阻塞的IO方式，为所有的基本类型提供了缓存支持。</p>
 
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
-</code></pre>
+<p>IO操作包括，对硬盘的读写，对socket的读写及外设的读写。</p>
 
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
+<p>阻塞和非阻塞<br/>
+阻塞：当某个事件或任务执行过程中，它发出一个请求操作，当该请求所需的条件不满足时，该事件会一直停留在这里，等待直到条件满足。</p>
 
-<hr/>
+<p>非阻塞：当某个事件或任务执行过程中，它发出一个请求操作，当该请求所需的条件不满足时，会立即返回一个标志信息告知条件不满足，不会一直等待条件满足。</p>
 
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
+<p>阻塞IO和非阻塞IO<br/>
+当用户发起一个IO请求操作，内核会去查看要读取的数据是否就绪。<br/>
+对于阻塞IO，如果数据没有准备就绪，就一直等待知道数据就绪。<br/>
+对于非阻塞IO来说，如果数据没准备就绪，就返回一个标识信息告诉用户线程当前的数据没有准备就绪。数据准备就绪后，便将数据拷贝到用户线程，完成一整个完整的IO请求操作。</p>
 
-<hr/>
+<p>完整的IO请求包括两个阶段：<br/>
+1）查看数据是否就绪<br/>
+2）进行数据拷贝（内核将数据拷贝到用户线程）</p>
 
-<p>手工寻址</p>
+<p>阻塞IO和非阻塞IO区别在于第一个阶段，没有数据的时候是一直等待还是返回一个标志信息。</p>
 
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
+<p>同步IO和异步IO：<br/>
+       从字面的意思可以看出：同步IO即 如果一个线程请求进行IO操作，在IO操作完成之前，该线程会被阻塞；<br/>
+　　而异步IO为 如果一个线程请求进行IO操作，IO操作不会导致请求线程被阻塞。<br/>
+　　事实上，同步IO和异步IO模型是针对用户线程和内核的交互来说的：<br/>
+　　对于同步IO：当用户发出IO请求操作之后，如果数据没有就绪，需要通过用户线程或者内核不断地去轮询数据是否就绪，当数据就绪时，再将数据从内核拷贝到用户线程；<br/>
+　　而异步IO：只有IO请求操作的发出是由用户线程来进行的，IO操作的两个阶段都是由内核自动完成，然后发送通知告知用户线程IO操作已经完成。也就是说在异步IO中，不会对用户线程产生任何阻塞。</p>
 
       </div>
 
@@ -183,16 +158,13 @@ int main(){
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14598725533534.html" 
-          title="Previous Post: Objective-C中的类别">&laquo; Objective-C中的类别</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14595804338386.html" 
-          title="Next Post: First blog">First blog &raquo;</a>
+          <a  href="14759174977641.html" 
+          title="Next Post: 29. foreach与正常for循环效率对比">29. foreach与正常for循环效率对比 &raquo;</a>
       
       </p>
         </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  二维数组作为参数在C语言函数中如何传递 - cd's blog
+  28. wait()和sleep()的区别 - cd's blog
   
   </title>
   
@@ -103,19 +103,19 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>二维数组作为参数在C语言函数中如何传递</h1>
+          <h1>28. wait()和sleep()的区别</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/4/3 1:18 上午</span>
+          <span class="date">2016/10/8 16:57 下午</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+              <span class="posted-in"><a href='Java.html'>Java</a></span>
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14759170796736.html#disqus_thread">comments</a>
             
 
             
@@ -125,57 +125,66 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
+      <table>
+<thead>
+<tr>
+<th></th>
+<th>wait()</th>
+<th>sleep()</th>
+</tr>
+</thead>
 
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
-</code></pre>
+<tbody>
+<tr>
+<td>原理</td>
+<td>Object的方法，用于线程通信</td>
+<td>Thread的静态方法</td>
+</tr>
+<tr>
+<td>对锁的处理机制</td>
+<td>释放资源给其它线程使用，在调用notify或notifyAll之后，重新参与争夺资源</td>
+<td>只是放cpu，时间到即恢复运行，不涉及线程通信</td>
+</tr>
+<tr>
+<td>使用区域</td>
+<td>必须在同步控制方法或语句块中使用(synchronized)</td>
+<td>可在任何地方</td>
+</tr>
+</tbody>
+</table>
 
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>sleep</th>
+<th>yield</th>
+</tr>
+</thead>
 
-<hr/>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
-
-<hr/>
-
-<p>手工寻址</p>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
+<tbody>
+<tr>
+<td>运行机会</td>
+<td>会给低优先级的线程机会运行</td>
+<td>只给相同优先级或更高的线程运行</td>
+</tr>
+<tr>
+<td>转入状态</td>
+<td>使线程转入阻塞状态，短时间内部执行</td>
+<td>使线程转入可执行状态，可参与竞争cpu，所以可能该线程立即又被执行</td>
+</tr>
+<tr>
+<td>异常</td>
+<td>抛出InterruptedException</td>
+<td>无</td>
+</tr>
+<tr>
+<td>移植性</td>
+<td>比yield高</td>
+<td>与操作系统相关</td>
+</tr>
+</tbody>
+</table>
 
       </div>
 
@@ -183,16 +192,16 @@ int main(){
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14598725533534.html" 
-          title="Previous Post: Objective-C中的类别">&laquo; Objective-C中的类别</a>
+          <a href="14759174977641.html" 
+          title="Previous Post: 29. foreach与正常for循环效率对比">&laquo; 29. foreach与正常for循环效率对比</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14595804338386.html" 
-          title="Next Post: First blog">First blog &raquo;</a>
+          <a  href="14757460203014.html" 
+          title="Next Post: 26. ThreadPool用法与优势">26. ThreadPool用法与优势 &raquo;</a>
       
       </p>
         </div>

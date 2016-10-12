@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  二维数组作为参数在C语言函数中如何传递 - cd's blog
+  26. ThreadPool用法与优势 - cd's blog
   
   </title>
   
@@ -103,19 +103,19 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>二维数组作为参数在C语言函数中如何传递</h1>
+          <h1>26. ThreadPool用法与优势</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2016/4/3 1:18 上午</span>
+          <span class="date">2016/10/6 17:27 下午</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='C/C++.html'>C/C++</a></span>
+              <span class="posted-in"><a href='Java.html'>Java</a></span>
            
          
           <span class="comments">
             
-              <a href="http://ranchu90.github.io/14596175387256.html#disqus_thread">comments</a>
+              <a href="http://ranchu90.github.io/14757460203014.html#disqus_thread">comments</a>
             
 
             
@@ -125,57 +125,35 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <blockquote>
-<p>今天做了几道处理字符串的面试题，发现自己已经忘了二数组如何在C语言函数中作为参数传递。<br/>
-现在把方法整理出来，以备能很快地回忆起来。</p>
-</blockquote>
+      <p>线程池的优势<br/>
+合理利用线程池能够带来三个好处。</p>
 
-<pre><code>void printArray(int a[3][2]);
-void printArray(int a[][2]);
-void printArray(int (*a)[2]);
+<ul>
+<li>降低资源消耗。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。</li>
+<li>提高响应速度。当任务到达时，任务可以不需要等到线程创建就能立即执行。</li>
+<li>提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控。但是要做到合理的利用线程池，必须对其原理了如指掌。</li>
+</ul>
+
+<p>Java通过Executors提供四种线程池，分别为： </p>
+
+<ul>
+<li>newCachedThreadPool创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。 </li>
+<li>newFixedThreadPool 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。 </li>
+<li>newScheduledThreadPool 创建一个定长线程池，支持定时及周期性任务执行。 </li>
+<li>newSingleThreadExecutor 创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。</li>
+</ul>
+
+<p>使用方式</p>
+
+<p>execute();<br/>
+submit();</p>
+
+<pre><code>ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 </code></pre>
 
-<p>以上三种方式都可以将二维数组传入函数中，其中int a[][2]是int (*a)[2]的语法糖。</p>
-
-<hr/>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int a[][2]){
-        for(int i=0; i&lt;3; ++i){
-                for(int j=0; j&lt;2; ++j){
-                        printf(&quot;%d\n&quot;, a[i][j]);
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray(test);
-        return 1;
-}
-</code></pre>
-
-<hr/>
-
-<p>手工寻址</p>
-
-<pre><code>#include&lt;stdio.h&gt;
-void printArray(int **a, int m, int n){
-        for(int i=0; i&lt;m; ++i){
-                for(int j=0; j&lt;n; ++j){
-                        printf(&quot;%d\n&quot;, *((int*)a+i*n+j));
-                }
-        }
-}
-int main(){
-        int test[][2] = {{8, 21}, {43, 54}, {89,23}};
-        printArray((int**)test, 3, 2);
-        return 1;
-}
-</code></pre>
-
-<p><code>int **a;</code></p>
-
-<p>*a表明a是一个指针，*(*a)表明a指针指向的内存单元(*a)的内容存放的也是一个指针。</p>
+<p>参考文献<br/>
+<a href="http://itindex.net/detail/48147-java-%E7%BA%BF%E7%A8%8B">http://itindex.net/detail/48147-java-%E7%BA%BF%E7%A8%8B</a><br/>
+<a href="http://blog.csdn.net/scboyhj__/article/details/48805881">http://blog.csdn.net/scboyhj__/article/details/48805881</a></p>
 
       </div>
 
@@ -183,16 +161,16 @@ int main(){
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="14598725533534.html" 
-          title="Previous Post: Objective-C中的类别">&laquo; Objective-C中的类别</a>
+          <a href="14759170796736.html" 
+          title="Previous Post: 28. wait()和sleep()的区别">&laquo; 28. wait()和sleep()的区别</a>
       
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="14595804338386.html" 
-          title="Next Post: First blog">First blog &raquo;</a>
+          <a  href="14753108824439.html" 
+          title="Next Post: 25. ThreadLocal的设计理念与作用">25. ThreadLocal的设计理念与作用 &raquo;</a>
       
       </p>
         </div>

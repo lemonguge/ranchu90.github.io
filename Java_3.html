@@ -103,18 +103,88 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748960344939.html">
+                <a class="clearlink" href="14751378304376.html">
                 
-                  <h1>3.equals()和==的区别</h1>
+                  <h1>19. Static inner class 与non static inner class的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
+                        	<p>Java当中一种有四种内部类：</p>
 
-<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
+<ul>
+<li>静态内部类</li>
+<li>普通内部类</li>
+<li>局部内部类</li>
+<li>匿名内部类</li>
+</ul>
 
-<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
+<p>静态内部类(static inner class)</p>
+
+<pre><code>class outerClass{
+    //静态内部类
+    static class staticInnerClass{
+    }
+    //普通内部类
+    class innerClass{
+    }
+    //局部内部类
+    public void function(){
+        class innerClass{
+        }
+    }
+    //匿名内部类
+    public MyFrame() {
+     addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+            ....
+        }
+    });
+}
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>静态内部类</th>
+<th>普通内部类</th>
+<th>局部内部类</th>
+<th>匿名内部类</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>实例化方式</td>
+<td>不依赖外部类实例</td>
+<td>依赖外部类实例</td>
+<td>方法内部</td>
+<td>只有一个实例</td>
+</tr>
+<tr>
+<td>访问权限</td>
+<td>外部静态成员和静态方法</td>
+<td>外部所有成员方法</td>
+<td>只能访问方法中final局部常量</td>
+<td>同左</td>
+</tr>
+<tr>
+<td>构造函数</td>
+<td>有</td>
+<td>有</td>
+<td>有</td>
+<td>无</td>
+</tr>
+<tr>
+<td>其它</td>
+<td></td>
+<td></td>
+<td>无publi,protected等修饰</td>
+<td>同左；必须继承一个父类或者实现一个接口</td>
+</tr>
+</tbody>
+</table>
 
                         
                       </div>
@@ -123,7 +193,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:20 下午</span>
+                    <span class="date">2016/9/29 16:30 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -132,7 +202,156 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14751378304376.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14751330832847.html">
+                
+                  <h1>18. interface与abstract类的区别</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>interface中不能有变量，只能有公有静态常量，没有构造方法，默认为public abstract，一个类可实现多个interface，表示has-a关系，实现一个接口必须实现其中所以的方法。</p>
+
+<p>抽象类中可以有自己的变量，可以有私有方法和非抽象方法，需要继承，一个类只继承一个，继承类如果不是抽象类必须实现抽象方法，如果是则不需要被重写。is-a关系。</p>
+
+<p>接口和抽象类的相同点：<br/>
+1.都不能被实例化<br/>
+2.接口的实现类或抽象类的子类都只有实现了接口或抽象类中的方法后才能被实例化。</p>
+
+<p>不同：<br/>
+1.接口中的方法只能有定义。抽象类中可以有定义和实现。<br/>
+2.接口可以实现（implement）多个，但是继承抽象类只能继承一个<br/>
+3.接口中不能有变量只能包含public static final常量。所有方法默认为public abstract。抽象类中可以有普通成员变量和成员方法。<br/>
+4.接口用于实现常用功能，便于日后维护或者添加删除方法；抽象类则充当公共类的角色，不适用于日后重新对代码进行修改。</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/29 15:11 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14751330832847.html#disqus_thread">comments</a>
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
+			<div class="article">
+                <a class="clearlink" href="14751246036816.html">
+                
+                  <h1>17. Override和Overload的含义去区别</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<p>Override<br/>
+覆盖（又称重写）指重写父类的同名方法，参数，名称，返回值都必须一样，子类不能降低父类方法的可见性（否则无法实现多态）</p>
+
+<p>Overload<br/>
+重载，在同一个类中，使用同名方法，但方法参数必须有不同，个数或类型</p>
+
+<pre><code>class Father{
+    public void show(){
+        System.out.println(&quot;Father&quot;);
+    }
+}
+
+class Sub extends Father{
+    
+    public void show(){
+        System.out.println(&quot;Sub&quot;);
+    }
+    
+    public void show(String msg){
+        System.out.println(&quot;reload:&quot; + msg);
+    }
+    
+    public void show(String msg, String time){
+        System.out.println(&quot;reload:&quot; + msg + &quot; time:&quot; + time);
+    }
+    
+    public void show(int number){
+        System.out.println(&quot;reload:&quot; + number);
+    }
+}
+</code></pre>
+
+<p>若子类尝试降覆盖方法的可见性，编译会报错。</p>
+
+<pre><code>class Father{
+    public void show(){
+        System.out.println(&quot;Father&quot;);
+    }
+}
+
+class Sub extends Father{
+    
+    private void show(){
+        System.out.println(&quot;Sub&quot;);
+    }
+    
+    public void show(String msg){
+        System.out.println(&quot;reload:&quot; + msg);
+    }
+    
+    public void show(String msg, String time){
+        System.out.println(&quot;reload:&quot; + msg + &quot; time:&quot; + time);
+    }
+    
+    public void show(int number){
+        System.out.println(&quot;reload:&quot; + number);
+    }
+}
+</code></pre>
+
+<p>输出</p>
+
+<pre><code>Untitled.java:9: 错误: Sub中的show()无法覆盖Father中的show()
+    private void show(){
+                 ^
+  正在尝试分配更低的访问权限; 以前为public
+1 个错误
+</code></pre>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2016/9/29 12:50 下午</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='Java.html'>Java</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+                        <a href="http://ranchu90.github.io/14751246036816.html#disqus_thread">comments</a>
                       
 
                        
@@ -218,33 +437,41 @@
 	      
 		      
 			      <li class="post">
-			        <a href="14748977980780.html">6. Hashcode的作用</a>
+			        <a href="14759831063023.html">30. Java IO与NIO</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748971773098.html">5. Java的四种引用，强弱软虚，用到的场景</a>
+			        <a href="14759174977641.html">29. foreach与正常for循环效率对比</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748970236814.html">4.Object有哪些公用方法？</a>
+			        <a href="14759170796736.html">28. wait()和sleep()的区别</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748960344939.html">3.equals()和==的区别</a>
+			        <a href="14757460203014.html">26. ThreadPool用法与优势</a>
 			      </li>
 		     
 		  
 		      
 			      <li class="post">
-			        <a href="14748943230133.html">2.  Switch能否用String做参数？</a>
+			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
 			      </li>
 		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
 		  
 		      
 		  

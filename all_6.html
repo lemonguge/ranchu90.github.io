@@ -103,21 +103,87 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748971773098.html">
+                <a class="clearlink" href="14749474920939.html">
                 
-                  <h1>5. Java的四种引用，强弱软虚，用到的场景</h1>
+                  <h1>9. Map、Set、List、Queue、Stack的特点与用法</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>Java对对象的引用分为四种：<br/>
-1.强引用。强引用的对象不会被垃圾回收器回收。内存不足时，宁可抛出OOM错误也不会回收强引用。</p>
+                        	<p>Collections框架中包含了大量的集合接口及这些接口的实现。主要提供了9种Map、Set、List、Queue、Stack等数据结构。</p>
 
-<p>2.软引用。可有可无的引用，当JVM内存足够的时候不会被回收；当JVM内存不足的时候，发现软引用的存在，会回收软引用。</p>
+<ul>
+<li>Set接口表示数学中集合的概念。其主要特点是集合中的元素不重复。</li>
+<li>List接口表示有序的集合。它按照对象进入的顺序保存对象，所以能对每个元素的插入和删除具体的位置进行精确的控制。它能存放重复的对象。</li>
+<li>Map接口提供了一个从Key到Value的数据结构，保存键值对。其中Value可以重复，但是Key不能重复。</li>
+<li>Queue接口提供了“先进先出”队列的数据结构。只能在队尾添加元素，只能在对头弹出元素。</li>
+<li>Stack继承自Vector，它实现了先进后出的栈结构。</li>
+</ul>
 
-<p>3.若引用。可有可无的引用，一旦被垃圾回收器发现，马上就被其回收。</p>
+<p>我在网络上找到一张实现Collection接口的类图，可以一目了然地看到实现的类及他们之间的关系。<br/>
+<img src="media/14749474920939/14749600076300.jpg" alt=""/></p>
 
-<p>4.幽灵引用。它一般用来标记被回收的对象，当对象被回收后，会受到一条消息。虚引用与软引用和弱引用的一个区别在于：虚引用必须和引用队列 （ReferenceQueue）联合使用。</p>
+<p>Collection接口定义了一套统一的操作方法：</p>
+
+<pre><code>int size();
+返回容器中元素的个数
+boolean isEmpty();
+判断容器是否为空，空则返回true，否则false
+boolean contains(Object o);
+判段容器是否包含o对象
+Iterator&lt;E&gt; iterator();
+获得该容器的迭代器
+Object[] toArray();
+将容器转换为对象数组
+boolean add(E e);
+向容器中添加元素
+boolean remove(Object o);
+移除容器中的对象
+boolean containsAll(Collection&lt;?&gt; c);
+判断是否包含c中的所有元素
+boolean addAll(Collection&lt;? extends E&gt; c);
+添加c容器中的所有元素
+boolean removeAll(Collection&lt;?&gt; c);
+移除c中包含的所有元素
+boolean retainAll(Collection&lt;?&gt; c);
+保留c中存在的元素，移除c中不存在的元素
+void clear();
+清除容器中的所有元素
+</code></pre>
+
+<p>Stack类中除了继承了Vector的方法外还实现了</p>
+
+<pre><code>boolean empty() 
+测试堆栈是否为空。
+Object peek( )
+查看堆栈顶部的对象，但不从堆栈中移除它。
+Object pop( )
+移除堆栈顶部的对象，并作为此函数的值返回该对象。
+Object push(Object element)
+把项压入堆栈顶部。
+int search(Object element)
+返回对象在堆栈中的位置，以 1 为基数。
+</code></pre>
+
+<p>Queue接口中常用方法</p>
+
+<pre><code>boolean add(E e);        
+增加一个元素              若队列已满，则抛出一个IIIegaISlabEepeplian异常
+boolean remove();   
+移除并返回队列头部的元素    若队列为空，则抛出一个NoSuchElementException异常
+E element()  
+返回队列头部的元素         若队列为空，则抛出一个NoSuchElementException异常
+offer(E e)      
+添加一个元素并返回true     若队列已满，则返回false
+E poll()      
+移除并返问队列头部的元素    若队列为空，则返回null
+E peek()     
+返回队列头部的元素         若队列为空，则返回null
+void put()     
+添加一个元素              若队列满，则阻塞
+void take()
+移除并返回队列头部的元素    若队列为空，则阻塞
+</code></pre>
 
                         
                       </div>
@@ -126,7 +192,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:39 下午</span>
+                    <span class="date">2016/9/27 11:38 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -135,7 +201,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748971773098.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14749474920939.html#disqus_thread">comments</a>
                       
 
                        
@@ -145,55 +211,56 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748970236814.html">
+                <a class="clearlink" href="14749467173553.html">
                 
-                  <h1>4.Object有哪些公用方法？</h1>
+                  <h1>8. String、StringBuffer与StringBuilder的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<h2 id="toc_0">1．clone方法</h2>
+                        	<table>
+<thead>
+<tr>
+<th></th>
+<th>String</th>
+<th>StringBuffer</th>
+<th>StringBuilder</th>
+</tr>
+</thead>
 
-<p>保护方法，实现对象的浅复制，只有实现了Cloneable接口才可以调用该方法，否则抛出CloneNotSupportedException异常。</p>
-
-<h2 id="toc_1">2．getClass方法</h2>
-
-<p>final方法，获得运行时类型。</p>
-
-<h2 id="toc_2">3．toString方法</h2>
-
-<p>该方法用得比较多，一般子类都有覆盖。</p>
-
-<h2 id="toc_3">4．finalize方法</h2>
-
-<p>该方法用于释放资源。因为无法确定该方法什么时候被调用，很少使用。自动垃圾收集 器 会 调用 finalize() 方法。</p>
-
-<h2 id="toc_4">5．equals方法</h2>
-
-<p>该方法是非常重要的一个方法。一般equals和<code>==</code>是不一样的，但是在Object中两者是一样的。子类一般都要重写这个方法。</p>
-
-<h2 id="toc_5">6．hashCode方法</h2>
-
-<p>该方法用于哈希查找，重写了equals方法一般都要重写hashCode方法。这个方法在一些具有哈希功能的Collection中用到。<br/>
-一般必须满足obj1.equals(obj2)<code>==</code>true。可以推出obj1.hashCode()<code>==</code>obj2.hashCode()，但是hashCode相等不一定就满足equals。不过为了提高效率，应该尽量使上面两个条件接近等价。</p>
-
-<h2 id="toc_6">7．wait方法</h2>
-
-<p>wait方法就是使当前线程等待该对象的锁，当前线程必须是该对象的拥有者，也就是具有该对象的锁。wait()方法一直等待，直到获得锁或者被中断。wait(long timeout)设定一个超时间隔，如果在规定时间内没有获得锁就返回。<br/>
-调用该方法后当前线程进入睡眠状态，直到以下事件发生。<br/>
-（1）其他线程调用了该对象的notify方法。<br/>
-（2）其他线程调用了该对象的notifyAll方法。<br/>
-（3）其他线程调用了interrupt中断该线程。<br/>
-（4）时间间隔到了。<br/>
-此时该线程就可以被调度了，如果是被中断的话就抛出一个InterruptedException异常。</p>
-
-<h2 id="toc_7">8．notify方法</h2>
-
-<p>该方法唤醒在该对象上等待的某个线程。</p>
-
-<h2 id="toc_8">9．notifyAll方法</h2>
-
-<p>该方法唤醒在该对象上等待的所有线程。</p>
+<tbody>
+<tr>
+<td>可变性</td>
+<td>不可变类</td>
+<td>可变</td>
+<td>可变</td>
+</tr>
+<tr>
+<td>线程安全</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>适用场合</td>
+<td>被共享的场合 少量数据</td>
+<td>经常修改的场合 避免附加操作 无用对象 提高效率 多线程大量数据</td>
+<td>单线程下大量数据</td>
+</tr>
+<tr>
+<td>构建</td>
+<td>构造函数 ==赋值</td>
+<td>构造函数</td>
+<td>构造函数</td>
+</tr>
+<tr>
+<td>执行效率</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
 
                         
                       </div>
@@ -202,7 +269,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:37 下午</span>
+                    <span class="date">2016/9/27 11:25 上午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -211,7 +278,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748970236814.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14749467173553.html#disqus_thread">comments</a>
                       
 
                        
@@ -221,18 +288,75 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748960344939.html">
+                <a class="clearlink" href="14748992011687.html">
                 
-                  <h1>3.equals()和==的区别</h1>
+                  <h1>7. ArrayList、LinkedList、Vector的区别</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
+                        	<p>Collection包结构，Collection是一个集合接口，它提供了对集合对象进行基本操作的通用接口方法。实现该接口的类主要有List和Set，其目的在于为各种具体的集合提供最大化的统一的操作方式。<br/>
+Collection包结构</p>
 
-<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
+<pre><code>Collection
+├List
+│├LinkedList
+│├ArrayList
+│└Vector
+│　└Stack
+└Set
+</code></pre>
 
-<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
+<p>ArrayList和Vector是顺序存储（物理上连续的内存空间）的集合，使用的时候可以根据下标进行访问，索引数据的效率高。但是在删除或者插入时，需要移动容器中的元素，因此插入删除时，效率低。<br/>
+另外，Vector的大多数方法前都有synchronized关键字，因此是线程安全的，ArrayList则不是。</p>
+
+<p>容量扩充：当ArrayList或Vector中设定的容量不够容纳新的节点时，会自动调用grow()方法进行容量的扩充。ArrayList默认扩充原来大小的1.5倍。Vector默认扩充原来大小的2倍，指定capacityIncrement的话，每次扩充指定的大小。</p>
+
+<pre><code>//ArrayList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+    
+//LinkedList
+private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?
+                                         capacityIncrement : oldCapacity);
+        if (newCapacity - minCapacity &lt; 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+            newCapacity = hugeCapacity(minCapacity);
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+</code></pre>
+
+<p>LinkedList采用双向链表实现，无法使用下标访问。每次由下标获取元素的时候，先判断其在前半段还是后半段，在前半段从头结点开始查找，在后半段从尾节点从后往前查找。因此，查找时，效率较ArrayList和Vector低。但是插入或者删除操作，只需要进行节点的删除或者连接操作，因此效率较前二者高。</p>
+
+<pre><code>Node&lt;E&gt; node(int index) {
+        // assert isElementIndex(index);
+
+        if (index &lt; (size &gt;&gt; 1)) {
+            Node&lt;E&gt; x = first;
+            for (int i = 0; i &lt; index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node&lt;E&gt; x = last;
+            for (int i = size - 1; i &gt; index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
+</code></pre>
 
                         
                       </div>
@@ -241,7 +365,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:20 下午</span>
+                    <span class="date">2016/9/26 22:13 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -250,7 +374,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14748992011687.html#disqus_thread">comments</a>
                       
 
                        
@@ -336,31 +460,31 @@
 	      
 		      
 			      <li class="post">
+			        <a href="14759831063023.html">30. Java IO与NIO</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759174977641.html">29. foreach与正常for循环效率对比</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759170796736.html">28. wait()和sleep()的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14757460203014.html">26. ThreadPool用法与优势</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  

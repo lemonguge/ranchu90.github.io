@@ -103,18 +103,42 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14748960344939.html">
+                <a class="clearlink" href="14757460203014.html">
                 
-                  <h1>3.equals()和==的区别</h1>
+                  <h1>26. ThreadPool用法与优势</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p><code>==</code>用于判断两边的变量的值是否相等，如果是基本数据类型，就是判断他们的值是不是相等；如果<code>==</code>两边是对象的引用，那么指的是这两个引用是否指向同一个对象，及引用的值是否相等。</p>
+                        	<p>线程池的优势<br/>
+合理利用线程池能够带来三个好处。</p>
 
-<p><code>equals()</code>是Object里的方法。在Object的equals中，就是使用<code>==</code>来进行比较，比较的是引用。与<code>==</code>不同的是，在某些Object的子类中，覆盖了equals()方法，比如String中的equals()方法比较两个字符串对象的内容是否相同。</p>
+<ul>
+<li>降低资源消耗。通过重复利用已创建的线程降低线程创建和销毁造成的消耗。</li>
+<li>提高响应速度。当任务到达时，任务可以不需要等到线程创建就能立即执行。</li>
+<li>提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控。但是要做到合理的利用线程池，必须对其原理了如指掌。</li>
+</ul>
 
-<p><code>hashCode()</code>方法也是继承自Object，它用来获取一个对象的hash值，返回int值。Object.hashCode规定，equals()相等的对象，它们的HashCode()返回值也必须相等，否则无法与集合类结合在一起使用。(List, Set, Hashmap..)</p>
+<p>Java通过Executors提供四种线程池，分别为： </p>
+
+<ul>
+<li>newCachedThreadPool创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。 </li>
+<li>newFixedThreadPool 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。 </li>
+<li>newScheduledThreadPool 创建一个定长线程池，支持定时及周期性任务执行。 </li>
+<li>newSingleThreadExecutor 创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。</li>
+</ul>
+
+<p>使用方式</p>
+
+<p>execute();<br/>
+submit();</p>
+
+<pre><code>ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+</code></pre>
+
+<p>参考文献<br/>
+<a href="http://itindex.net/detail/48147-java-%E7%BA%BF%E7%A8%8B">http://itindex.net/detail/48147-java-%E7%BA%BF%E7%A8%8B</a><br/>
+<a href="http://blog.csdn.net/scboyhj__/article/details/48805881">http://blog.csdn.net/scboyhj__/article/details/48805881</a></p>
 
                         
                       </div>
@@ -123,7 +147,7 @@
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 21:20 下午</span>
+                    <span class="date">2016/10/6 17:27 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -132,7 +156,7 @@
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748960344939.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14757460203014.html#disqus_thread">comments</a>
                       
 
                        
@@ -142,69 +166,137 @@
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748943230133.html">
+                <a class="clearlink" href="14753108824439.html">
                 
-                  <h1>2.  Switch能否用String做参数？</h1>
+                  <h1>25. ThreadLocal的设计理念与作用</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>1.jdk1.7之前只能使用int型作为参数，byte、short会自动转换成int进行比较。<br/>
-2.在jdk 1.7之前，无法使用String作为参数。1.7以后加入。<br/>
-原理：hashCode()+equals()<br/>
-编译器在编译期间给代码做了转换。<br/>
-原始：</p>
+                        	<h3 id="toc_0">目的</h3>
 
-<pre><code>public class StringInSwitchCase { 
-      public static void main(String[] args) { 
-            String mode = args[0]; 
-            switch (mode) { 
-                  case &quot;ACTIVE&quot;: 
-                        System.out.println(&quot;Application is running on Active mode&quot;); 
-                        break; 
-                  case &quot;PASSIVE&quot;:
-                        System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         break; 
-                  case &quot;SAFE&quot;: 
-                          System.out.println(&quot;Application is running on Safe mode&quot;); 
-          } 
-      } 
+<p>多线程共享一个变量，可以通过public static的形式来实现。<br/>
+每一个线程都有自己的共享变量，提出ThreadLocal正是解决这样的问题。<br/>
+ThreadLocal类主要解决每个线程绑定自己的值，打个比方，类似全局的存放数据的盒子，盒子中可以存放每个线程的私有数据。</p>
+
+<h3 id="toc_1">常用的方法</h3>
+
+<pre><code>T get();
+
+void set(T value);
+
+protected T initialValue() {
+        return null;
 }
 </code></pre>
 
-<p>编译器优化后：</p>
+<p>get()用来获取本地线程中存放的值，set()用来设置本地线程中的值。<br/>
+覆盖initialValue()可以设定指定的初始值，若不设定，初始值默认为null。</p>
 
-<pre><code>import java.io.PrintStream; 
- 
-public class StringInSwitchCase{ 
-      public StringInSwitchCase() { } 
- 
-      public static void main(string args[]) { 
-             String mode = args[0]; 
-            String s; switch ((s = mode).hashCode()) { 
-                  default: break; 
-                  case -74056953: 
-                        if (s.equals(&quot;PASSIVE&quot;)) { 
-                                    System.out.println(&quot;Application is running on Passive mode&quot;); 
-                         } 
-                        break; 
-                  case 2537357: 
-                        if (s.equals(&quot;SAFE&quot;)) { 
-                              System.out.println(&quot;Application is running on Safe mode&quot;); 
-                         } 
-                        break; 
-                  case 1925346054: 
-                        if (s.equals(&quot;ACTIVE&quot;)) { 
-                              System.out.println(&quot;Application is running on Active mode&quot;); 
-                         } 
-                        break; 
-               } 
-          } 
+<p>线程变量是隔离的，即每个线程只能访问自己的值，他们有各自的初始值。</p>
+
+<h3 id="toc_2">InheritableThreadLocal</h3>
+
+<p>使用InheritableThreadLocal可以继承父线程中的值，并可以通过覆盖childValue方法来修改继承的值。</p>
+
+<h3 id="toc_3">示例</h3>
+
+<pre><code>package com.cd.threadlocal;
+
+public class Tools {
+
+    public static ThreadLocalDefined&lt;String&gt; tl = new ThreadLocalDefined&lt;String&gt;();
+    
+    public Tools() {
+        // TODO Auto-generated constructor stub
+    }
+
 }
+
+package com.cd.threadlocal;
+
+public class ThreadLocalDefined&lt;T&gt; extends ThreadLocal&lt;Object&gt; {
+
+    @Override
+    protected Object initialValue() {
+        // TODO Auto-generated method stub
+        return &quot;OK&quot;;
+    }
+
+}
+
+package com.cd.threadlocal;
+
+public class ThreadA extends Thread {
+
+    public ThreadA() {
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public void run() {
+        for(int i=0; i&lt;10; ++i){
+            if(Tools.tl.get() == null){
+                System.out.println(&quot;ThreadA 1st &quot; + Tools.tl.get());
+            }
+            
+            System.out.println(Tools.tl.get());
+            Tools.tl.set(&quot;Thread A &quot;+ i);
+        }
+    }
+}
+
+package com.cd.threadlocal;
+
+public class Main {
+
+    public Main() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public static void main(String[] args) {
+        
+        ThreadA a = new ThreadA();
+        a.start();
+        
+        for(int i=0; i&lt;10; ++i){
+            if(Tools.tl.get() == null){
+                System.out.println(&quot;Main 1st &quot; + Tools.tl.get());
+            }
+            
+            System.out.println(Tools.tl.get());
+            Tools.tl.set(&quot;Main Thread &quot;+i);
+        }
+
+    }
+
+}
+
 </code></pre>
 
-<p>参考资料：<br/>
-<a href="http://www.importnew.com/14597.html">http://www.importnew.com/14597.html</a></p>
+<p>运行结果</p>
+
+<pre><code>OK
+OK
+Main Thread 0
+Thread A 0
+Main Thread 1
+Thread A 1
+Thread A 2
+Main Thread 2
+Thread A 3
+Main Thread 3
+Thread A 4
+Thread A 5
+Main Thread 4
+Thread A 6
+Main Thread 5
+Thread A 7
+Main Thread 6
+Thread A 8
+Main Thread 7
+Main Thread 8
+</code></pre>
 
                         
                       </div>
@@ -213,7 +305,7 @@ public class StringInSwitchCase{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 20:52 下午</span>
+                    <span class="date">2016/10/1 16:34 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -222,7 +314,7 @@ public class StringInSwitchCase{
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748943230133.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14753108824439.html#disqus_thread">comments</a>
                       
 
                        
@@ -232,117 +324,180 @@ public class StringInSwitchCase{
               </div><!-- article -->
         
 			<div class="article">
-                <a class="clearlink" href="14748770602290.html">
+                <a class="clearlink" href="14753034865723.html">
                 
-                  <h1>1.	九种基本数据类型的大小，以及他们的封装类</h1>
+                  <h1>24. 写出生产者消费者模式</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<table>
-<thead>
-<tr>
-<th></th>
-<th>大小</th>
-<th>最小值</th>
-<th>最大值</th>
-<th>包装类型</th>
-</tr>
-</thead>
+                        	<p>参照网络上的资料，自己写了一个生产者消费者模式。</p>
 
-<tbody>
-<tr>
-<td>boolean</td>
-<td>32-bit</td>
-<td>-</td>
-<td>-</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>char</td>
-<td>16-bit</td>
-<td>Unicode 0</td>
-<td>Unicode 2<sup>16</sup> -1</td>
-<td>Character</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8-bit</td>
-<td>-2<sup>7</sup></td>
-<td>2<sup>7</sup> -1</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16-bit</td>
-<td>-2<sup>15</sup></td>
-<td>2<sup>15</sup> -1</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>int</td>
-<td>32-bit</td>
-<td>-2<sup>31</sup></td>
-<td>2<sup>31</sup> -1</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64-bit</td>
-<td>-2<sup>63</sup></td>
-<td>2<sup>63</sup> -1</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64-bit</td>
-<td>IEEE754</td>
-<td>IEEE754</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>void</td>
-<td>-</td>
-<td>-</td>
-<td>-</td>
-<td>Void</td>
-</tr>
-</tbody>
-</table>
+<pre><code>package com.cd.test;
 
-<h2 id="toc_0">使用封装类的目的</h2>
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-<p>集合类中存放的都是对象，为了使集合类也能存放基本数据类型，Java提供了其对应的包装类。</p>
+class Main {
 
-<h2 id="toc_1">封装类与基本数据类型的区别</h2>
+    public static void main(String[] args) {
+        ExecutorService service = Executors.newCachedThreadPool();
+        
+        Container container = new Container();
+        
+        Producer a = new Producer(container, &quot;Wang Sir&quot;);
+        Producer b = new Producer(container, &quot;Li Sir&quot;);
+        Consumer c = new Consumer(container, &quot;Chen&quot;);
+        Consumer d = new Consumer(container, &quot;Opp&quot;);
+        Consumer e = new Consumer(container, &quot;Satoshi&quot;);
+        
+        service.submit(a);
+        service.submit(b);
+        service.submit(c);
+        service.submit(d);
+        service.submit(e);
+    }
 
-<ol>
-<li>传递类型不同，封装类是引用传递，基本数据类型是值传递。</li>
-<li>内存分配不同，类在堆上分配，基本类型在Java虚拟栈上分配。</li>
-</ol>
+}
 
-<h2 id="toc_2">void类型</h2>
+class Goods {
+    int no;
+    String producer;
+    
+    Goods(int no, String producer){
+        this.no = no;
+        this.producer = producer;
+    }
+    
+    public String toString(){
+        return &quot;product :&quot; + no + &quot; by &quot; + this.producer;
+    }
+}
 
-<p>Java编程思想中奖void也纳入基本数据类型。Java文档中对void的解释:</p>
+class Container {
+    BlockingQueue&lt;Goods&gt; queue = null;
+    int index = 0;
+    int max = 0;
+    
+    Container(int num){
+        if(num &gt; 0){
+            queue = new ArrayBlockingQueue&lt;Goods&gt;(num);
+            max = num;
+        }
+        else{
+            queue = new ArrayBlockingQueue&lt;Goods&gt;(10);
+            max = 10;
+        }
+    }
 
-<pre><code>/**
- * The {@code Void} class is an uninstantiable placeholder class to hold a
- * reference to the {@code Class} object representing the Java keyword
- * void.
- *
- * @author  unascribed
- * @since   JDK1.1
- */
+    Container(){
+        this(10);
+    }
+    
+    synchronized public Goods pop() throws InterruptedException{
+        if(queue == null || queue.isEmpty())
+            return null;
+        
+        Goods tmp = queue.take();
+        
+        return tmp;
+    }
+    
+    synchronized public boolean push(Goods good) throws InterruptedException{
+        if(queue == null || queue.size() == max)
+            return false;
+        
+        queue.put(good);
+        
+        return true;
+    }
+}
+
+class Producer implements Runnable{
+    Container container = null;
+    String producer = null;
+    
+    Producer(Container ct, String producer){
+        this.container = ct;
+        this.producer = producer;
+    }
+
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        int index = 0;
+        
+        while(index &lt; 5){
+            Goods good = new Goods(index++, this.producer);
+            
+            try {
+                container.push(good);
+                System.out.println(&quot; Produced goods :&quot; + good.toString());
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+    
+}
+
+class Consumer implements Runnable{
+    Container container = null;
+    String producer = null;
+    
+    Consumer(Container ct, String producer){
+        this.container = ct;
+        this.producer = producer;
+    }
+    
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        while(true){
+            Goods good;
+            
+            try {
+                good = container.pop();
+                
+                System.out.println(&quot; Consumed goods :&quot; + good.toString());
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
+        }
+    }
+    
+}
 </code></pre>
 
-<p>java.lang.Void 类是一个不可实例化的占位符类来保存一个引用代表了Java关键字void的Class对象。Void无法通过new在堆中分配空间。</p>
+<p>其中一次的运行结果</p>
+
+<pre><code> Produced goods :product :0 by Wang Sir
+ Produced goods :product :1 by Wang Sir
+ Produced goods :product :2 by Wang Sir
+ Produced goods :product :3 by Wang Sir
+ Produced goods :product :4 by Wang Sir
+ Produced goods :product :0 by Li Sir
+ Produced goods :product :1 by Li Sir
+ Consumed goods :product :0 by Wang Sir
+ Consumed goods :product :0 by Li Sir
+ Consumed goods :product :1 by Wang Sir
+ Consumed goods :product :2 by Wang Sir
+ Consumed goods :product :3 by Wang Sir
+ Consumed goods :product :4 by Wang Sir
+ Produced goods :product :2 by Li Sir
+ Consumed goods :product :1 by Li Sir
+ Consumed goods :product :2 by Li Sir
+ Produced goods :product :3 by Li Sir
+ Consumed goods :product :3 by Li Sir
+ Produced goods :product :4 by Li Sir
+ Consumed goods :product :4 by Li Sir
+
+</code></pre>
 
                         
                       </div>
@@ -351,7 +506,7 @@ public class StringInSwitchCase{
                 <div class="read-more clearfix">
                   <div class="more-left left">
                   
-                    <span class="date">2016/9/26 16:4 下午</span>
+                    <span class="date">2016/10/1 14:31 下午</span>
                     <span>posted in&nbsp;</span> 
           				  
           					    <span class="posted-in"><a href='Java.html'>Java</a></span>
@@ -360,7 +515,7 @@ public class StringInSwitchCase{
                   <div class="more-right right">
                   <span class="comments">
                       
-                        <a href="http://ranchu90.github.io/14748770602290.html#disqus_thread">comments</a>
+                        <a href="http://ranchu90.github.io/14753034865723.html#disqus_thread">comments</a>
                       
 
                        
@@ -446,31 +601,31 @@ public class StringInSwitchCase{
 	      
 		      
 			      <li class="post">
+			        <a href="14759831063023.html">30. Java IO与NIO</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759174977641.html">29. foreach与正常for循环效率对比</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14759170796736.html">28. wait()和sleep()的区别</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14757460203014.html">26. ThreadPool用法与优势</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="14753108824439.html">25. ThreadLocal的设计理念与作用</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14753034865723.html">24. 写出生产者消费者模式</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752943139261.html">23. 锁的等级：方法锁、对象锁、类锁</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752937281313.html">22. 线程同步的方法：synchronized、lock、reentrantLock</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14752420902330.html">21. 实现多线程的两种方法：Thread与Runnable</a>
 			      </li>
 		     
 		  
